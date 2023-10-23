@@ -138,7 +138,8 @@ const contenedoresSlice = createSlice({
       try {
         postData
           .postEliminarAcciones(action.payload)
-          .then((res) => state.acciones.splice(index, 1));
+          .then((res) => state.acciones.splice(index, 1))
+          .then(() => toast.success("Tarea eliminada correctamente"));
       } catch (error) {
         toast.error("Ha ocurrido un error: " + error);
       }

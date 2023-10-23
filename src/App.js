@@ -16,6 +16,8 @@ import {
   setSolicitudesInicial,
 } from "./redux/slices/contenedoresSlice";
 
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   const dispatch = useDispatch();
 

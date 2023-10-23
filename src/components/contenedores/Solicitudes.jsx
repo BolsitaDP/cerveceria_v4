@@ -10,6 +10,7 @@ import {
   Modal,
   Select,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -98,12 +99,14 @@ const Solicitudes = () => {
         <Card variant="tiulo">
           <p>Pendiente por programar</p>
 
-          <IconButton
-            sx={{ color: theme.palette.primary.contrast }}
-            onClick={handleMostrarFiltro}
-            edge="end">
-            <FilterAltRoundedIcon />
-          </IconButton>
+          <Tooltip title="Filtros" arrow>
+            <IconButton
+              sx={{ color: theme.palette.primary.contrast }}
+              onClick={handleMostrarFiltro}
+              edge="end">
+              <FilterAltRoundedIcon />
+            </IconButton>
+          </Tooltip>
         </Card>
 
         <Card
@@ -154,7 +157,11 @@ const Solicitudes = () => {
                 <em>No ordenar</em>
               </MenuItem>
               {posiblesOrdenamientos.map((filtro) => {
-                return <MenuItem value={filtro}>{filtro}</MenuItem>;
+                return (
+                  <MenuItem key={filtro} value={filtro}>
+                    {filtro}
+                  </MenuItem>
+                );
               })}
             </Select>
           </FormControl>
@@ -175,7 +182,12 @@ const Solicitudes = () => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         onClick={() => handleOpenModalDetalles(solicitud)}
-                        ref={provided.innerRef}>
+                        ref={provided.innerRef}
+                        style={{
+                          width: "10px",
+                          height: "10px",
+                          backgroundColor: "blue",
+                        }}>
                         <div>
                           {solicitud.cantidad} {solicitud.unidadMedida}
                         </div>
