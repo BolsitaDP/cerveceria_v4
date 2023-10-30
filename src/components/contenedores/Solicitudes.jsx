@@ -99,7 +99,7 @@ const Solicitudes = () => {
         <Card variant="tiulo">
           <p>Pendiente por programar</p>
 
-          <Tooltip title="Filtros" arrow>
+          <Tooltip title="Abrir filtros" arrow>
             <IconButton
               sx={{ color: theme.palette.primary.contrast }}
               onClick={handleMostrarFiltro}

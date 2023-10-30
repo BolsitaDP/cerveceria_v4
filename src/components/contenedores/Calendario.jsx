@@ -7,7 +7,7 @@ import { useTheme } from "@emotion/react";
 const Calendario = () => {
   const theme = useTheme();
   return (
-    <Box sx={{ height: "34%" }}>
+    <Box sx={{ height: "100%" }}>
       <Card variant="contenedor">
         <Card variant="tiulo">
           <p>Calendario</p>
