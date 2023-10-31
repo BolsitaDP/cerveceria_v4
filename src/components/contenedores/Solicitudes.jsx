@@ -24,6 +24,7 @@ import ordenarSolicitudes from "../../helpers/ordenarSolicitudes";
 import { useDispatch } from "react-redux";
 import filtrarObjetoAnidado from "../../helpers/filtrarObjetoAnidado";
 import { setSolicitudes } from "../../redux/slices/contenedoresSlice";
+import Solicitud from "../modales/Solicitud";
 
 const Solicitudes = () => {
   const theme = useTheme();
@@ -169,40 +170,30 @@ const Solicitudes = () => {
 
         <Droppable droppableId="solicitudes" key="solicitudes">
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {Object.values(solicitudesARenderizar).map((solicitud, index) => {
-                let solicitudId = solicitud.idDnd;
+            <Box
+              sx={{
+                padding: "10px",
+                gap: "10px",
+                display: "flex",
+                flexDirection: "column",
+                height: filtrosVisibles ? "48vh" : "55vh",
+                overflow: "auto",
+                transition: "0.3s ease all",
+              }}
+              {...provided.droppableProps}
+              ref={provided.innerRef}>
+              {Object.values(solicitudesFiltradas).map((solicitud, index) => {
                 return (
-                  <Draggable
-                    draggableId={solicitudId}
+                  <Solicitud
+                    solicitud={solicitud}
+                    key={index}
                     index={index}
-                    key={solicitudId}>
-                    {(provided) => (
-                      <div
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        onClick={() => handleOpenModalDetalles(solicitud)}
-                        ref={provided.innerRef}
-                        style={{
-                          width: "10px",
-                          height: "10px",
-                          backgroundColor: "blue",
-                        }}>
-                        <div>
-                          {solicitud.cantidad} {solicitud.unidadMedida}
-                        </div>
-                        <div>
-                          {solicitud.producto.slice(0, 30)}
-                          {solicitud.producto.length > 30 && "..."}
-                          <span>{solicitud.codigoNombre}</span>
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
+                    handleOpenModalDetalles={handleOpenModalDetalles}
+                  />
                 );
               })}
               {provided.placeholder}
-            </div>
+            </Box>
           )}
         </Droppable>
       </Card>

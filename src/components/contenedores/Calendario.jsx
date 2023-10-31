@@ -1,17 +1,37 @@
 import { Box, Card, IconButton, Modal, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 
+import BackupRoundedIcon from "@mui/icons-material/BackupRounded";
+import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
 import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
 import { useTheme } from "@emotion/react";
 import SeleccionadorDeFechas from "../modales/SeleccionadorDeFechas";
+import EstadisticasGenerales from "../modales/EstadisticasGenerales";
+import { useSelector } from "react-redux";
+import EstadisticasSalon from "../modales/EstadisticasSalon";
 
 const Calendario = () => {
   const theme = useTheme();
 
   const [modalAbierto, setModalAbierto] = useState(null);
+  const [estadisticasSalon, setEstadisticasSalon] = useState(null);
 
-  const handleMostrarSeleccionadorDeFechas = () => {
-    setModalAbierto("seleccionadorDeFechas");
+  const [activeTab, setActiveTab] = useState(0);
+
+  const salones = useSelector((state) => state.contenedores.calendario);
+
+  const handleMostrarModal = (modal) => {
+    setModalAbierto(modal);
+  };
+
+  const handleOpenModalStats = (salon) => {
+    setModalAbierto("estadisitcasSalon");
+    setEstadisticasSalon(salon);
+  };
+
+  const handleTabClick = (index, salon) => {
+    setActiveTab(index);
+    // dispatch(setSalonSeleccionado(salon));
   };
 
   return (
@@ -19,17 +39,55 @@ const Calendario = () => {
       <Card variant="contenedor">
         <Card variant="tiulo">
           <p>Calendario</p>
-          <Tooltip title="Seleccionar fecha" arrow>
-            <IconButton
-              sx={{ color: theme.palette.primary.contrast }}
-              onClick={handleMostrarSeleccionadorDeFechas}
-              edge="end">
-              <CalendarTodayRoundedIcon />
-            </IconButton>
-          </Tooltip>
+          <Box sx={{ display: "flex", gap: "20px" }}>
+            <Tooltip title="Seleccionar fecha" arrow>
+              <IconButton
+                sx={{ color: theme.palette.primary.contrast }}
+                onClick={() => handleMostrarModal("seleccionadorDeFechas")}
+                edge="end">
+                <CalendarTodayRoundedIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Notificar cambios" arrow>
+              <IconButton
+                sx={{ color: theme.palette.primary.contrast }}
+                onClick={() => handleMostrarModal("notificarCambios")}
+                edge="end">
+                <BackupRoundedIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Estadísticas generales" arrow>
+              <IconButton
+                sx={{ color: theme.palette.primary.contrast }}
+                onClick={() => handleMostrarModal("estadisticasGenerales")}
+                edge="end">
+                <QueryStatsRoundedIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Card>
 
-        <Card>Salones</Card>
+        <Card>
+          {Object.keys(salones).map((salon, index) => {
+            console.log(salon);
+            return (
+              <div key={index} onClick={() => handleTabClick(index, salon)}>
+                {`Salón ${salon}`}
+
+                <Tooltip title="Estadísticas generales" arrow>
+                  <IconButton
+                    sx={{ color: theme.palette.primary.contrast }}
+                    onClick={() => handleOpenModalStats(salon)}
+                    edge="end">
+                    <QueryStatsRoundedIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            );
+          })}
+        </Card>
 
         <Box sx={{ backgroundColor: "red", display: "flex", height: "100%" }}>
           <Card
@@ -65,6 +123,16 @@ const Calendario = () => {
         open={modalAbierto === "seleccionadorDeFechas"}
         onClose={() => setModalAbierto(null)}>
         <SeleccionadorDeFechas />
+      </Modal>
+      <Modal
+        open={modalAbierto === "estadisticasGenerales"}
+        onClose={() => setModalAbierto(null)}>
+        <EstadisticasGenerales />
+      </Modal>
+      <Modal
+        open={modalAbierto === "estadisitcasSalon"}
+        onClose={() => setModalAbierto(null)}>
+        <EstadisticasSalon />
       </Modal>
     </Box>
   );

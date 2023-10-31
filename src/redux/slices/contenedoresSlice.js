@@ -148,12 +148,12 @@ const contenedoresSlice = createSlice({
       state.calendario = action.payload;
     },
     setSalonesInicial: (state, action) => {
+      console.log(action.payload);
       action.payload.forEach((salon) => {
-        let nombreSalon = `salon_${salon.Nombre}`;
+        let nombreSalon = salon.Nombre;
         state.calendario[nombreSalon] = {
           id: salon.Nombre,
           dias: {},
-          capacidadHora: salon.capacidadHora,
         };
       });
     },

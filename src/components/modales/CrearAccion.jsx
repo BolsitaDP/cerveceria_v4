@@ -61,71 +61,87 @@ const CrearAccion = () => {
 
   return (
     <BasicModal titulo={"Crear actividad"}>
-      <FormControl variant="outlined">
-        <InputLabel>Nombre</InputLabel>
-        <Input
-          id="standard-search"
-          type="text"
-          value={textoNombre}
-          onChange={handleChangeTextoNombre}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                sx={{ color: theme.palette.primary.main }}
-                onClick={deleteTextoNombre}
-                edge="end">
-                {textoNombre && (
-                  <BackspaceRoundedIcon onClick={deleteTextoNombre} />
-                )}
-              </IconButton>
-            </InputAdornment>
-          }
-          size="small"
-          label="Solicitud a filtrar"
-          variant="standard"
-        />
-      </FormControl>
-
-      <FormControl variant="outlined">
-        <InputLabel>Duración</InputLabel>
-        <Input
-          id="standard-search"
-          type="number"
-          min="0"
-          value={minutosAccion}
-          onChange={handleChangeMinutos}
-          inputProps={{ min: 0 }}
-          endAdornment={<InputAdornment position="end">Minutos</InputAdornment>}
-          size="small"
-          label="Solicitud a filtrar"
-          variant="standard"
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel id="demo-row-radio-buttons-group-label">Tipo</FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby="demo-row-radio-buttons-group-label"
-          onChange={handleChange}
-          value={tipoAccion}
-          name="row-radio-buttons-group">
-          <FormControlLabel
-            value="operativa"
-            control={<Radio />}
-            label="Operativa"
+      <Box
+        sx={{
+          width: "30vw",
+          minWidth: "350px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          padding: "10%",
+          gap: "2vh",
+        }}>
+        <FormControl variant="outlined">
+          <InputLabel>Nombre</InputLabel>
+          <Input
+            id="standard-search"
+            type="text"
+            value={textoNombre}
+            onChange={handleChangeTextoNombre}
+            sx={{ maxWidth: "200px" }}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  sx={{ color: theme.palette.primary.main }}
+                  onClick={deleteTextoNombre}
+                  edge="end">
+                  {textoNombre && (
+                    <BackspaceRoundedIcon onClick={deleteTextoNombre} />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            }
+            size="small"
+            label="Solicitud a filtrar"
+            variant="standard"
           />
-          <FormControlLabel
-            value="correctiva"
-            control={<Radio />}
-            label="Correctiva"
-          />
-        </RadioGroup>
-      </FormControl>
+        </FormControl>
 
-      <Button variant="contained" onClick={handleNuevaAccion}>
-        Crear
-      </Button>
+        <FormControl variant="outlined">
+          <InputLabel>Duración</InputLabel>
+          <Input
+            id="standard-search"
+            type="number"
+            min="0"
+            sx={{ maxWidth: "200px" }}
+            value={minutosAccion}
+            onChange={handleChangeMinutos}
+            inputProps={{ min: 0 }}
+            endAdornment={
+              <InputAdornment position="end">Minutos</InputAdornment>
+            }
+            size="small"
+            label="Solicitud a filtrar"
+            variant="standard"
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel id="demo-row-radio-buttons-group-label">Tipo</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            onChange={handleChange}
+            value={tipoAccion}
+            name="row-radio-buttons-group">
+            <FormControlLabel
+              value="operativa"
+              control={<Radio />}
+              label="Operativa"
+            />
+            <FormControlLabel
+              value="correctiva"
+              control={<Radio />}
+              label="Correctiva"
+            />
+          </RadioGroup>
+        </FormControl>
+
+        <Button variant="contained" onClick={handleNuevaAccion}>
+          Crear
+        </Button>
+      </Box>
     </BasicModal>
   );
 };

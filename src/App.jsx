@@ -17,6 +17,7 @@ import {
 } from "./redux/slices/contenedoresSlice";
 
 import "react-toastify/dist/ReactToastify.css";
+import MUIFloatingButton from "./components/MUIComponents/MUIFloatingButton";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,9 +41,9 @@ function App() {
           getData.getCorreos(),
         ]);
 
-        dispatch(setSolicitudesInicial(solicitudesSinProgramar));
-        dispatch(setAccionesInicial(acciones));
-        dispatch(setSalonesInicial(salones));
+        dispatch(setSolicitudesInicial(solicitudesSinProgramar.data));
+        dispatch(setAccionesInicial(acciones.data));
+        dispatch(setSalonesInicial(salones.data));
         // dispatch(setHistorialInicial(historial));
         // dispatch(setGruposInicial(grupos));
         // dispatch(setMiembrosInicial(correos));
@@ -92,6 +93,9 @@ function App() {
             </Box>
           </Box>
         </DragDropContext>
+
+        <MUIFloatingButton />
+
         <ToastContainer
           position="bottom-center"
           autoClose={5000}

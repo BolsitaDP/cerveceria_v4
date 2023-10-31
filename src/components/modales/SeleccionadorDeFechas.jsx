@@ -8,6 +8,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import BasicModal from "../MUIComponents/BasicModal";
 import { useState } from "react";
+import { Box } from "@mui/material";
 
 dayjs.extend(isBetweenPlugin);
 
@@ -68,23 +69,25 @@ export default function SeleccionadorDeFechas() {
 
   return (
     <BasicModal titulo={"Seleccionar fechas"}>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es-ES">
-        <DateCalendar
-          value={value}
-          onChange={(newValue) => setValue(newValue)}
-          showDaysOutsideCurrentMonth
-          displayWeekNumber
-          slots={{ day: Day }}
-          slotProps={{
-            day: (ownerState) => ({
-              selectedDay: value,
-              hoveredDay,
-              onPointerEnter: () => setHoveredDay(ownerState.day),
-              onPointerLeave: () => setHoveredDay(null),
-            }),
-          }}
-        />
-      </LocalizationProvider>
+      <Box sx={{ width: "30vw", minWidth: "350px" }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es-ES">
+          <DateCalendar
+            value={value}
+            onChange={(newValue) => setValue(newValue)}
+            showDaysOutsideCurrentMonth
+            displayWeekNumber
+            slots={{ day: Day }}
+            slotProps={{
+              day: (ownerState) => ({
+                selectedDay: value,
+                hoveredDay,
+                onPointerEnter: () => setHoveredDay(ownerState.day),
+                onPointerLeave: () => setHoveredDay(null),
+              }),
+            }}
+          />
+        </LocalizationProvider>
+      </Box>
     </BasicModal>
   );
 }

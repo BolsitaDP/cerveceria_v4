@@ -3,3 +3,15 @@
 * {
   font-family: "Poppins", sans-serif;
 }
+
+html::-webkit-scrollbar {
+  background-color: var(--color-primario);
+  border-radius: 5px;
+  height: 5px;
+  width: 10px;
+}
+html::-webkit-scrollbar-thumb {
+  background-color: var(--color-blanco);
+  border: 1px solid var(--color-primario);
+  border-radius: 5px;
+}
