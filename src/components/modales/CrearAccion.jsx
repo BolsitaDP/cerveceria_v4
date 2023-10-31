@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   FormControl,
   FormControlLabel,
@@ -17,12 +18,14 @@ import BasicModal from "../MUIComponents/BasicModal";
 import { useTheme } from "@emotion/react";
 import BackspaceRoundedIcon from "@mui/icons-material/BackspaceRounded";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const CrearAccion = () => {
   const theme = useTheme();
 
   const [textoNombre, setTextoNombre] = useState("");
   const [minutosAccion, setMinutosAccion] = useState(null);
+  const [tipoAccion, setTipoAccion] = useState(null);
 
   const handleChangeTextoNombre = (e) => {
     setTextoNombre(e.target.value);
@@ -36,8 +39,28 @@ const CrearAccion = () => {
     setTextoNombre("");
   };
 
+  const handleChange = (event) => {
+    setTipoAccion(event.target.value);
+  };
+
+  const handleNuevaAccion = () => {
+    if (textoNombre && textoNombre !== "" && minutosAccion > 0 && tipoAccion) {
+      // dispatch(
+      //   createAccion({
+      //     idDnd: uuid(),
+      //     duracion: parseInt(minutosAccion),
+      //     estado: 1,
+      //     nombreDeLaAccion: textoNombre,
+      //     tipo: tipoAccion,
+      //   })
+      // );
+    } else {
+      toast("La actividad debe tener nombre, duración y tipo");
+    }
+  };
+
   return (
-    <BasicModal titulo={"Crear acción"}>
+    <BasicModal titulo={"Crear actividad"}>
       <FormControl variant="outlined">
         <InputLabel>Nombre</InputLabel>
         <Input
@@ -84,6 +107,8 @@ const CrearAccion = () => {
         <RadioGroup
           row
           aria-labelledby="demo-row-radio-buttons-group-label"
+          onChange={handleChange}
+          value={tipoAccion}
           name="row-radio-buttons-group">
           <FormControlLabel
             value="operativa"
@@ -97,6 +122,10 @@ const CrearAccion = () => {
           />
         </RadioGroup>
       </FormControl>
+
+      <Button variant="contained" onClick={handleNuevaAccion}>
+        Crear
+      </Button>
     </BasicModal>
   );
 };

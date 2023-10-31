@@ -16,7 +16,17 @@ const BasicModal = ({ titulo, children }) => {
         <Card variant="tiulo" sx={{ justifyContent: "center" }}>
           <p>{titulo}</p>
         </Card>
-        {children}
+        <Box
+          sx={{
+            width: "100%",
+            height: "calc(100% - (1ch + 10%))",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+          }}>
+          {children}
+        </Box>
       </Card>
     </Box>
   );
