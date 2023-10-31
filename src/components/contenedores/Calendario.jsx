@@ -1,11 +1,19 @@
-import { Box, Card, IconButton, Tooltip } from "@mui/material";
-import React from "react";
+import { Box, Card, IconButton, Modal, Tooltip } from "@mui/material";
+import React, { useState } from "react";
 
 import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
 import { useTheme } from "@emotion/react";
+import SeleccionadorDeFechas from "../modales/SeleccionadorDeFechas";
 
 const Calendario = () => {
   const theme = useTheme();
+
+  const [modalAbierto, setModalAbierto] = useState(null);
+
+  const handleMostrarSeleccionadorDeFechas = () => {
+    setModalAbierto("seleccionadorDeFechas");
+  };
+
   return (
     <Box sx={{ height: "100%" }}>
       <Card variant="contenedor">
@@ -14,7 +22,7 @@ const Calendario = () => {
           <Tooltip title="Seleccionar fecha" arrow>
             <IconButton
               sx={{ color: theme.palette.primary.contrast }}
-              // onClick={handleMostrarFiltro}
+              onClick={handleMostrarSeleccionadorDeFechas}
               edge="end">
               <CalendarTodayRoundedIcon />
             </IconButton>
@@ -52,6 +60,12 @@ const Calendario = () => {
           <Card>Programación</Card>
         </Box>
       </Card>
+
+      <Modal
+        open={modalAbierto === "seleccionadorDeFechas"}
+        onClose={() => setModalAbierto(null)}>
+        <SeleccionadorDeFechas />
+      </Modal>
     </Box>
   );
 };
