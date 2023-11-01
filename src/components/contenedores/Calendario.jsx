@@ -19,6 +19,7 @@ const Calendario = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const salones = useSelector((state) => state.contenedores.calendario);
+  const diasDeLaSemana = useSelector((state) => state.utils.diasDeLaSemana);
 
   const handleMostrarModal = (modal) => {
     setModalAbierto(modal);
@@ -69,52 +70,116 @@ const Calendario = () => {
           </Box>
         </Card>
 
-        <Card>
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            overflow: "auto",
+            // paddingLeft: "50px",
+            backgroundColor: theme.palette.primary.main,
+          }}>
           {Object.keys(salones).map((salon, index) => {
-            console.log(salon);
             return (
-              <div key={index} onClick={() => handleTabClick(index, salon)}>
+              <Box
+                sx={{
+                  backgroundColor:
+                    activeTab === index
+                      ? theme.palette.primary.contrast
+                      : theme.palette.primary.main,
+                  color:
+                    activeTab === index
+                      ? theme.palette.primary.main
+                      : theme.palette.primary.contrast,
+                  minWidth: "150px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+                key={index}
+                onClick={() => handleTabClick(index, salon)}>
                 {`Salón ${salon}`}
 
-                <Tooltip title="Estadísticas generales" arrow>
+                <Tooltip title={`Estadísticas del salón ${salon}`} arrow>
                   <IconButton
-                    sx={{ color: theme.palette.primary.contrast }}
+                    sx={{
+                      color:
+                        activeTab === index
+                          ? theme.palette.primary.main
+                          : theme.palette.primary.contrast,
+                    }}
                     onClick={() => handleOpenModalStats(salon)}
                     edge="end">
                     <QueryStatsRoundedIcon />
                   </IconButton>
                 </Tooltip>
-              </div>
+              </Box>
             );
           })}
-        </Card>
+        </Box>
 
-        <Box sx={{ backgroundColor: "red", display: "flex", height: "100%" }}>
+        <Box
+          sx={{
+            backgroundColor: "red",
+            display: "flex",
+            height: "100%",
+            overflow: "scroll",
+          }}>
           <Card
-            sx={{ height: "95%", backgroundColor: "blue", padding: "5% 0" }}>
-            <Box sx={{ height: "calc(100% / 7)", minHeight: "9ch" }}>
-              <Card sx={{ transform: "rotate(270deg)" }}>Lunes</Card>
-            </Box>
-            <Box sx={{ height: "calc(100% / 7)" }}>
-              <Card sx={{ transform: "rotate(270deg)" }}>Martes</Card>
-            </Box>
-            <Box sx={{ height: "calc(100% / 7)" }}>
-              <Card sx={{ transform: "rotate(270deg)" }}>Miércoles</Card>
-            </Box>
-            <Box sx={{ height: "calc(100% / 7)" }}>
-              <Card sx={{ transform: "rotate(270deg)" }}>Jueves</Card>
-            </Box>
-            <Box sx={{ height: "calc(100% / 7)" }}>
-              <Card sx={{ transform: "rotate(270deg)" }}>Viernes</Card>
-            </Box>
-            <Box sx={{ height: "calc(100% / 7)" }}>
-              <Card sx={{ transform: "rotate(270deg)" }}>Sábado</Card>
-            </Box>
-            <Box sx={{ height: "calc(100% / 7)" }}>
-              <Card sx={{ transform: "rotate(270deg)" }}>Domingo</Card>
-            </Box>
+            sx={{
+              height: "86%",
+              backgroundColor: theme.palette.primary.main,
+              padding: "2% 0",
+              overflow: "hidden",
+            }}>
+            {diasDeLaSemana.map((dia, index) => {
+              return (
+                <Box
+                  key={index}
+                  sx={{
+                    height: "calc(100% / 7)",
+                    minHeight: "9ch",
+                    padding: "5px",
+                  }}>
+                  <Card
+                    sx={{
+                      transform: "rotate(270deg)",
+                      padding: "2px",
+                      borderRadius: "5px",
+                      textAlign: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}>
+                    {dia}
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "0",
+                        backgroundColor: "pink",
+                        opacity: 0.5,
+                        height: "100%",
+                        width: "50%",
+                        padding: "2px",
+                      }}></Box>
+                    <Box>
+                      50%
+                      <Tooltip title={`Estadísticas del día ${dia}`} arrow>
+                        <IconButton
+                          sx={{
+                            color: theme.palette.primary.main,
+                          }}
+                          // onClick={() => handleOpenModalStats(salon)}
+                          edge="end">
+                          <QueryStatsRoundedIcon sx={{ fontSize: "1.7vh" }} />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Card>
+                </Box>
+              );
+            })}
           </Card>
-          <Card>Porcentaje</Card>
           <Card>Programación</Card>
         </Box>
       </Card>
