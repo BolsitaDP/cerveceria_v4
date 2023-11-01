@@ -12,9 +12,14 @@ import EstadisticasSalon from "../modales/EstadisticasSalon";
 import { useEffect } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import Solicitud from "../MUIComponents/Solicitud";
+import Accion from "../MUIComponents/Accion";
+import { useDispatch } from "react-redux";
+import { setSalonSeleccionado } from "../../redux/slices/historySlice";
 
 const Calendario = () => {
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   const [modalAbierto, setModalAbierto] = useState(null);
   const [estadisticasSalon, setEstadisticasSalon] = useState(null);
@@ -46,7 +51,7 @@ const Calendario = () => {
 
   const handleTabClick = (index, salon) => {
     setActiveTab(index);
-    // dispatch(setSalonSeleccionado(salon));
+    dispatch(setSalonSeleccionado(salon));
   };
 
   useEffect(() => {
@@ -70,6 +75,10 @@ const Calendario = () => {
   };
 
   const handleOpenModalDetallesSolicitud = (solicitud) => {};
+
+  const handleOpenModalDetallesAccion = (accion) => {};
+
+  const handleDeleteAccion = (accion) => {};
 
   return (
     <Box sx={{ height: "100%" }}>
@@ -300,7 +309,16 @@ const Calendario = () => {
                                           }
                                         />
                                       ) : (
-                                        ""
+                                        <Accion
+                                          accion={contenidoContenido}
+                                          index={index}
+                                          handleOpenDetalles={
+                                            handleOpenModalDetallesAccion
+                                          }
+                                          handleDeleteAccion={
+                                            handleDeleteAccion
+                                          }
+                                        />
                                       )}
                                     </div>
                                   )}

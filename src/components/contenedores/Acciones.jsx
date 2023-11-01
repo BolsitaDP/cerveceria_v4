@@ -12,6 +12,7 @@ import CrearAccion from "../modales/CrearAccion";
 import { useDispatch } from "react-redux";
 import { deleteAccionAcciones } from "../../redux/slices/contenedoresSlice";
 import { toast } from "react-toastify";
+import Accion from "../MUIComponents/Accion";
 
 const Acciones = () => {
   const theme = useTheme();
@@ -53,43 +54,33 @@ const Acciones = () => {
 
         <Droppable droppableId="acciones" key="acciones">
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
+            <Box
+              sx={{
+                padding: "10px",
+                gap: "10px",
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                height: "26vh",
+                overflow: "auto",
+                transition: "0.3s ease all",
+              }}
+              {...provided.droppableProps}
+              ref={provided.innerRef}>
               {acciones.map((accion, index) => {
-                let accionId = accion.idDnd;
                 return (
-                  <Draggable
-                    draggableId={accionId}
+                  <Accion
+                    key={index}
+                    accion={accion}
                     index={index}
-                    key={accionId}>
-                    {(provided) => (
-                      <div
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        onClick={() => handleOpenDetalles(accion)}
-                        ref={provided.innerRef}>
-                        <div>
-                          {accion.nombreDeLaAccion.slice(0, 11)}
-                          {accion.nombreDeLaAccion.length >= 11 && "..."}
-                          <Tooltip title="Eliminar actividad" arrow>
-                            <IconButton
-                              sx={{ color: theme.palette.primary.contrast }}
-                              onClick={() => handleDeleteAccion(accion)}
-                              edge="end">
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                        <div>
-                          <span>{accion.duracion} minutos</span>
-                          <span>{accion.tipo}</span>
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
+                    handleOpenDetalles={handleOpenDetalles}
+                    handleDeleteAccion={handleDeleteAccion}
+                  />
                 );
               })}
               {provided.placeholder}
-            </div>
+            </Box>
           )}
         </Droppable>
         <Modal

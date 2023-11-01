@@ -19,8 +19,12 @@ import { useTheme } from "@emotion/react";
 import BackspaceRoundedIcon from "@mui/icons-material/BackspaceRounded";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { v4 as uuid } from "uuid";
+import { useDispatch } from "react-redux";
+import { createAccion } from "../../redux/slices/contenedoresSlice";
 
 const CrearAccion = () => {
+  const dispatch = useDispatch();
   const theme = useTheme();
 
   const [textoNombre, setTextoNombre] = useState("");
@@ -45,15 +49,15 @@ const CrearAccion = () => {
 
   const handleNuevaAccion = () => {
     if (textoNombre && textoNombre !== "" && minutosAccion > 0 && tipoAccion) {
-      // dispatch(
-      //   createAccion({
-      //     idDnd: uuid(),
-      //     duracion: parseInt(minutosAccion),
-      //     estado: 1,
-      //     nombreDeLaAccion: textoNombre,
-      //     tipo: tipoAccion,
-      //   })
-      // );
+      dispatch(
+        createAccion({
+          idDnd: uuid(),
+          duracion: parseInt(minutosAccion),
+          estado: 1,
+          nombreDeLaAccion: textoNombre,
+          tipo: tipoAccion,
+        })
+      );
     } else {
       toast("La actividad debe tener nombre, duración y tipo");
     }

@@ -7,20 +7,36 @@ import Calendario from "./components/contenedores/Calendario";
 import { ToastContainer, toast } from "react-toastify";
 
 import TemaClaro from "./components/temas/TemaClaro.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import getData from "./requests/getData";
 import { useDispatch } from "react-redux";
 import {
+  setAcciones,
   setAccionesInicial,
+  setSalones,
   setSalonesInicial,
+  setSolicitudes,
   setSolicitudesInicial,
+  updateEstadoSolicitud,
 } from "./redux/slices/contenedoresSlice";
 
 import "react-toastify/dist/ReactToastify.css";
 import MUIFloatingButton from "./components/MUIComponents/MUIFloatingButton";
+import onDragEnd from "./components/OnDragEnd";
+import { useSelector } from "react-redux";
+import { addToHistory, setDestino } from "./redux/slices/historySlice";
 
 function App() {
   const dispatch = useDispatch();
+
+  const [crearCopia, setCrearCopia] = useState(false);
+  const [data, setData] = useState(null);
+
+  // Data de estado global
+  const contenedores = useSelector((state) => state.contenedores);
+  const editorEstado = useSelector((state) => state.history.editor);
+  const versionEstado = useSelector((state) => state.history.version);
+  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
 
   useEffect(() => {
     const setInitialData = async () => {
@@ -59,7 +75,32 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDragEnd = () => {};
+  const dispatcher = (accion, data) => {
+    if (accion === "addToHistory") {
+      if (data.tipoDeCambio !== "Cambio de orden") {
+        dispatch(addToHistory(data));
+      }
+    } else if (accion === "setSolicitudes") {
+      dispatch(setSolicitudes(data));
+      data = null;
+    } else if (accion === "setAcciones") {
+      dispatch(setAcciones(data));
+      data = null;
+    } else if (accion === "setSalones") {
+      dispatch(setSalones(data));
+      data = null;
+    } else if (accion === "statusUpdaters") {
+      dispatch(updateEstadoSolicitud(data));
+      dispatch(setDestino(data));
+    } else if (accion === "Creación elemento copia") {
+      setCrearCopia(true);
+      setData(data);
+    }
+  };
+
+  const handleDragEnd = (result) => {
+    onDragEnd(result, dispatcher, contenedores, editorEstado, versionEstado);
+  };
 
   return (
     <div className="App">

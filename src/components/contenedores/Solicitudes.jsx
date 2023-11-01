@@ -87,7 +87,7 @@ const Solicitudes = () => {
     const objeto = solicitudesFiltradas[key];
     if (
       objeto.velocidadesSalonProducto?.some(
-        (producto) => `salon_${producto.Linea}` === salonSeleccionadoEstado
+        (producto) => producto.Linea === salonSeleccionadoEstado
       )
     ) {
       solicitudesARenderizar[key] = objeto;
@@ -182,7 +182,7 @@ const Solicitudes = () => {
               }}
               {...provided.droppableProps}
               ref={provided.innerRef}>
-              {Object.values(solicitudesFiltradas).map((solicitud, index) => {
+              {Object.values(solicitudesARenderizar).map((solicitud, index) => {
                 return (
                   <Solicitud
                     solicitud={solicitud}

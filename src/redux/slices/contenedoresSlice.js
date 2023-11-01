@@ -91,16 +91,19 @@ const contenedoresSlice = createSlice({
     },
     createAccion: (state, action) => {
       let exists = state.acciones.find(
-        (accion) => JSON.stringify(accion) === JSON.stringify(action.payload)
+        (accion) => accion.nombreDeLaAccion === action.payload.nombreDeLaAccion
       );
       if (!exists) {
         try {
-          postData
-            .postCrearAccion(action.payload)
-            .then((res) => state.acciones.push(action.payload));
+          postData.postCrearAccion(action.payload);
+          // .then(() => state.acciones.push(action.payload));
+          state.acciones.push(action.payload);
+          toast.success("Actividad creada correctamente");
         } catch (error) {
           toast.error("Ha ocurrido un error: " + error);
         }
+      } else {
+        toast.error("Ya existe una actividad con este mismo nombre");
       }
     },
     deteleAccionCalendario: (state, action) => {
@@ -136,10 +139,9 @@ const contenedoresSlice = createSlice({
       );
 
       try {
-        postData
-          .postEliminarAcciones(action.payload)
-          .then((res) => state.acciones.splice(index, 1))
-          .then(() => toast.success("Tarea eliminada correctamente"));
+        postData.postEliminarAcciones(action.payload);
+        state.acciones.splice(index, 1);
+        toast.success("Tarea eliminada exitosamente");
       } catch (error) {
         toast.error("Ha ocurrido un error: " + error);
       }
@@ -148,7 +150,6 @@ const contenedoresSlice = createSlice({
       state.calendario = action.payload;
     },
     setSalonesInicial: (state, action) => {
-      console.log(action.payload);
       action.payload.forEach((salon) => {
         let nombreSalon = salon.Nombre;
         state.calendario[nombreSalon] = {
