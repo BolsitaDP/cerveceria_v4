@@ -24,7 +24,7 @@ import ordenarSolicitudes from "../../helpers/ordenarSolicitudes";
 import { useDispatch } from "react-redux";
 import filtrarObjetoAnidado from "../../helpers/filtrarObjetoAnidado";
 import { setSolicitudes } from "../../redux/slices/contenedoresSlice";
-import Solicitud from "../modales/Solicitud";
+import Solicitud from "../MUIComponents/Solicitud";
 
 const Solicitudes = () => {
   const theme = useTheme();

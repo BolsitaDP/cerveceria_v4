@@ -9,6 +9,9 @@ import SeleccionadorDeFechas from "../modales/SeleccionadorDeFechas";
 import EstadisticasGenerales from "../modales/EstadisticasGenerales";
 import { useSelector } from "react-redux";
 import EstadisticasSalon from "../modales/EstadisticasSalon";
+import { useEffect } from "react";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import Solicitud from "../MUIComponents/Solicitud";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -16,17 +19,28 @@ const Calendario = () => {
   const [modalAbierto, setModalAbierto] = useState(null);
   const [estadisticasSalon, setEstadisticasSalon] = useState(null);
 
+  const [dias, setDias] = useState([]);
+
   const [activeTab, setActiveTab] = useState(0);
 
   const salones = useSelector((state) => state.contenedores.calendario);
   const diasDeLaSemana = useSelector((state) => state.utils.diasDeLaSemana);
+  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
+
+  console.log(fechasSeleccionadas);
+
+  let fechasSoloDiaMes = [];
+  fechasSeleccionadas.forEach((fecha) => {
+    let arrFecha = fecha.split("/");
+    fechasSoloDiaMes.push(`${arrFecha[0]}/${arrFecha[1]}`);
+  });
 
   const handleMostrarModal = (modal) => {
     setModalAbierto(modal);
   };
 
   const handleOpenModalStats = (salon) => {
-    setModalAbierto("estadisitcasSalon");
+    setModalAbierto("estadisticasSalon");
     setEstadisticasSalon(salon);
   };
 
@@ -35,11 +49,36 @@ const Calendario = () => {
     // dispatch(setSalonSeleccionado(salon));
   };
 
+  useEffect(() => {
+    setDiasRenderizar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fechasSeleccionadas]);
+
+  const setDiasRenderizar = () => {
+    let diasSet = new Set();
+    Object.values(salones).forEach((salon) => {
+      let dias = salon.dias;
+      Object.keys(dias).forEach((dia) => {
+        let [, fecha] = dia.split("&");
+        if (fechasSeleccionadas.includes(fecha)) {
+          diasSet.add(dia);
+        }
+      });
+    });
+    let diasArr = Array.from(diasSet);
+    setDias(diasArr);
+  };
+
+  const handleOpenModalDetallesSolicitud = (solicitud) => {};
+
   return (
     <Box sx={{ height: "100%" }}>
       <Card variant="contenedor">
         <Card variant="tiulo">
-          <p>Calendario</p>
+          {fechasSeleccionadas
+            ? `Programación del ${fechasSoloDiaMes[0]} al ${fechasSoloDiaMes[6]}`
+            : "Calendario"}
+
           <Box sx={{ display: "flex", gap: "20px" }}>
             <Tooltip title="Seleccionar fecha" arrow>
               <IconButton
@@ -121,16 +160,18 @@ const Calendario = () => {
 
         <Box
           sx={{
-            backgroundColor: "red",
+            backgroundColor: theme.palette.primary.main,
             display: "flex",
             height: "100%",
-            overflow: "scroll",
+            // overflow: "scroll",
           }}>
-          <Card
+          <Box
             sx={{
               height: "86%",
               backgroundColor: theme.palette.primary.main,
               padding: "2% 0",
+              justifyContent: " space-between",
+              alignItems: "center",
               overflow: "hidden",
             }}>
             {diasDeLaSemana.map((dia, index) => {
@@ -179,8 +220,103 @@ const Calendario = () => {
                 </Box>
               );
             })}
-          </Card>
-          <Card>Programación</Card>
+          </Box>
+
+          <Box
+            sx={{
+              height: "86%",
+              backgroundColor: theme.palette.primary.main,
+              // padding: "2% 0",
+              width: "90%",
+            }}>
+            {Object.entries(salones).map((salon, index) => {
+              let salonNombre = salon[0];
+              // let salonId = salon[1].id;
+              let dias = salon[1].dias;
+              return (
+                <Box
+                  sx={{
+                    display: index === activeTab ? "flex" : "none",
+                    flexDirection: "column",
+                    height: "100%",
+                    padding: "1%",
+                    gap: "1%",
+                  }}
+                  key={salon}>
+                  {Object.entries(dias).map(([diaNombre, diaInfo]) => {
+                    const { contenido, fecha } = diaInfo;
+                    const fechaSeleccionada =
+                      fechasSeleccionadas.includes(fecha);
+
+                    if (!fechaSeleccionada) {
+                      return null; // No se renderiza nada si la fecha no coincide
+                    }
+
+                    const diaConteidoOrganizado = Object.entries(contenido);
+
+                    return (
+                      <Droppable
+                        droppableId={`${salonNombre}|${diaNombre}`}
+                        key={`${salonNombre}|${diaNombre}`}
+                        direction="horizontal">
+                        {(provided, snapshot) => (
+                          <Box
+                            sx={{
+                              width: "100%",
+                              height: "calc(100% / 7)",
+                              minHeight: "8ch",
+                              backgroundColor: "white",
+                              borderRadius: "5px",
+                            }}
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}>
+                            {diaConteidoOrganizado.map((contenido, index) => {
+                              let contenidoId = null;
+                              let contenidoContenido = null;
+                              if (contenido[1].idDnd) {
+                                contenidoId = contenido[1].idDnd;
+                                contenidoContenido = contenido[1];
+                              } else {
+                                contenidoId = contenido[1].Id;
+                                contenidoContenido = contenido[1];
+                              }
+
+                              return (
+                                <Draggable
+                                  draggableId={contenidoId}
+                                  index={index}
+                                  key={contenidoId}>
+                                  {(provided, snapshot) => (
+                                    <div
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      ref={provided.innerRef}>
+                                      {contenidoContenido.codigoNombre ? (
+                                        <Solicitud
+                                          solicitud={contenidoContenido}
+                                          index={index}
+                                          handleOpenModalDetalles={
+                                            handleOpenModalDetallesSolicitud
+                                          }
+                                        />
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                  )}
+                                </Draggable>
+                              );
+                            })}
+                            {provided.placeholder}
+                          </Box>
+                        )}
+                      </Droppable>
+                    );
+                  })}
+                </Box>
+              );
+            })}
+          </Box>
         </Box>
       </Card>
 
@@ -195,7 +331,7 @@ const Calendario = () => {
         <EstadisticasGenerales />
       </Modal>
       <Modal
-        open={modalAbierto === "estadisitcasSalon"}
+        open={modalAbierto === "estadisticasSalon"}
         onClose={() => setModalAbierto(null)}>
         <EstadisticasSalon />
       </Modal>

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import dayjs from "dayjs";
 import isBetweenPlugin from "dayjs/plugin/isBetween";
 import { styled } from "@mui/material/styles";
@@ -9,6 +9,19 @@ import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import BasicModal from "../MUIComponents/BasicModal";
 import { useState } from "react";
 import { Box } from "@mui/material";
+import obtenerFechasDeLaSemana from "../../helpers/obtenerFechasDeLaSemana";
+import obtenerDiasDeLaSemana from "../../helpers/obtenerDiasDeLaSemana";
+import { useDispatch } from "react-redux";
+import { addDates } from "../../redux/slices/datesSlice";
+import { setDias } from "../../redux/slices/contenedoresSlice";
+
+import updateLocale from "dayjs/plugin/updateLocale";
+
+dayjs.extend(updateLocale);
+
+dayjs.updateLocale("en", {
+  weekStart: 1,
+});
 
 dayjs.extend(isBetweenPlugin);
 
@@ -29,11 +42,11 @@ const CustomPickersDay = styled(PickersDay, {
       backgroundColor: theme.palette.primary[theme.palette.mode],
     },
   }),
-  ...(day.day() === 0 && {
+  ...(day.day() === 1 && {
     borderTopLeftRadius: "50%",
     borderBottomLeftRadius: "50%",
   }),
-  ...(day.day() === 6 && {
+  ...(day.day() === 0 && {
     borderTopRightRadius: "50%",
     borderBottomRightRadius: "50%",
   }),
@@ -64,8 +77,22 @@ function Day(props) {
 }
 
 export default function SeleccionadorDeFechas() {
+  const dispatch = useDispatch();
+
   const [hoveredDay, setHoveredDay] = useState(null);
   const [value, setValue] = useState(dayjs("2022-04-17"));
+
+  const handleDateChange = (newValue) => {
+    setValue(newValue);
+
+    let fechaFormateadada = newValue.format("YYYY-MM-DD");
+
+    let fechasDeLaSemana = obtenerFechasDeLaSemana(fechaFormateadada);
+    let fechasDeLaSemanaCompletas = obtenerDiasDeLaSemana(fechasDeLaSemana);
+
+    dispatch(addDates(fechasDeLaSemana));
+    dispatch(setDias(fechasDeLaSemanaCompletas));
+  };
 
   return (
     <BasicModal titulo={"Seleccionar fechas"}>
@@ -73,7 +100,7 @@ export default function SeleccionadorDeFechas() {
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es-ES">
           <DateCalendar
             value={value}
-            onChange={(newValue) => setValue(newValue)}
+            onChange={(newValue) => handleDateChange(newValue)}
             showDaysOutsideCurrentMonth
             displayWeekNumber
             slots={{ day: Day }}
