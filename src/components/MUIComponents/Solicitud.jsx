@@ -2,7 +2,12 @@ import { Box, Card, Typography } from "@mui/material";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 
-const Solicitud = ({ solicitud, index, handleOpenModalDetalles }) => {
+const Solicitud = ({
+  solicitud,
+  index,
+  handleOpenModalDetalles,
+  calendario = false,
+}) => {
   let solicitudId = solicitud.idDnd;
   return (
     <Draggable draggableId={solicitudId} index={index} key={solicitudId}>
@@ -13,11 +18,15 @@ const Solicitud = ({ solicitud, index, handleOpenModalDetalles }) => {
               ? "solicitud nacional"
               : "solicitud internacional"
           }
+          sx={{
+            width: calendario ? "400px" : "100%",
+          }}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => handleOpenModalDetalles(solicitud)}
           ref={provided.innerRef}>
-          <Typography sx={{ width: "100%", fontSize: "1.8vh" }}>
+          <Typography
+            sx={{ width: "100%", fontSize: calendario ? "1.5vh" : "1.8vh" }}>
             {solicitud.cantidad} {solicitud.unidadMedida}
           </Typography>
           <Box
@@ -32,6 +41,7 @@ const Solicitud = ({ solicitud, index, handleOpenModalDetalles }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 textAlign: "center",
+                fontSize: calendario ? "1.8vh" : "2vh",
               }}>
               {solicitud.producto.slice(0, 30)}
               {solicitud.producto.length > 30 && "..."}
@@ -40,7 +50,7 @@ const Solicitud = ({ solicitud, index, handleOpenModalDetalles }) => {
               sx={{
                 display: "flex",
                 justifyContent: "right",
-                fontSize: "1.8vh",
+                fontSize: calendario ? "1.5vh" : "1.8vh",
               }}>
               {solicitud.codigoNombre}
             </Typography>

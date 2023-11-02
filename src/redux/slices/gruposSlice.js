@@ -45,7 +45,7 @@ const gruposSlice = createSlice({
       const [nombre] = action.payload;
       delete state.groups[nombre];
       let idLocal = action.payload[1].idLocal;
-      postEliminarGrupo({ nombre, idLocal });
+      // postEliminarGrupo({ nombre, idLocal });
     },
     createMember: (state, action) => {
       console.log(action.payload);
@@ -64,7 +64,7 @@ const gruposSlice = createSlice({
       // let id = action.payload.idLocal;
       // Falta id, que es secuencial y se usa para borrar el miembro
 
-      postCrearCorreos({ groupId, correo, id });
+      // postCrearCorreos({ groupId, correo, id });
     },
     setMiembrosInicial: (state, action) => {
       action.payload.forEach((correo) => {
@@ -86,7 +86,7 @@ const gruposSlice = createSlice({
       state.groups[grupo].members = filteredMembers;
 
       let miembro = action.payload.miembro;
-      postEliminarCorreo(miembro);
+      // postEliminarCorreo(miembro);
     },
   },
 });

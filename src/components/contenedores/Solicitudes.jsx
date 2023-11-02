@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import filtrarObjetoAnidado from "../../helpers/filtrarObjetoAnidado";
 import { setSolicitudes } from "../../redux/slices/contenedoresSlice";
 import Solicitud from "../MUIComponents/Solicitud";
+import DetallesSolicitud from "../modales/DetallesSolicitud";
 
 const Solicitudes = () => {
   const theme = useTheme();
@@ -199,16 +200,8 @@ const Solicitudes = () => {
       </Card>
       <Modal
         open={modalAbierto === "detallesSolicitud"}
-        onClose={() => setModalAbierto(null)}
-        solicitudAbierta={solicitudAbierta}>
-        <Box>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
+        onClose={() => setModalAbierto(null)}>
+        <DetallesSolicitud solicitudAbierta={solicitudAbierta} />
       </Modal>
     </Box>
   );

@@ -1,7 +1,9 @@
+import { useTheme } from "@emotion/react";
 import { Box, Card } from "@mui/material";
 import React from "react";
 
-const BasicModal = ({ titulo, children }) => {
+const BasicModal = ({ titulo, children, tipo = null }) => {
+  const theme = useTheme();
   return (
     <Box
       sx={{
@@ -12,8 +14,25 @@ const BasicModal = ({ titulo, children }) => {
         left: "50%",
         transform: "translate(-50%, -50%)",
       }}>
-      <Card variant="contenedor">
-        <Card variant="tiulo" sx={{ justifyContent: "center" }}>
+      <Card
+        variant="contenedor"
+        sx={{
+          borderColor: tipo
+            ? tipo === "nacional"
+              ? theme.palette.primary.nacional
+              : theme.palette.primary.internacional
+            : "",
+        }}>
+        <Card
+          variant="tiulo"
+          sx={{
+            justifyContent: "center",
+            backgroundColor: tipo
+              ? tipo === "nacional"
+                ? theme.palette.primary.nacional
+                : theme.palette.primary.internacional
+              : "",
+          }}>
           <p>{titulo}</p>
         </Card>
         <Box

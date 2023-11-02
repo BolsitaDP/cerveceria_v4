@@ -15,6 +15,7 @@ import Solicitud from "../MUIComponents/Solicitud";
 import Accion from "../MUIComponents/Accion";
 import { useDispatch } from "react-redux";
 import { setSalonSeleccionado } from "../../redux/slices/historySlice";
+import DetallesSolicitud from "../modales/DetallesSolicitud";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -24,6 +25,8 @@ const Calendario = () => {
   const [modalAbierto, setModalAbierto] = useState(null);
   const [estadisticasSalon, setEstadisticasSalon] = useState(null);
 
+  const [solicitudAbierta, setSolicitudAbierta] = useState(null);
+
   const [dias, setDias] = useState([]);
 
   const [activeTab, setActiveTab] = useState(0);
@@ -31,8 +34,9 @@ const Calendario = () => {
   const salones = useSelector((state) => state.contenedores.calendario);
   const diasDeLaSemana = useSelector((state) => state.utils.diasDeLaSemana);
   const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
-
-  console.log(fechasSeleccionadas);
+  const salonSeleccionadoEstado = useSelector(
+    (state) => state.history.salonSeleccionado
+  );
 
   let fechasSoloDiaMes = [];
   fechasSeleccionadas.forEach((fecha) => {
@@ -74,7 +78,19 @@ const Calendario = () => {
     setDias(diasArr);
   };
 
-  const handleOpenModalDetallesSolicitud = (solicitud) => {};
+  let porcentajesDeOcupacion = [];
+  if (fechasSeleccionadas[1]) {
+    Object.values(salones[salonSeleccionadoEstado].dias).forEach(
+      (dia, index) => {
+        porcentajesDeOcupacion.push(100 - Math.round(dia.horas * (100 / 24)));
+      }
+    );
+  }
+
+  const handleOpenModalDetallesSolicitud = (solicitud) => {
+    setSolicitudAbierta(solicitud);
+    setModalAbierto("detallesSolicitud");
+  };
 
   const handleOpenModalDetallesAccion = (accion) => {};
 
@@ -192,40 +208,51 @@ const Calendario = () => {
                     minHeight: "9ch",
                     padding: "5px",
                   }}>
-                  <Card
-                    sx={{
-                      transform: "rotate(270deg)",
-                      padding: "2px",
-                      borderRadius: "5px",
-                      textAlign: "center",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}>
-                    {dia}
-                    <Box
+                  <Tooltip title={`${fechasSoloDiaMes[index]}`} arrow>
+                    <Card
                       sx={{
-                        position: "absolute",
-                        top: "0",
-                        backgroundColor: "pink",
-                        opacity: 0.5,
-                        height: "100%",
-                        width: "50%",
-                        padding: "2px",
-                      }}></Box>
-                    <Box>
-                      50%
-                      <Tooltip title={`Estadísticas del día ${dia}`} arrow>
-                        <IconButton
-                          sx={{
-                            color: theme.palette.primary.main,
-                          }}
-                          // onClick={() => handleOpenModalStats(salon)}
-                          edge="end">
-                          <QueryStatsRoundedIcon sx={{ fontSize: "1.7vh" }} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </Card>
+                        transform: "rotate(270deg)",
+                        // padding: "2px",
+                        borderRadius: "5px",
+                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}>
+                      {dia}
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "0",
+                          backgroundColor:
+                            porcentajesDeOcupacion[index] > 75
+                              ? "red"
+                              : porcentajesDeOcupacion[index] > 25
+                              ? "#F9E078"
+                              : "green",
+                          opacity: 0.3,
+                          height: "100%",
+                          width: `${porcentajesDeOcupacion[index]}%`,
+                          padding: "2px",
+                        }}></Box>
+                      <Box>
+                        {`${
+                          porcentajesDeOcupacion[index]
+                            ? porcentajesDeOcupacion[index]
+                            : "0"
+                        }%`}
+                        <Tooltip title={`Estadísticas del día ${dia}`} arrow>
+                          <IconButton
+                            sx={{
+                              color: theme.palette.primary.main,
+                            }}
+                            // onClick={() => handleOpenModalStats(salon)}
+                            edge="end">
+                            <QueryStatsRoundedIcon sx={{ fontSize: "1.7vh" }} />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Card>
+                  </Tooltip>
                 </Box>
               );
             })}
@@ -276,6 +303,11 @@ const Calendario = () => {
                               minHeight: "8ch",
                               backgroundColor: "white",
                               borderRadius: "5px",
+                              display: "flex",
+                              alignItems: "center",
+                              padding: "0 10px",
+                              gap: "10px",
+                              overflow: "auto",
                             }}
                             {...provided.droppableProps}
                             ref={provided.innerRef}>
@@ -296,7 +328,8 @@ const Calendario = () => {
                                   index={index}
                                   key={contenidoId}>
                                   {(provided, snapshot) => (
-                                    <div
+                                    <Box
+                                      // sx={{ height: "45px" }}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
                                       ref={provided.innerRef}>
@@ -304,6 +337,7 @@ const Calendario = () => {
                                         <Solicitud
                                           solicitud={contenidoContenido}
                                           index={index}
+                                          calendario
                                           handleOpenModalDetalles={
                                             handleOpenModalDetallesSolicitud
                                           }
@@ -320,7 +354,7 @@ const Calendario = () => {
                                           }
                                         />
                                       )}
-                                    </div>
+                                    </Box>
                                   )}
                                 </Draggable>
                               );
@@ -352,6 +386,14 @@ const Calendario = () => {
         open={modalAbierto === "estadisticasSalon"}
         onClose={() => setModalAbierto(null)}>
         <EstadisticasSalon />
+      </Modal>
+      <Modal
+        open={modalAbierto === "detallesSolicitud"}
+        onClose={() => setModalAbierto(null)}>
+        <DetallesSolicitud
+          solicitudAbierta={solicitudAbierta}
+          calendario={true}
+        />
       </Modal>
     </Box>
   );

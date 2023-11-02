@@ -3,6 +3,8 @@ import { esES } from "@mui/x-date-pickers/locales";
 
 const temaFw7 = "#007aff";
 const blanco = "#fff";
+const nacional = "#5c65c0";
+const internacional = "#f05d67";
 
 const TemaClaro = createTheme(
   {
@@ -11,6 +13,8 @@ const TemaClaro = createTheme(
       primary: {
         main: "#007aff",
         contrast: blanco,
+        nacional: nacional,
+        internacional: internacional,
       },
       secondary: {
         main: "#ff6f61",
@@ -56,10 +60,10 @@ const TemaClaro = createTheme(
               justifyContent: "center",
               padding: "1% 10% ",
               alignItems: "center",
-              backgroundColor: "#5c65c0",
+              backgroundColor: nacional,
               fontSize: "2vh",
               transition: "0.3s ease all",
-              minHeight: "80px",
+              minHeight: "50px",
               borderRadius: "5px",
             },
           },
@@ -72,10 +76,10 @@ const TemaClaro = createTheme(
               justifyContent: "center",
               padding: "1% 10% ",
               alignItems: "center",
-              backgroundColor: "#f05d67",
+              backgroundColor: internacional,
               fontSize: "2vh",
               transition: "0.3s ease all",
-              minHeight: "80px",
+              minHeight: "50px",
               borderRadius: "5px",
             },
           },
@@ -92,7 +96,7 @@ const TemaClaro = createTheme(
               backgroundColor: "#6f95ff",
               fontSize: "2vh",
               transition: "0.3s ease all",
-              minHeight: "80px",
+              minHeight: "50px",
               borderRadius: "5px",
               maxHeight: "100px",
             },
@@ -110,12 +114,20 @@ const TemaClaro = createTheme(
               backgroundColor: "#faa191",
               fontSize: "2vh",
               transition: "0.3s ease all",
-              minHeight: "80px",
+              minHeight: "50px",
               borderRadius: "5px",
               maxHeight: "100px",
             },
           },
         ],
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            borderRadius: 0,
+            width: "40%",
+          },
+        },
       },
     },
   },
