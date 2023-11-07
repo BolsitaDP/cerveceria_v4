@@ -80,7 +80,7 @@ export default function SeleccionadorDeFechas() {
   const dispatch = useDispatch();
 
   const [hoveredDay, setHoveredDay] = useState(null);
-  const [value, setValue] = useState(dayjs("2022-04-17"));
+  const [value, setValue] = useState(null);
 
   const handleDateChange = (newValue) => {
     setValue(newValue);

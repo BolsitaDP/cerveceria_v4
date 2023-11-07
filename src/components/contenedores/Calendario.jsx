@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { Box, Card, IconButton, Modal, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 
@@ -16,6 +17,7 @@ import Accion from "../MUIComponents/Accion";
 import { useDispatch } from "react-redux";
 import { setSalonSeleccionado } from "../../redux/slices/historySlice";
 import DetallesSolicitud from "../modales/DetallesSolicitud";
+import ModalDetallesAccion from "../modales/ModalDetallesAccion";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -26,6 +28,7 @@ const Calendario = () => {
   const [estadisticasSalon, setEstadisticasSalon] = useState(null);
 
   const [solicitudAbierta, setSolicitudAbierta] = useState(null);
+  const [accionAbierta, setAccionAbierta] = useState(null);
 
   const [dias, setDias] = useState([]);
 
@@ -37,6 +40,10 @@ const Calendario = () => {
   const salonSeleccionadoEstado = useSelector(
     (state) => state.history.salonSeleccionado
   );
+
+  useEffect(() => {
+    setModalAbierto("seleccionadorDeFechas");
+  }, []);
 
   let fechasSoloDiaMes = [];
   fechasSeleccionadas.forEach((fecha) => {
@@ -92,7 +99,10 @@ const Calendario = () => {
     setModalAbierto("detallesSolicitud");
   };
 
-  const handleOpenModalDetallesAccion = (accion) => {};
+  const handleOpenModalDetallesAccion = (accion) => {
+    setAccionAbierta(accion);
+    setModalAbierto("detallesAccion");
+  };
 
   const handleDeleteAccion = (accion) => {};
 
@@ -217,6 +227,7 @@ const Calendario = () => {
                         textAlign: "center",
                         display: "flex",
                         flexDirection: "column",
+                        fontSize: "1.8vh",
                       }}>
                       {dia}
                       <Box
@@ -346,6 +357,7 @@ const Calendario = () => {
                                         <Accion
                                           accion={contenidoContenido}
                                           index={index}
+                                          calendario
                                           handleOpenDetalles={
                                             handleOpenModalDetallesAccion
                                           }
@@ -394,6 +406,11 @@ const Calendario = () => {
           solicitudAbierta={solicitudAbierta}
           calendario={true}
         />
+      </Modal>
+      <Modal
+        open={modalAbierto === "detallesAccion"}
+        onClose={() => setModalAbierto(null)}>
+        <ModalDetallesAccion accionAbierta={accionAbierta} />
       </Modal>
     </Box>
   );

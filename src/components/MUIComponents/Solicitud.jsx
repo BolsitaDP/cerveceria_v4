@@ -1,6 +1,7 @@
 import { Box, Card, Typography } from "@mui/material";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { v4 as uuid } from "uuid";
 
 const Solicitud = ({
   solicitud,
@@ -20,6 +21,7 @@ const Solicitud = ({
           }
           sx={{
             width: calendario ? "400px" : "100%",
+            minHeight: "65px",
           }}
           {...provided.draggableProps}
           {...provided.dragHandleProps}

@@ -62,7 +62,10 @@ const Solicitudes = () => {
   const handleChangeOrden = (e) => {
     if (e.target.value !== "") {
       setOrdenamiento(e.target.value);
-      let solicitudesOrdenadas = ordenarSolicitudes(solicitudes, ordenamiento);
+      let solicitudesOrdenadas = ordenarSolicitudes(
+        solicitudes,
+        e.target.value
+      );
       dispatch(setSolicitudes(solicitudesOrdenadas));
     }
   };

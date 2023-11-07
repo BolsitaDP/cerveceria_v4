@@ -21,9 +21,13 @@ const postData = {
   },
 
   postActualizarEstadoProducto(body) {
-    return peticion.post("ProgramacionController/updateStatus", {
-      listado: body,
-    });
+    try {
+      return peticion.post("ProgramacionController/updateStatus", {
+        listado: body,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   postActualizarPropiedades(body) {

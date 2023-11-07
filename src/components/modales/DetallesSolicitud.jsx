@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BasicModal from "../MUIComponents/BasicModal";
-import { Box, Modal, TextField } from "@mui/material";
+import { Box, IconButton, Modal, TextField, Tooltip } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
@@ -16,19 +16,27 @@ import {
 import postData from "../../requests/postData";
 import { addToHistory } from "../../redux/slices/historySlice";
 import PreguntarPartirSolicitudSinProgramar from "./PreguntarPartirSolicitudSinProgramar";
+import ClearIcon from "@mui/icons-material/Clear";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useTheme } from "@emotion/react";
+import HistoryIcon from "@mui/icons-material/History";
+import dayjs from "dayjs";
+import "dayjs/locale/en-gb";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   const dispatch = useDispatch();
 
-  const [fechaRequeridoPara, setFechaRequeridoPara] = useState(
-    solicitudAbierta.fechaRequiere
-  );
+  const theme = useTheme();
+
+  console.log(solicitudAbierta.fechaRequiere);
+
+  // Crea un objeto de fecha con la fecha parseada
+
+  const [fechaRequeridoPara, setFechaRequeridoPara] = useState(null);
   const [observacionesInput, setObservacionesInput] = useState(
     solicitudAbierta.observaciones
   );
   const [cantidadInput, setCantidadInput] = useState(solicitudAbierta.cantidad);
-
-  console.log(solicitudAbierta.fechaRequiere);
 
   const [valorPrevio, setValorPrevio] = useState(null);
   const [valueAPartir, setValueAPartir] = useState(null);
@@ -46,6 +54,14 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   let fechaHoraActual = getFechaHoraActual();
 
   const solicitudEditada = JSON.parse(JSON.stringify(solicitudAbierta));
+
+  useEffect(() => {
+    setFechaRequeridoPara(dayjs(solicitudAbierta.fechaRequiere));
+  }, []);
+
+  console.log(fechaRequeridoPara);
+  console.log(fechaRequeridoPara);
+  console.log(dayjs(solicitudAbierta.fechaRequiere));
 
   const handleCantidadChange = (e) => {
     let { value } = e.target;
@@ -116,6 +132,35 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
     }
   };
 
+  useEffect(() => {
+    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+    let editedProperty = {
+      codigo: solicitudAbierta.codigoNombre,
+      tipoDeCambio: "Propiedad",
+      propiedad: "reqPara",
+      valorPrevio: dayjs(solicitudAbierta.fechaRequiere),
+      valorNuevo: fechaRequeridoPara,
+      notificado: 0,
+      fechaDelCambio: fechaActual,
+      horaDelCambio: horaActual,
+      versionDelCambio: versionEstado,
+      editor: editorEstado,
+    };
+    // if (solicitudAbierta.fechaRequiere !== solicitudEditada.fechaRequiere) {
+    dispatch(addToHistory(editedProperty));
+    // }
+
+    solicitudEditada.fechaRequiere = fechaRequeridoPara;
+    // if (destino && destino[1]) {
+    //   solicitudEditada.fecha = destino[1];
+    //   solicitudEditada.salonProgramado = destino[0];
+    // }
+
+    dispatch(updatePropiedadesSolicitud(solicitudEditada));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fechaRequeridoPara]);
+
   if (calendario) {
     if (destino && destino.length >= 1) {
       var [salonDest, diaDest] = destino;
@@ -183,9 +228,53 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
     setOpenPartir(false);
   };
 
+  const handleCalendarChange = (date) => {};
+
+  const handleMostrarHistorial = () => {};
+
+  const handleBorrarSolicitud = () => {};
+
   return (
     <BasicModal
-      titulo={solicitudAbierta.codigoNombre}
+      titulo={
+        <Box sx={{ width: "55vw", display: "flex" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}>
+            {solicitudAbierta.codigoNombre}
+          </Box>
+          <Box
+            sx={{
+              position: "absolute",
+              right: "20px",
+              top: "5px",
+              display: "flex",
+              alignItems: "center",
+              gap: "30px",
+            }}>
+            <Tooltip title="Mostrar historial de cambios" arrow>
+              <IconButton
+                sx={{ color: theme.palette.primary.contrast }}
+                onClick={handleMostrarHistorial}
+                edge="end">
+                <HistoryIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Eliminar solicitud" arrow>
+              <IconButton
+                sx={{ color: theme.palette.primary.contrast }}
+                onClick={handleBorrarSolicitud}
+                edge="end">
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+      }
       tipo={
         solicitudAbierta.pais === "Guatemala" ? "nacional" : "internacional"
       }>
@@ -274,10 +363,11 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
           variant="standard"
         />
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
           <DatePicker
             label="Requerido para"
             value={fechaRequeridoPara}
+            onBlur={handleBlurred}
             variant="standard"
             onChange={(newValue) => setFechaRequeridoPara(newValue)}
           />

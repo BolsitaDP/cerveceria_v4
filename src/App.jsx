@@ -13,10 +13,12 @@ import { useDispatch } from "react-redux";
 import {
   setAcciones,
   setAccionesInicial,
+  setAccionesProgramadas,
   setSalones,
   setSalonesInicial,
   setSolicitudes,
   setSolicitudesInicial,
+  setSolicitudesProgramadas,
   updateEstadoSolicitud,
 } from "./redux/slices/contenedoresSlice";
 
@@ -97,6 +99,35 @@ function App() {
       setData(data);
     }
   };
+
+  useEffect(() => {
+    getData.getProgramacionProgramado().then((response) => {
+      let solicitudesFiltradas = [];
+      response.data.forEach((sol) => {
+        let [, solFecha] = sol.fecha.split("&");
+        fechasSeleccionadas.forEach((fecha) => {
+          if (fecha === solFecha) {
+            solicitudesFiltradas.push(sol);
+          }
+        });
+      });
+      dispatch(setSolicitudesProgramadas(solicitudesFiltradas));
+    });
+    getData.getAccionesProgramadas().then((response) => {
+      let accionesFiltradas = [];
+      response.data.forEach((acc) => {
+        let [, accFecha] = acc.fecha.split("&");
+        fechasSeleccionadas.forEach((fecha) => {
+          if (fecha === accFecha) {
+            accionesFiltradas.push(acc);
+          }
+        });
+      });
+      dispatch(setAccionesProgramadas(accionesFiltradas));
+      // as
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fechasSeleccionadas]);
 
   const handleDragEnd = (result) => {
     onDragEnd(result, dispatcher, contenedores, editorEstado, versionEstado);

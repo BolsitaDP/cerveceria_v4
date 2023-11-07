@@ -22,12 +22,14 @@ const contenedoresSlice = createSlice({
       });
     },
     setSolicitudes: (state, action) => {
+      console.log(action.payload);
       state.solicitudes = [];
       action.payload.forEach((solicitud) => {
         state.solicitudes.push(solicitud);
       });
     },
     setSolicitudesProgramadas: (state, action) => {
+      console.log(action.payload);
       action.payload.forEach((solicitud) => {
         let fecha = solicitud.fecha;
         let salon = solicitud.salonProgramado;
@@ -176,6 +178,7 @@ const contenedoresSlice = createSlice({
       let solicitudesUpdatear = [];
 
       action.payload.contenidoDia.forEach((elemento, index) => {
+        console.log(elemento);
         let exists2 = solicitudesUpdatear.find(
           (x) => x.id === action.payload.elementoArrastrado.id
         );
@@ -251,10 +254,15 @@ const contenedoresSlice = createSlice({
           }
         }
       }
-      solicitudesUpdatear.length >= 1 &&
-        postData.postActualizarEstadoProducto(solicitudesUpdatear); //Creo que faltaría el trycatch
-      accionesUpdatear.length >= 1 &&
-        postData.postActualizarEstadoAcciones(accionesUpdatear);
+      try {
+        solicitudesUpdatear.length >= 1 &&
+          postData.postActualizarEstadoProducto(solicitudesUpdatear); //Creo que faltaría el trycatch
+
+        accionesUpdatear.length >= 1 &&
+          postData.postActualizarEstadoAcciones(accionesUpdatear);
+      } catch (error) {
+        toast.error("Se ha producido un error: " + error);
+      }
     },
     updatePropiedadesSolicitud: (state, action) => {
       const { codigoNombre } = action.payload;

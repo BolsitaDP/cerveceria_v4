@@ -4,7 +4,13 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import ClearIcon from "@mui/icons-material/Clear";
 
-const Accion = ({ accion, index, handleOpenDetalles, handleDeleteAccion }) => {
+const Accion = ({
+  accion,
+  index,
+  handleOpenDetalles,
+  handleDeleteAccion,
+  calendario,
+}) => {
   const theme = useTheme();
 
   let accionId = accion.idDnd;
@@ -17,6 +23,11 @@ const Accion = ({ accion, index, handleOpenDetalles, handleDeleteAccion }) => {
               ? "accion correctiva"
               : "accion operativa"
           }
+          sx={{
+            width: calendario ? "200px" : "200px",
+            height: calendario ? "70px" : "200px",
+            display: "flex",
+          }}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => handleOpenDetalles(accion)}
@@ -26,10 +37,16 @@ const Accion = ({ accion, index, handleOpenDetalles, handleDeleteAccion }) => {
               width: "200px",
               display: "flex",
               justifyContent: "space-between",
-              padding: "0 15px",
+              padding: "5px 15px",
+              height: "20px",
               alignItems: "center",
             }}>
-            <Box sx={{ display: "flex", textAlign: "center" }}>
+            <Box
+              sx={{
+                display: "flex",
+                textAlign: "center",
+                fontSize: calendario ? "1.8vh" : "2vh",
+              }}>
               {accion.nombreDeLaAccion.slice(0, 11)}
               {accion.nombreDeLaAccion.length >= 11 && "..."}
             </Box>
@@ -37,6 +54,7 @@ const Accion = ({ accion, index, handleOpenDetalles, handleDeleteAccion }) => {
               <IconButton
                 sx={{
                   color: theme.palette.primary.contrast,
+                  display: "flex",
                 }}
                 onClick={() => handleDeleteAccion(accion)}
                 edge="end">
@@ -51,6 +69,7 @@ const Accion = ({ accion, index, handleOpenDetalles, handleDeleteAccion }) => {
               width: "200px",
               justifyContent: "center",
               alignItems: "center",
+              fontSize: calendario ? "1.8vh" : "2vh",
             }}>
             <Box sx={{ textAlign: "center" }}>{accion.duracion} minutos</Box>
             <Box sx={{ width: "80%", textAlign: "right" }}>{accion.tipo}</Box>
