@@ -70,13 +70,26 @@ const Acciones = () => {
               ref={provided.innerRef}>
               {acciones.map((accion, index) => {
                 return (
-                  <Accion
-                    key={index}
-                    accion={accion}
+                  <Draggable
+                    draggableId={accion.idDnd}
                     index={index}
-                    handleOpenDetalles={handleOpenDetalles}
-                    handleDeleteAccion={handleDeleteAccion}
-                  />
+                    key={accion.idDnd}>
+                    {(provided, snapshot) => (
+                      <Box
+                        // sx={{ height: "45px" }}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}>
+                        <Accion
+                          key={index}
+                          accion={accion}
+                          index={index}
+                          handleOpenDetalles={handleOpenDetalles}
+                          handleDeleteAccion={handleDeleteAccion}
+                        />
+                      </Box>
+                    )}
+                  </Draggable>
                 );
               })}
               {provided.placeholder}

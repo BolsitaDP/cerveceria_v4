@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { setSalonSeleccionado } from "../../redux/slices/historySlice";
 import DetallesSolicitud from "../modales/DetallesSolicitud";
 import ModalDetallesAccion from "../modales/ModalDetallesAccion";
+import EstadisticasDia from "../modales/EstadisticasDia";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -26,6 +27,7 @@ const Calendario = () => {
 
   const [modalAbierto, setModalAbierto] = useState(null);
   const [estadisticasSalon, setEstadisticasSalon] = useState(null);
+  const [estadisticasDia, setEstadisticasDia] = useState(null);
 
   const [solicitudAbierta, setSolicitudAbierta] = useState(null);
   const [accionAbierta, setAccionAbierta] = useState(null);
@@ -55,9 +57,14 @@ const Calendario = () => {
     setModalAbierto(modal);
   };
 
-  const handleOpenModalStats = (salon) => {
+  const handleOpenModalStatsSalon = (salon) => {
     setModalAbierto("estadisticasSalon");
     setEstadisticasSalon(salon);
+  };
+
+  const handleOpenModalStatsDia = (dia) => {
+    setModalAbierto("estadisticasDia");
+    setEstadisticasDia(dia);
   };
 
   const handleTabClick = (index, salon) => {
@@ -183,7 +190,7 @@ const Calendario = () => {
                           ? theme.palette.primary.main
                           : theme.palette.primary.contrast,
                     }}
-                    onClick={() => handleOpenModalStats(salon)}
+                    onClick={() => handleOpenModalStatsSalon(salon)}
                     edge="end">
                     <QueryStatsRoundedIcon />
                   </IconButton>
@@ -256,7 +263,11 @@ const Calendario = () => {
                             sx={{
                               color: theme.palette.primary.main,
                             }}
-                            // onClick={() => handleOpenModalStats(salon)}
+                            onClick={() =>
+                              handleOpenModalStatsDia(
+                                fechasSeleccionadas[index]
+                              )
+                            }
                             edge="end">
                             <QueryStatsRoundedIcon sx={{ fontSize: "1.7vh" }} />
                           </IconButton>
@@ -390,6 +401,11 @@ const Calendario = () => {
         <SeleccionadorDeFechas />
       </Modal>
       <Modal
+        open={modalAbierto === "estadisticasDia"}
+        onClose={() => setModalAbierto(null)}>
+        <EstadisticasDia estadisticasDia={estadisticasDia} />
+      </Modal>
+      <Modal
         open={modalAbierto === "estadisticasGenerales"}
         onClose={() => setModalAbierto(null)}>
         <EstadisticasGenerales />
@@ -397,7 +413,7 @@ const Calendario = () => {
       <Modal
         open={modalAbierto === "estadisticasSalon"}
         onClose={() => setModalAbierto(null)}>
-        <EstadisticasSalon />
+        <EstadisticasSalon estadisticasSalon={estadisticasSalon} />
       </Modal>
       <Modal
         open={modalAbierto === "detallesSolicitud"}

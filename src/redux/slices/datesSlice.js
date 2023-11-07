@@ -6,6 +6,15 @@ const datesSlice = createSlice({
     dates: [],
     owedDates: [],
     selectedDates: [],
+    nombreDiasDeLaSemana: [
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo",
+    ],
   },
   reducers: {
     addDates: (state, action) => {

@@ -188,12 +188,25 @@ const Solicitudes = () => {
               ref={provided.innerRef}>
               {Object.values(solicitudesARenderizar).map((solicitud, index) => {
                 return (
-                  <Solicitud
-                    solicitud={solicitud}
-                    key={index}
+                  <Draggable
+                    draggableId={solicitud.idDnd}
                     index={index}
-                    handleOpenModalDetalles={handleOpenModalDetalles}
-                  />
+                    key={solicitud.idDnd}>
+                    {(provided, snapshot) => (
+                      <Box
+                        // sx={{ height: "45px" }}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}>
+                        <Solicitud
+                          solicitud={solicitud}
+                          key={index}
+                          index={index}
+                          handleOpenModalDetalles={handleOpenModalDetalles}
+                        />
+                      </Box>
+                    )}
+                  </Draggable>
                 );
               })}
               {provided.placeholder}
