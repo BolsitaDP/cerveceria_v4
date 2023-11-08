@@ -26,7 +26,11 @@ import "react-toastify/dist/ReactToastify.css";
 import MUIFloatingButton from "./components/MUIComponents/MUIFloatingButton";
 import onDragEnd from "./components/OnDragEnd";
 import { useSelector } from "react-redux";
-import { addToHistory, setDestino } from "./redux/slices/historySlice";
+import {
+  addToHistory,
+  setDestino,
+  setHistorialInicial,
+} from "./redux/slices/historySlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -62,7 +66,7 @@ function App() {
         dispatch(setSolicitudesInicial(solicitudesSinProgramar.data));
         dispatch(setAccionesInicial(acciones.data));
         dispatch(setSalonesInicial(salones.data));
-        // dispatch(setHistorialInicial(historial));
+        dispatch(setHistorialInicial(historial.data));
         // dispatch(setGruposInicial(grupos));
         // dispatch(setMiembrosInicial(correos));
       } catch (error) {

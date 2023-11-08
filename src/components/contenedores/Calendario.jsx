@@ -398,7 +398,7 @@ const Calendario = () => {
       <Modal
         open={modalAbierto === "seleccionadorDeFechas"}
         onClose={() => setModalAbierto(null)}>
-        <SeleccionadorDeFechas />
+        <SeleccionadorDeFechas onClose={() => setModalAbierto(null)} />
       </Modal>
       <Modal
         open={modalAbierto === "estadisticasDia"}

@@ -67,6 +67,7 @@ const MUIFloatingButton = () => {
         }}>
         <Tooltip title="Opciones" arrow placement="left">
           <Fab
+            disableElevation
             color="primary"
             aria-label="add"
             onClick={handleOpenFAB}
@@ -84,6 +85,7 @@ const MUIFloatingButton = () => {
             <Tooltip key={index} title={btn.tooltip} arrow placement="left">
               <Fab
                 key={index}
+                disableElevation
                 sx={{
                   position: "absolute",
                   transform: `translateY(${

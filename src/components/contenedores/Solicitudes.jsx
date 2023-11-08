@@ -124,11 +124,12 @@ const Solicitudes = () => {
             alignItems: "center",
             justifyContent: "center",
           }}>
-          <FormControl variant="outlined">
-            <InputLabel>Filtrar solicitudes</InputLabel>
+          <FormControl variant="outlined" color="secondary">
+            <InputLabel color="secondary">Filtrar solicitudes</InputLabel>
             <Input
               id="standard-search"
               type="text"
+              color="secondary"
               value={textoFiltro}
               onChange={handleChangeTextoFiltro}
               endAdornment={
@@ -149,12 +150,18 @@ const Solicitudes = () => {
             />
           </FormControl>
 
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-standard-label">
+          <FormControl
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+            color="secondary">
+            <InputLabel
+              id="demo-simple-select-standard-label"
+              color="secondary">
               Ordenar por
             </InputLabel>
             <Select
               labelId="demo-simple-select-standard-label"
+              color="secondary"
               value={ordenamiento}
               onChange={handleChangeOrden}
               label="Age">

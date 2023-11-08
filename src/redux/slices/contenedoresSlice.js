@@ -178,23 +178,23 @@ const contenedoresSlice = createSlice({
       let solicitudesUpdatear = [];
 
       action.payload.contenidoDia.forEach((elemento, index) => {
-        console.log(elemento);
-        let exists2 = solicitudesUpdatear.find(
-          (x) => x.id === action.payload.elementoArrastrado.id
-        );
+        // console.log(elemento);
+        // let exists2 = solicitudesUpdatear.find(
+        //   (x) => x.id === action.payload.elementoArrastrado.id
+        // );
 
-        if (!exists2) {
-          solicitudesUpdatear.push({
-            id: action.payload.elementoArrastrado.id,
-            estado: action.payload.destino[1] ? "Programado" : "",
-            salonProgramado: action.payload.destino[1]
-              ? action.payload.destino[0]
-              : "",
-            fecha: action.payload.destino[1] ? action.payload.destino[1] : "",
-            orden: action.payload.index,
-            cantidad: action.payload.elementoArrastrado.cantidad,
-          });
-        }
+        // if (!exists2) {
+        //   solicitudesUpdatear.push({
+        //     id: action.payload.elementoArrastrado.id,
+        //     estado: action.payload.destino[1] ? "Programado" : "",
+        //     salonProgramado: action.payload.destino[1]
+        //       ? action.payload.destino[0]
+        //       : "",
+        //     fecha: action.payload.destino[1] ? action.payload.destino[1] : "",
+        //     orden: action.payload.index,
+        //     cantidad: action.payload.elementoArrastrado.cantidad,
+        //   });
+        // }
 
         if (elemento.codigoNombre) {
           let exists3 = solicitudesUpdatear.find((x) => x.id === elemento.id);
@@ -256,7 +256,7 @@ const contenedoresSlice = createSlice({
       }
       try {
         solicitudesUpdatear.length >= 1 &&
-          postData.postActualizarEstadoProducto(solicitudesUpdatear); //Creo que faltaría el trycatch
+          postData.postActualizarEstadoProducto(solicitudesUpdatear);
 
         accionesUpdatear.length >= 1 &&
           postData.postActualizarEstadoAcciones(accionesUpdatear);

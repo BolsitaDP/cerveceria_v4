@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import BasicModal from "../MUIComponents/BasicModal";
 import { Box } from "@mui/material";
 
-import { DataGrid, esES } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 
 const EstadisticasDia = ({ estadisticasDia }) => {
   const contenedoresEstado = useSelector((state) => state.contenedores);
@@ -79,14 +79,27 @@ const EstadisticasDia = ({ estadisticasDia }) => {
         fechasSeleccionadas.indexOf(estadisticasDia)
       ].toLowerCase()}
         ${estadisticasDia.split("/")[0]}/${estadisticasDia.split("/")[1]} `}>
-      <Box sx={{ display: "flex", minHeight: "180px", width: "100%" }}>
+      <Box
+        sx={{
+          display: "flex",
+          minHeight: "180px",
+          height: "50vh",
+          width: "100%",
+        }}>
         <Box sx={{ flexGrow: 1, width: "100%" }}>
           <DataGrid
-            getRowHeight={() => "auto"}
+            slots={{ toolbar: GridToolbar }}
+            // getRowHeight={() => "auto"}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             rows={contenidoDia}
+            pageSizeOptions={[10]}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
             columns={columns}
-            getRowId={(row) => row.id || row.Id}
+            getRowId={(row) => row.idDnd || row.id || row.Id}
           />
         </Box>
       </Box>

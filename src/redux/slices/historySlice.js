@@ -16,6 +16,7 @@ const historySlice = createSlice({
   },
   reducers: {
     setHistorialInicial: (state, action) => {
+      console.log(action.payload);
       state.cambios = action.payload;
       action.payload?.forEach((cambio) => {
         if (cambio.notificado === 0) {

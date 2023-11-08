@@ -17,7 +17,8 @@ const TemaClaro = createTheme(
         internacional: internacional,
       },
       secondary: {
-        main: "#ff6f61",
+        main: blanco,
+        contrast: temaFw7,
       },
     },
     components: {
@@ -126,6 +127,13 @@ const TemaClaro = createTheme(
           root: {
             borderRadius: 0,
             width: "40%",
+          },
+        },
+      },
+      MuiFab: {
+        styleOverrides: {
+          root: {
+            boxShadow: "none",
           },
         },
       },

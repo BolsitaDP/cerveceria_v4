@@ -76,7 +76,7 @@ function Day(props) {
   );
 }
 
-export default function SeleccionadorDeFechas() {
+export default function SeleccionadorDeFechas({ onClose }) {
   const dispatch = useDispatch();
 
   const [hoveredDay, setHoveredDay] = useState(null);
@@ -92,6 +92,8 @@ export default function SeleccionadorDeFechas() {
 
     dispatch(addDates(fechasDeLaSemana));
     dispatch(setDias(fechasDeLaSemanaCompletas));
+
+    onClose();
   };
 
   return (
