@@ -22,6 +22,7 @@ import { useTheme } from "@emotion/react";
 import HistoryIcon from "@mui/icons-material/History";
 import dayjs from "dayjs";
 import "dayjs/locale/en-gb";
+import { NumericFormat } from "react-number-format";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   const dispatch = useDispatch();
@@ -55,8 +56,14 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
 
   const solicitudEditada = JSON.parse(JSON.stringify(solicitudAbierta));
 
+  const formatoFecha = "DD/MM/YYYY";
+
+  console.log(dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha }));
+
   useEffect(() => {
-    setFechaRequeridoPara(dayjs(solicitudAbierta.fechaRequiere));
+    setFechaRequeridoPara(
+      dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha })
+    );
   }, []);
 
   console.log(fechaRequeridoPara);
@@ -88,9 +95,14 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
       editor: editorEstado,
     };
 
+    if (name === "cantidad") {
+      var numericValue = value.replace(/,/g, "");
+    }
+
     if (
       name === "cantidad" &&
-      Number(value) - Number(solicitudAbierta.cantidad) > cantidadExtraPosible
+      Number(numericValue) - Number(solicitudAbierta.cantidad) >
+        cantidadExtraPosible
     ) {
       toast(
         "No puedes superar la cantidad máxima restante para este día: " +
@@ -102,27 +114,32 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
     } else {
       if (!calendario && name === "cantidad") {
         if (valorPrevio) {
-          if (Number(value) < Number(valorPrevio)) {
+          if (Number(numericValue) < Number(valorPrevio)) {
             setOpenPartir(true);
           }
         } else {
-          if (Number(value) < solicitudAbierta[name]) {
+          if (Number(numericValue) < solicitudAbierta[name]) {
             setOpenPartir(true);
           } else {
             dispatch(addToHistory(editedProperty));
-            solicitudEditada[name] = value;
+            solicitudEditada[name] = Number(numericValue);
             setValorPrevio(solicitudEditada[name]);
             dispatch(updatePropiedadesSolicitud(solicitudEditada));
           }
         }
 
-        setValueAPartir(value);
+        setValueAPartir(Number(numericValue));
         setEditedPropertyState(editedProperty);
 
         return;
       }
       dispatch(addToHistory(editedProperty));
-      solicitudEditada[name] = value;
+      if (name === "cantidad") {
+        setCantidadInput(Number(numericValue));
+        solicitudEditada[name] = Number(numericValue);
+      } else {
+        solicitudEditada[name] = value;
+      }
       setValorPrevio(solicitudEditada[name]);
       // if (destino && destino[1]) {
       //   solicitudEditada.fecha = destino[1];
@@ -189,7 +206,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
     solicitudAbierta.velocidadesSalonProducto.forEach((linea) => {
       if (linea.Linea === salonSeleccionadoEstado) {
         // let minutosRestar = elementoArrastrado.cantidad / linea.Velocidad;
-        capacidadSalon = linea.Velocidad * 60;
+        capacidadSalon = linea.Velocidad * 60 * 24;
       }
     });
 
@@ -227,6 +244,25 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
     dispatch(updatePropiedadesSolicitud(solicitudPartidaOrig));
     setOpenPartir(false);
   };
+
+  const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(
+    props,
+    ref
+  ) {
+    const { onChange, ...other } = props;
+
+    return (
+      <NumericFormat
+        {...other}
+        getInputRef={ref}
+        onValueChange={(values) => {
+          // Aquí puedes aplicar lógica adicional si es necesario
+        }}
+        thousandSeparator
+        onBlur={handleBlurred} // Agregar el manejador onBlur personalizado
+      />
+    );
+  });
 
   const handleCalendarChange = (date) => {};
 
@@ -303,10 +339,12 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
           name="cantidad"
           // defaultValue={solicitudAbierta.cantidad}
           // variant="standard"value={Math.round(cantidadInput)}
-          value={Math.round(cantidadInput)}
+          value={cantidadInput}
           onBlur={handleBlurred}
           onChange={handleCantidadChange}
-          type="number"
+          InputProps={{
+            inputComponent: NumericFormatCustom,
+          }}
         />
 
         <TextField

@@ -43,7 +43,7 @@ const contenedoresSlice = createSlice({
         solicitud.velocidadesSalonProducto.forEach((linea) => {
           if (linea.Linea === salon) {
             // let minutosRestar = elementoArrastrado.cantidad / linea.Velocidad;
-            capacidadSalon = linea.Velocidad * 60;
+            capacidadSalon = linea.Velocidad * 60 * 24;
           }
         });
 
@@ -109,28 +109,27 @@ const contenedoresSlice = createSlice({
       }
     },
     deteleAccionCalendario: (state, action) => {
-      let dia = action.payload.dia[0];
-      let salon = action.payload.salon[0];
+      console.log(action.payload);
+      let dia = action.payload.fecha;
+      let salon = action.payload.salonProgramado;
       // let contenidoContenido = action.payload.contenidoContenido;
-      let contenidoId = action.payload.contenidoId;
+      // let contenidoId = action.payload.contenidoId;
 
       try {
-        postData
-          .postEliminarAccionesProgramadas({
-            Id: action.payload.contenidoContenido.Id,
-            nombreDeLaAccion:
-              action.payload.contenidoContenido.nombreDeLaAccion,
-            salonProgramado: action.payload.salon[0],
-            fecha: action.payload.dia[0],
-          })
-          .then(
-            (res) =>
-              (state.calendario[salon].dias[dia].contenido = state.calendario[
-                salon
-              ].dias[dia].contenido.filter(
-                (accion) => accion.idDnd !== contenidoId
-              ))
-          );
+        postData.postEliminarAccionesProgramadas({
+          Id: action.payload.idDnd,
+          nombreDeLaAccion: action.payload.nombreDeLaAccion,
+          salonProgramado: action.payload.salonProgramado,
+          fecha: action.payload.fecha,
+        });
+
+        state.calendario[salon].dias[dia].contenido = state.calendario[
+          salon
+        ].dias[dia].contenido.filter(
+          (accion) => accion.idDnd !== action.payload.idDnd
+        );
+        state.calendario[salon].dias[dia].horas += action.payload.duracion / 60;
+        toast.success(`Tarea eliminada exitosamente`);
       } catch (error) {
         toast.error("Ha ocurrido un error: " + error);
       }
@@ -300,8 +299,10 @@ const contenedoresSlice = createSlice({
             (solicitud) => solicitud.codigoNombre === codigoNombre
           );
         }
-        let capacidadSalon =
-          state.calendario[action.payload.salonProgramado].capacidadHora;
+        // let capacidadSalon =
+        //   state.calendario[action.payload.salonProgramado].capacidadHora;
+
+        let capacidadSalonPorDia;
 
         solicitudActualizada =
           state.calendario[action.payload.salonProgramado].dias[
@@ -315,12 +316,18 @@ const contenedoresSlice = createSlice({
             ].contenido[solIndex];
         }
 
+        solicitudActualizada.velocidadesSalonProducto.forEach((linea) => {
+          if (linea.Linea === solicitudActualizada.salonProgramado) {
+            capacidadSalonPorDia = linea.Velocidad * 60 * 24;
+          }
+        });
+
         let diferencia =
           solicitudActualizada.cantidad - action.payload.cantidad;
 
         state.calendario[action.payload.salonProgramado].dias[
           action.payload.fecha
-        ].horas += diferencia / capacidadSalon;
+        ].horas += diferencia / capacidadSalonPorDia;
 
         solicitudActualizada = state.calendario[
           action.payload.salonProgramado
@@ -357,13 +364,19 @@ const contenedoresSlice = createSlice({
         elementoOriginal
       );
 
-      let capacidadSalon = state.calendario[salonOriginal].capacidadHora;
+      let capacidadSalonPorDia;
+
+      elementoOriginal.velocidadesSalonProducto.forEach((linea) => {
+        if (linea.Linea === elementoOriginal.salonProgramado) {
+          capacidadSalonPorDia = linea.Velocidad * 60 * 24;
+        }
+      });
 
       state.calendario[salonOriginal].dias[fechaOriginal].horas -=
-        elementoOriginal.cantidad / capacidadSalon;
+        elementoOriginal.cantidad / capacidadSalonPorDia;
 
       state.calendario[salonCopia].dias[fechaCopia].horas -=
-        elementoArrastradoCopia.cantidad / capacidadSalon;
+        elementoArrastradoCopia.cantidad / capacidadSalonPorDia;
     },
     creacionMasDeUnaCopia: (state, action) => {
       console.log(action.payload);
@@ -387,9 +400,17 @@ const contenedoresSlice = createSlice({
             elEdit.fecha
           ].contenido.splice(elEdit.orden, 0, elEdit);
         }
-        let capacidadSalon = state.calendario[el.salonProgramado].capacidadHora;
+
+        let capacidadSalonPorDia;
+
+        el.velocidadesSalonProducto.forEach((linea) => {
+          if (linea.Linea === el.salonProgramado) {
+            capacidadSalonPorDia = linea.Velocidad * 60 * 24;
+          }
+        });
+
         state.calendario[el.salonProgramado].dias[el.fecha].horas -=
-          el.cantidad / capacidadSalon;
+          el.cantidad / capacidadSalonPorDia;
       });
     },
     particionSolicitudSinProgramar: (state, action) => {

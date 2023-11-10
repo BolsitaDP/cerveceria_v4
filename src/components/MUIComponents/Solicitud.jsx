@@ -1,6 +1,7 @@
 import { Box, Card, Typography } from "@mui/material";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { NumericFormat } from "react-number-format";
 import { v4 as uuid } from "uuid";
 
 const Solicitud = ({
@@ -10,6 +11,25 @@ const Solicitud = ({
   calendario = false,
 }) => {
   let solicitudId = solicitud.idDnd;
+
+  const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(
+    props,
+    ref
+  ) {
+    const { onChange, ...other } = props;
+
+    return (
+      <NumericFormat
+        {...other}
+        getInputRef={ref}
+        onValueChange={(values) => {
+          // Aquí puedes aplicar lógica adicional si es necesario
+        }}
+        thousandSeparator // Agregar el manejador onBlur personalizado
+      />
+    );
+  });
+
   return (
     <Card
       variant={
@@ -19,12 +39,17 @@ const Solicitud = ({
       }
       sx={{
         width: calendario ? "400px" : "100%",
-        minHeight: "65px",
+        // minHeight: "65px",
       }}
       onClick={() => handleOpenModalDetalles(solicitud)}>
       <Typography
         sx={{ width: "100%", fontSize: calendario ? "1.5vh" : "1.8vh" }}>
-        {solicitud.cantidad} {solicitud.unidadMedida}
+        <NumericFormatCustom
+          value={solicitud.cantidad}
+          displayType={"text"} // Esto indica que el valor formateado es para mostrar como texto
+          thousandSeparator={true} // Otras opciones de formato si es necesario
+        />{" "}
+        {solicitud.unidadMedida}
       </Typography>
       <Box
         sx={{

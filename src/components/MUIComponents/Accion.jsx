@@ -23,7 +23,7 @@ const Accion = ({
         height: calendario ? "70px" : "200px",
         display: "flex",
       }}
-      onClick={() => handleOpenDetalles(accion)}>
+      onClick={() => !calendario && handleOpenDetalles(accion)}>
       <Box
         sx={{
           width: "200px",

@@ -9,7 +9,7 @@ const historySlice = createSlice({
   initialState: {
     version: 1,
     cambiosSinNotificar: [],
-    editor: "Wilmer Claudio",
+    editor: "Usuario pruebas BPMco",
     cambios: [],
     salonSeleccionado: "1AB",
     destino: null,

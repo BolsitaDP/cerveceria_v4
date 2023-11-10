@@ -22,6 +22,10 @@ const PDFs = () => {
     (state) => state.dates.nombreDiasDeLaSemana
   );
   const contenedoresEstado = useSelector((state) => state.contenedores);
+  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
+  const salonSeleccionadoEstado = useSelector(
+    (state) => state.history.salonSeleccionado
+  );
 
   let rows = [];
 
@@ -59,6 +63,31 @@ const PDFs = () => {
       minWidth: 150,
     },
   ];
+
+  console.log(diasSeleccionado);
+  console.log(contenedoresEstado);
+
+  diasSeleccionado.forEach((dia) => {
+    nombreDiasDeLaSemana.forEach((nombre, index) => {
+      if (dia === nombre) {
+        let diasDelSalon =
+          contenedoresEstado.calendario[salonSeleccionadoEstado].dias;
+        diasDelSalon.forEach((diaDelSalon) => {
+          if (diaDelSalon.fecha === fechasSeleccionadas[index]) {
+            console.log(fechasSeleccionadas[index]);
+            let cont = diaDelSalon.contenido;
+            cont.forEach((c) => {
+              console.log(c);
+
+              rows.push(c);
+            });
+          }
+        });
+      }
+    });
+  });
+
+  console.log(rows);
 
   return (
     <BasicModal titulo={"Creación de PDF"}>

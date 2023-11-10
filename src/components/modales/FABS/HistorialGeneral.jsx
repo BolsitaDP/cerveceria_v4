@@ -5,6 +5,7 @@ import { useTheme } from "@emotion/react";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { v4 as uuid } from "uuid";
 
 const HistorialGeneral = () => {
   const theme = useTheme();
@@ -20,6 +21,15 @@ const HistorialGeneral = () => {
       headerName: "Tipo de cambio",
       flex: 1,
       minWidth: 150,
+      renderCell: ({ row }) => {
+        if (row.tipoDeCambio === "Propiedad") {
+          if (row.propiedad === "reqPara") {
+            return "Fecha requerido";
+          } else if (row.propiedad === "cantidad") {
+            return "Cantidad";
+          }
+        }
+      },
     },
     {
       field: "codigo",
@@ -33,8 +43,8 @@ const HistorialGeneral = () => {
       flex: 1,
       minWidth: 200,
       renderCell: ({ row }) => {
-        let fecha = row.valorPrevio?.split("&");
         if (row.valorPrevio) {
+          let fecha = row.valorPrevio?.split("&");
           if (fecha[1]) {
             let [, dia] = fecha[0].split(" ");
             let [dd, mm] = fecha[1].split("/");
@@ -61,8 +71,8 @@ const HistorialGeneral = () => {
       flex: 1,
       minWidth: 200,
       renderCell: ({ row }) => {
-        let fecha = row.valorNuevo?.split("&");
         if (row.valorNuevo) {
+          let fecha = row.valorNuevo?.split("&");
           if (fecha[1]) {
             let [, dia] = fecha[0].split(" ");
             let [dd, mm] = fecha[1].split("/");
@@ -142,7 +152,7 @@ const HistorialGeneral = () => {
                 },
               }}
               columns={columns}
-              // getRowId={(row) => row.id || row.Id}
+              getRowId={(row) => uuid()}
             />
           </Box>
         </Box>

@@ -19,6 +19,7 @@ import { setSalonSeleccionado } from "../../redux/slices/historySlice";
 import DetallesSolicitud from "../modales/DetallesSolicitud";
 import ModalDetallesAccion from "../modales/ModalDetallesAccion";
 import EstadisticasDia from "../modales/EstadisticasDia";
+import { deteleAccionCalendario } from "../../redux/slices/contenedoresSlice";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -111,7 +112,9 @@ const Calendario = () => {
     setModalAbierto("detallesAccion");
   };
 
-  const handleDeleteAccion = (accion) => {};
+  const handleDeleteAccion = (accion) => {
+    dispatch(deteleAccionCalendario(accion));
+  };
 
   return (
     <Box sx={{ height: "100%" }}>
@@ -222,7 +225,7 @@ const Calendario = () => {
                   key={index}
                   sx={{
                     height: "calc(100% / 7)",
-                    minHeight: "9ch",
+                    // minHeight: "9ch",
                     padding: "5px",
                   }}>
                   <Tooltip title={`${fechasSoloDiaMes[index]}`} arrow>
@@ -299,6 +302,7 @@ const Calendario = () => {
                     height: "100%",
                     padding: "1%",
                     gap: "1%",
+                    overflow: "auto",
                   }}
                   key={salon}>
                   {Object.entries(dias).map(([diaNombre, diaInfo]) => {
@@ -322,7 +326,7 @@ const Calendario = () => {
                             sx={{
                               width: "100%",
                               height: "calc(100% / 7)",
-                              minHeight: "8ch",
+                              // minHeight: "8ch",
                               backgroundColor: "white",
                               borderRadius: "5px",
                               display: "flex",

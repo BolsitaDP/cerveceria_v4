@@ -12,7 +12,7 @@ const postData = {
       id: body.id,
       cantidad: body.cantidad,
       codigoNombre: body.codigoNombre,
-      estado: "Programado",
+      estado: body.estado,
       salonProgramado: body.salonProgramado,
       fecha: body.fecha,
       orden: body.orden,

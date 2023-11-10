@@ -33,7 +33,7 @@ const EstadisticasSalon = ({ estadisticasSalon }) => {
 
         const index = fechasSeleccionadas.indexOf(dia.fecha);
         if (index !== -1) {
-          solicitudes[index] += cantidadDia;
+          solicitudes[index] += parseInt(cantidadDia);
         }
       }
     });

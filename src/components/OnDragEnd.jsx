@@ -170,7 +170,12 @@ const onDragEnd = (
   // Creamos variable para validar posteriormente
   let tiempoARestarEnElDia = 0;
 
-  let idLinea = destino[0];
+  let idLinea;
+  if (destino[0] === "solicitudes") {
+    idLinea = fuente[0];
+  } else {
+    idLinea = destino[0];
+  }
 
   let capacidadSalonPorDia;
 
@@ -178,10 +183,12 @@ const onDragEnd = (
   if (solicitud) {
     elementoArrastrado.velocidadesSalonProducto.forEach((linea) => {
       if (linea.Linea === idLinea) {
-        capacidadSalonPorDia = linea.Velocidad * 60;
+        capacidadSalonPorDia = linea.Velocidad * 60 * 24;
       }
     });
-    tiempoARestarEnElDia = elementoArrastrado.cantidad / capacidadSalonPorDia;
+    tiempoARestarEnElDia = Math.round(
+      elementoArrastrado.cantidad / capacidadSalonPorDia
+    );
   }
 
   // Si es acción, el tiempo a restar es la duración de la acción dividido 60 minutos.
