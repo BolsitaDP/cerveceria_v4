@@ -20,7 +20,7 @@ const Accion = ({
       }
       sx={{
         width: calendario ? "200px" : "200px",
-        height: calendario ? "70px" : "200px",
+        // height: calendario ? "70px" : "200px",
         display: "flex",
       }}
       onClick={() => !calendario && handleOpenDetalles(accion)}>

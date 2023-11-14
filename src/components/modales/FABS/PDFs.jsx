@@ -27,67 +27,127 @@ const PDFs = () => {
     (state) => state.history.salonSeleccionado
   );
 
-  let rows = [];
+  const handleChangeTipoDeReporte = (e) => {
+    if (e.target.value !== "Diario") {
+      setDiasSeleccionado([]);
+    } else if (e.target.value !== "Semanal") {
+      setSalonesSeleccionados([]);
+    } else {
+    }
+    setTipoDeReporte(e.target.value);
+  };
 
   let columns = [];
 
   let columnasReporteDiario = [
     {
-      field: "producto",
+      field: "codigoNombre",
       headerName: "Código",
       flex: 1,
       minWidth: 150,
+      renderCell: (params) => {
+        if (!params.row.codigoNombre) {
+          return "Actividad";
+        }
+      },
     },
     {
-      field: "prod2ucto",
+      field: "producto",
       headerName: "Producto",
       flex: 1,
-      minWidth: 150,
+      minWidth: 250,
+      renderCell: (params) => {
+        if (!params.row.producto) {
+          return params.row.nombreDeLaAccion;
+        }
+      },
     },
     {
-      field: "produ4cto",
+      field: "cantidad",
       headerName: "Cantidad",
       flex: 1,
       minWidth: 150,
+      renderCell: (params) => {
+        if (!params.row.cantidad) {
+          return "-";
+        }
+      },
     },
     {
-      field: "produ1cto",
+      field: "fecha",
       headerName: "Fecha programada",
       flex: 1,
       minWidth: 150,
+      renderCell: (params) => {
+        let [nombre, fecha] = params.row.fecha.split("&");
+        let [dia, mes] = fecha.split("/");
+        return `${nombre} - ${dia}/${mes}`;
+      },
     },
     {
-      field: "produ1scto",
+      field: "salonProgramado",
       headerName: "Salón",
       flex: 1,
       minWidth: 150,
     },
   ];
 
-  console.log(diasSeleccionado);
-  console.log(contenedoresEstado);
+  const uniqueRows = new Set();
 
-  diasSeleccionado.forEach((dia) => {
-    nombreDiasDeLaSemana.forEach((nombre, index) => {
-      if (dia === nombre) {
-        let diasDelSalon =
-          contenedoresEstado.calendario[salonSeleccionadoEstado].dias;
-        diasDelSalon.forEach((diaDelSalon) => {
-          if (diaDelSalon.fecha === fechasSeleccionadas[index]) {
-            console.log(fechasSeleccionadas[index]);
-            let cont = diaDelSalon.contenido;
+  if (tipoDeReporte === "Diario") {
+    diasSeleccionado.forEach((dia) => {
+      nombreDiasDeLaSemana.forEach((nombre) => {
+        if (dia === nombre) {
+          let diasDelSalon =
+            contenedoresEstado.calendario[salonSeleccionadoEstado].dias;
+          Object.values(diasDelSalon).forEach((diaDelSalon) => {
+            fechasSeleccionadas.forEach((fecha) => {
+              if (diaDelSalon.fecha === fecha) {
+                let cont = diaDelSalon.contenido;
+                cont.forEach((c) => {
+                  if (c.fecha.split("&")[0] === dia) {
+                    uniqueRows.add(c);
+                  }
+                });
+              }
+            });
+          });
+        }
+      });
+    });
+  } else if (tipoDeReporte === "Semanal") {
+    salonesSeleccionados.forEach((salon) => {
+      Object.values(contenedoresEstado.calendario[salon].dias).forEach(
+        (dia) => {
+          fechasSeleccionadas.forEach((fecha) => {
+            if (dia.fecha === fecha) {
+              let cont = dia.contenido;
+              cont.forEach((c) => {
+                uniqueRows.add(c);
+              });
+            }
+          });
+        }
+      );
+    });
+  } else if (tipoDeReporte === "General") {
+    let salones = contenedoresEstado.calendario;
+
+    Object.values(salones).forEach((salon) => {
+      Object.values(salon.dias).forEach((dia) => {
+        fechasSeleccionadas.forEach((fecha) => {
+          if (dia.fecha === fecha) {
+            let cont = dia.contenido;
             cont.forEach((c) => {
-              console.log(c);
-
-              rows.push(c);
+              uniqueRows.add(c);
             });
           }
         });
-      }
+      });
     });
-  });
+  }
 
-  console.log(rows);
+  const rows = Array.from(uniqueRows);
 
   return (
     <BasicModal titulo={"Creación de PDF"}>
@@ -107,7 +167,7 @@ const PDFs = () => {
             id="demo-select-small"
             value={tipoDeReporte}
             label="Reporte"
-            onChange={(e) => setTipoDeReporte(e.target.value)}>
+            onChange={handleChangeTipoDeReporte}>
             <MenuItem value="">
               <em>Ninguno</em>
             </MenuItem>
@@ -171,12 +231,12 @@ const PDFs = () => {
           </Select>
         </FormControl>
 
-        <Button variant="contained" disableElevation>
+        {/* <Button variant="contained" disableElevation>
           Generar reporte
-        </Button>
+        </Button> */}
       </Box>
 
-      <Box sx={{ height: "40vh", width: "100%", padding: "10px" }}>
+      <Box sx={{ height: "50vh", width: "100%", padding: "10px" }}>
         <Box
           sx={{
             display: "flex",
@@ -196,10 +256,8 @@ const PDFs = () => {
                   paginationModel: { page: 0, pageSize: 10 },
                 },
               }}
-              columns={
-                tipoDeReporte === "Diario" ? columnasReporteDiario : columns
-              }
-              // getRowId={(row) => row.id || row.Id}
+              columns={columnasReporteDiario}
+              getRowId={(row) => row.id || row.Id}
             />
           </Box>
         </Box>

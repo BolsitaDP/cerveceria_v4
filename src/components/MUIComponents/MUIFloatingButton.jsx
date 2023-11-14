@@ -25,14 +25,14 @@ const FABS = [
     icon: <PictureAsPdfRoundedIcon />,
     tooltip: "PDF",
   },
-  {
-    icon: <AssessmentRoundedIcon />,
-    tooltip: "Reportes",
-  },
-  {
-    icon: <DonutLargeRoundedIcon />,
-    tooltip: "Programado y producido",
-  },
+  // {
+  //   icon: <AssessmentRoundedIcon />,
+  //   tooltip: "Reportes",
+  // },
+  // {
+  //   icon: <DonutLargeRoundedIcon />,
+  //   tooltip: "Programado y producido",
+  // },
 ];
 
 const MUIFloatingButton = () => {
