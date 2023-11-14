@@ -174,12 +174,15 @@ const Calendario = () => {
                     activeTab === index
                       ? theme.palette.primary.main
                       : theme.palette.primary.contrast,
-                  minWidth: "150px",
+                  // minWidth: "150px",
+                  padding: "0vh 2vw",
+                  whiteSpace: "nowrap",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: "5px",
                   cursor: "pointer",
+                  fontSize: "2vh",
                 }}
                 key={index}
                 onClick={() => handleTabClick(index, salon)}>

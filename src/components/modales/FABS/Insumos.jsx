@@ -3,9 +3,11 @@ import BasicModal from "../../MUIComponents/BasicModal";
 import { useSelector } from "react-redux";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
+import postData from "../../../requests/postData";
+import { toast } from "react-toastify";
 
 const Insumos = () => {
-  const [insumos, setInsumos] = useState(null);
+  const [insumos, setInsumos] = useState([]);
 
   const contenedoresEstado = useSelector((state) => state.contenedores);
   const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
@@ -20,27 +22,29 @@ const Insumos = () => {
     fechasSeleccionadas.forEach((fecha) => {
       if (dia.fecha === fecha) {
         dia.contenido.forEach((el) => {
-          soliciudes.push(el);
+          soliciudes.push(el.codigoNombre);
         });
       }
     });
   });
 
-  let solicitudesAEnviar = soliciudes.toString();
+  useEffect(() => {
+    let solicitudesAEnviar = soliciudes.toString();
 
-  // useEffect(() => {
-  //   if (solicitudesAEnviar) {
-  //     try {
-  //       postEnviarInsumos({
-  //         codigoProductos: solicitudesAEnviar,
-  //       })
-  //         .then((res) => setInsumos(res))
-  //         .then(() => setVisibleLoader(false));
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // }, []);
+    if (solicitudesAEnviar) {
+      try {
+        postData
+          .postEnviarInsumos({
+            codigoProductos: solicitudesAEnviar,
+          })
+          .then((res) => {
+            setInsumos(res.data);
+          });
+      } catch (error) {
+        toast.error("Ha ocurrido un error: " + error);
+      }
+    }
+  }, []);
 
   let insumosOrganizados = {};
   insumos?.forEach((i) => {
@@ -53,29 +57,29 @@ const Insumos = () => {
     };
   });
 
-  let rows = [];
+  let rows = Object.values(insumosOrganizados);
 
   let columns = [
     {
-      field: "producto2",
+      field: "insumoNombre",
       headerName: "Insumo",
       flex: 1,
-      minWidth: 150,
+      minWidth: 300,
     },
     {
-      field: "product3o",
+      field: "codigoInsumo",
       headerName: "Código",
       flex: 1,
       minWidth: 150,
     },
     {
-      field: "produ4cto",
+      field: "cantidad",
       headerName: "Cantidad",
       flex: 1,
-      minWidth: 150,
+      minWidth: 100,
     },
     {
-      field: "produ1cto",
+      field: "unidadMedida",
       headerName: "Unidad medida",
       flex: 1,
       minWidth: 150,
@@ -86,8 +90,8 @@ const Insumos = () => {
     <BasicModal titulo={"Insumos salón " + salonSeleccionadoEstado}>
       <Box
         sx={{
-          height: "50vh",
-          width: "50vw",
+          height: "60vh",
+          width: "60vw",
         }}>
         <Box
           sx={{
@@ -108,7 +112,7 @@ const Insumos = () => {
               },
             }}
             columns={columns}
-            // getRowId={(row) => row.id || row.Id}
+            getRowId={(row) => row.codigoInsumo}
           />
         </Box>
       </Box>
