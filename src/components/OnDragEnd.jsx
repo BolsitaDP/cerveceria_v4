@@ -183,7 +183,7 @@ const onDragEnd = (
   if (solicitud) {
     elementoArrastrado.velocidadesSalonProducto.forEach((linea) => {
       if (linea.Linea === idLinea) {
-        capacidadSalonPorDia = linea.Velocidad * 60 * 24;
+        capacidadSalonPorDia = linea.Velocidad * 24;
       }
     });
     tiempoARestarEnElDia = Math.round(
@@ -193,7 +193,7 @@ const onDragEnd = (
 
   // Si es acción, el tiempo a restar es la duración de la acción dividido 60 minutos.
   else if (accion) {
-    tiempoARestarEnElDia = elementoArrastrado.duracion / 60;
+    tiempoARestarEnElDia = elementoArrastrado.duracion;
   }
 
   // Si el elemento es arrastrado dentro de los contenedores de solicitudes o de acciones.

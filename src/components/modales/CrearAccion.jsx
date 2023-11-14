@@ -44,22 +44,46 @@ const CrearAccion = () => {
   };
 
   const handleChange = (event) => {
+    if (event.target.value === "notas") {
+      setMinutosAccion(null);
+    }
     setTipoAccion(event.target.value);
   };
 
   const handleNuevaAccion = () => {
-    if (textoNombre && textoNombre !== "" && minutosAccion > 0 && tipoAccion) {
-      dispatch(
-        createAccion({
-          idDnd: uuid(),
-          duracion: parseInt(minutosAccion),
-          estado: 1,
-          nombreDeLaAccion: textoNombre,
-          tipo: tipoAccion,
-        })
-      );
+    if (tipoAccion !== "notas") {
+      if (
+        textoNombre &&
+        textoNombre !== "" &&
+        minutosAccion > 0 &&
+        tipoAccion
+      ) {
+        dispatch(
+          createAccion({
+            idDnd: uuid(),
+            duracion: parseInt(minutosAccion),
+            estado: 1,
+            nombreDeLaAccion: textoNombre,
+            tipo: tipoAccion,
+          })
+        );
+      } else {
+        toast("La actividad debe tener nombre, duración y tipo");
+      }
     } else {
-      toast("La actividad debe tener nombre, duración y tipo");
+      if (textoNombre && textoNombre !== "") {
+        dispatch(
+          createAccion({
+            idDnd: uuid(),
+            duracion: 0,
+            estado: 1,
+            nombreDeLaAccion: textoNombre,
+            tipo: tipoAccion,
+          })
+        );
+      } else {
+        toast("La actividad debe tener nombre");
+      }
     }
   };
 
@@ -107,14 +131,13 @@ const CrearAccion = () => {
           <Input
             id="standard-search"
             type="number"
+            disabled={tipoAccion === "notas"}
             min="0"
             sx={{ maxWidth: "200px" }}
             value={minutosAccion}
             onChange={handleChangeMinutos}
             inputProps={{ min: 0 }}
-            endAdornment={
-              <InputAdornment position="end">Minutos</InputAdornment>
-            }
+            endAdornment={<InputAdornment position="end">Horas</InputAdornment>}
             size="small"
             label="Solicitud a filtrar"
             variant="standard"
@@ -139,6 +162,7 @@ const CrearAccion = () => {
               control={<Radio />}
               label="Correctiva"
             />
+            <FormControlLabel value="notas" control={<Radio />} label="Notas" />
           </RadioGroup>
         </FormControl>
 

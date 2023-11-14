@@ -1,4 +1,4 @@
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Card, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { NumericFormat } from "react-number-format";
@@ -57,17 +57,19 @@ const Solicitud = ({
           flexDirection: "column",
           width: "100%",
         }}>
-        <Typography
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-            fontSize: calendario ? "1.8vh" : "2vh",
-          }}>
-          {solicitud.producto.slice(0, 30)}
-          {solicitud.producto.length > 30 && "..."}
-        </Typography>
+        <Tooltip title={solicitud.producto} arrow>
+          <Typography
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              fontSize: calendario ? "1.8vh" : "2vh",
+            }}>
+            {solicitud.producto.slice(0, 30)}
+            {solicitud.producto.length > 30 && "..."}
+          </Typography>
+        </Tooltip>
         <Typography
           sx={{
             display: "flex",

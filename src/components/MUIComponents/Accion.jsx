@@ -16,14 +16,19 @@ const Accion = ({
   return (
     <Card
       variant={
-        accion.tipo === "correctiva" ? "accion correctiva" : "accion operativa"
+        accion.tipo === "correctiva"
+          ? "accion correctiva"
+          : accion.tipo === "operativa"
+          ? "accion operativa"
+          : "accion notas"
       }
       sx={{
         width: calendario ? "200px" : "200px",
         // height: calendario ? "70px" : "200px",
         display: "flex",
       }}
-      onClick={() => !calendario && handleOpenDetalles(accion)}>
+      // onClick={() => !calendario && handleOpenDetalles(accion)}
+    >
       <Box
         sx={{
           width: "200px",
@@ -39,8 +44,8 @@ const Accion = ({
             textAlign: "center",
             fontSize: calendario ? "1.8vh" : "2vh",
           }}>
-          {accion.nombreDeLaAccion.slice(0, 11)}
-          {accion.nombreDeLaAccion.length >= 11 && "..."}
+          {accion.tipo !== "notas" &&
+            parseFloat(accion.duracion.toFixed(2)) + " horas"}
         </Box>
         <Tooltip title="Eliminar actividad" arrow>
           <IconButton
@@ -63,7 +68,12 @@ const Accion = ({
           alignItems: "center",
           fontSize: calendario ? "1.8vh" : "2vh",
         }}>
-        <Box sx={{ textAlign: "center" }}>{accion.duracion} minutos</Box>
+        <Box sx={{ textAlign: "center" }}>
+          <Tooltip title={accion.nombreDeLaAccion} arrow>
+            {accion.nombreDeLaAccion.slice(0, 22)}
+            {accion.nombreDeLaAccion.length >= 22 && "..."}
+          </Tooltip>
+        </Box>
         <Box sx={{ width: "80%", textAlign: "right" }}>{accion.tipo}</Box>
       </Box>
     </Card>

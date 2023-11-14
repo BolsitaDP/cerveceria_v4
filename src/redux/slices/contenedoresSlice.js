@@ -43,7 +43,7 @@ const contenedoresSlice = createSlice({
         solicitud.velocidadesSalonProducto.forEach((linea) => {
           if (linea.Linea === salon) {
             // let minutosRestar = elementoArrastrado.cantidad / linea.Velocidad;
-            capacidadSalon = linea.Velocidad * 60 * 24;
+            capacidadSalon = linea.Velocidad * 24;
           }
         });
 
@@ -81,7 +81,7 @@ const contenedoresSlice = createSlice({
         accion.duracion = Number(accion.tiempo);
         // accion.Id = accion.Id;
         state.calendario[salon].dias[fecha]?.contenido?.push(accion);
-        state.calendario[salon].dias[fecha].horas -= accion.duracion / 60;
+        state.calendario[salon].dias[fecha].horas -= accion.duracion;
       });
 
       // Ordenar las solicitudes según la propiedad "orden" Creo qeues e se peude quoitar
@@ -153,10 +153,6 @@ const contenedoresSlice = createSlice({
     setSalonesInicial: (state, action) => {
       action.payload.forEach((salon) => {
         let nombreSalon = salon.Nombre;
-        // DELETE
-        // if (salon.Nombre === "2L") {
-        //   nombreSalon = "2LI";
-        // }
         state.calendario[nombreSalon] = {
           id: salon.Nombre,
           dias: {},
@@ -322,7 +318,7 @@ const contenedoresSlice = createSlice({
 
         solicitudActualizada.velocidadesSalonProducto.forEach((linea) => {
           if (linea.Linea === solicitudActualizada.salonProgramado) {
-            capacidadSalonPorDia = linea.Velocidad * 60 * 24;
+            capacidadSalonPorDia = linea.Velocidad * 24;
           }
         });
 
@@ -372,7 +368,7 @@ const contenedoresSlice = createSlice({
 
       elementoOriginal.velocidadesSalonProducto.forEach((linea) => {
         if (linea.Linea === elementoOriginal.salonProgramado) {
-          capacidadSalonPorDia = linea.Velocidad * 60 * 24;
+          capacidadSalonPorDia = linea.Velocidad * 24;
         }
       });
 
@@ -409,7 +405,7 @@ const contenedoresSlice = createSlice({
 
         el.velocidadesSalonProducto.forEach((linea) => {
           if (linea.Linea === el.salonProgramado) {
-            capacidadSalonPorDia = linea.Velocidad * 60 * 24;
+            capacidadSalonPorDia = linea.Velocidad * 24;
           }
         });
 
