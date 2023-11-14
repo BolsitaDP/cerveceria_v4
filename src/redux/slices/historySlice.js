@@ -11,7 +11,7 @@ const historySlice = createSlice({
     cambiosSinNotificar: [],
     editor: "Usuario pruebas BPMco",
     cambios: [],
-    salonSeleccionado: "1AB",
+    salonSeleccionado: "1A",
     destino: null,
   },
   reducers: {

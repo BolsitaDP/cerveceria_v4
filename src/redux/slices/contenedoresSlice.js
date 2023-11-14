@@ -154,9 +154,9 @@ const contenedoresSlice = createSlice({
       action.payload.forEach((salon) => {
         let nombreSalon = salon.Nombre;
         // DELETE
-        if (salon.Nombre === "2L") {
-          nombreSalon = "2LI";
-        }
+        // if (salon.Nombre === "2L") {
+        //   nombreSalon = "2LI";
+        // }
         state.calendario[nombreSalon] = {
           id: salon.Nombre,
           dias: {},
