@@ -167,6 +167,8 @@ const onDragEnd = (
   // Obtenemos las horas disponibles en el dia
   let horasDisponiblesEnElDia = getHorasDisponiblesEnElDia(destino);
 
+  let elementosACopiar = [];
+
   // Creamos variable para validar posteriormente
   let tiempoARestarEnElDia = 0;
 
@@ -355,7 +357,6 @@ const onDragEnd = (
                 if (horasDisponiblesDiaSiguiente <= 0) {
                   return;
                 }
-                let reparticion = [];
 
                 let horasDisponiblesDia = getHorasDisponiblesEnElDia(destino);
 
@@ -465,7 +466,7 @@ const onDragEnd = (
                       elementoArrastradoQuinto.fecha = quintoDia;
                       elementoArrastradoQuinto.salonProgramado = destino[0];
 
-                      reparticion.push({
+                      elementosACopiar.push({
                         elementoArrastradoEditable,
                         elementoArrastradoCopia,
                         elementoArrastradoTercero,
@@ -474,7 +475,7 @@ const onDragEnd = (
                         indexElementoArrastrado: posicionDestino,
                       });
                     } else {
-                      reparticion.push({
+                      elementosACopiar.push({
                         elementoArrastradoEditable,
                         elementoArrastradoCopia,
                         elementoArrastradoTercero,
@@ -483,7 +484,7 @@ const onDragEnd = (
                       });
                     }
                   } else {
-                    reparticion.push({
+                    elementosACopiar.push({
                       elementoArrastradoEditable,
                       elementoArrastradoCopia,
                       elementoArrastradoTercero,
@@ -491,7 +492,7 @@ const onDragEnd = (
                     });
                   }
                 } else {
-                  reparticion.push({
+                  elementosACopiar.push({
                     elementoArrastradoEditable,
                     elementoArrastradoCopia,
                     indexElementoArrastrado: posicionDestino,
@@ -499,7 +500,7 @@ const onDragEnd = (
                 }
 
                 dispatcher("Creación elemento copia", {
-                  reparticion,
+                  elementosACopiar,
                 });
               }
             }

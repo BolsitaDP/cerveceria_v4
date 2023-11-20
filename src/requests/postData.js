@@ -71,7 +71,7 @@ const postData = {
 
   postCrearAccion(body) {
     return peticion.post("AccionController/save", {
-      Id: body.Id,
+      Id: body.Id || body.idDnd,
       duracion: body.duracion,
       estado: body.estado,
       nombreDeLaAccion: body.nombreDeLaAccion,
@@ -96,7 +96,7 @@ const postData = {
 
   postEliminarAcciones(body) {
     return peticion.post("AccionController/delete", {
-      Id: body.Id,
+      Id: body.Id || body.idDnd,
       duracion: body.duracion,
       estado: body.estado,
       nombreDeLaAccion: body.nombreDeLaAccion,

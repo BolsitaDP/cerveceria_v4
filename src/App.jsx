@@ -1,4 +1,4 @@
-import { Box, ThemeProvider } from "@mui/material";
+import { Box, ThemeProvider, Modal } from "@mui/material";
 import "./App.css";
 import { DragDropContext } from "react-beautiful-dnd";
 import Solicitudes from "./components/contenedores/Solicitudes";
@@ -31,6 +31,7 @@ import {
   setDestino,
   setHistorialInicial,
 } from "./redux/slices/historySlice";
+import PreguntarCrearCopia from "./components/modales/PreguntarCrearCopia.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -184,6 +185,10 @@ function App() {
           pauseOnHover
           theme="dark"
         />
+
+        <Modal open={crearCopia} onClose={() => setCrearCopia(false)}>
+          <PreguntarCrearCopia data={data} />
+        </Modal>
       </ThemeProvider>
     </div>
   );

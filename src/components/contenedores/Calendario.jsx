@@ -21,6 +21,8 @@ import ModalDetallesAccion from "../modales/ModalDetallesAccion";
 import EstadisticasDia from "../modales/EstadisticasDia";
 import { deteleAccionCalendario } from "../../redux/slices/contenedoresSlice";
 
+import { toast } from "react-toastify";
+
 const Calendario = () => {
   const theme = useTheme();
 
@@ -120,9 +122,9 @@ const Calendario = () => {
     <Box sx={{ height: "100%" }}>
       <Card variant="contenedor">
         <Card variant="tiulo">
-          {fechasSeleccionadas
+          {fechasSeleccionadas[1]
             ? `Programación del ${fechasSoloDiaMes[0]} al ${fechasSoloDiaMes[6]}`
-            : "Calendario"}
+            : "Selecciona una fecha para continuar"}
 
           <Box sx={{ display: "flex", gap: "20px" }}>
             <Tooltip title="Seleccionar fecha" arrow>
@@ -404,7 +406,13 @@ const Calendario = () => {
 
       <Modal
         open={modalAbierto === "seleccionadorDeFechas"}
-        onClose={() => setModalAbierto(null)}>
+        onClose={() => {
+          if (fechasSeleccionadas[1]) {
+            setModalAbierto(null);
+          } else {
+            toast.error("Debes seleccionar una fecha para continuar");
+          }
+        }}>
         <SeleccionadorDeFechas onClose={() => setModalAbierto(null)} />
       </Modal>
       <Modal
