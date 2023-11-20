@@ -326,8 +326,6 @@ const onDragEnd = (
             elementoArrastradoCopia.cantidad = Math.round(
               cantidadNuevaElementoNuevo
             );
-            elementoArrastradoCopia.codigoNombre =
-              elementoArrastradoCopia.codigoNombre + " 2";
             elementoArrastradoCopia.fecha = diaSiguiente;
 
             // Si el día siguiente ya se creó
@@ -396,8 +394,6 @@ const onDragEnd = (
                     cantidadSegundo >
                   0
                 ) {
-                  let [cod] = elementoArrastradoCopia.codigoNombre.split(" ");
-                  elementoArrastradoTercero.codigoNombre = `${cod} 3`;
                   elementoArrastradoTercero.idDndn = uuid();
                   elementoArrastradoTercero.cantidad =
                     elementoArrastrado.cantidad -
@@ -425,7 +421,6 @@ const onDragEnd = (
                       cuartoDia,
                     ]);
 
-                    elementoArrastradoCuarto.codigoNombre = `${cod} 4`;
                     elementoArrastradoCuarto.idDndn = uuid();
                     elementoArrastradoCuarto.cantidad =
                       elementoArrastrado.cantidad -
@@ -455,7 +450,6 @@ const onDragEnd = (
                       let horasDisponiblesQuintoDia =
                         getHorasDisponiblesEnElDia([destino[0], quintoDia]);
 
-                      elementoArrastradoQuinto.codigoNombre = `${cod} 5`;
                       elementoArrastradoQuinto.idDndn = uuid();
                       elementoArrastradoQuinto.cantidad =
                         elementoArrastrado.cantidad -
