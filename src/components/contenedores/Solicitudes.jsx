@@ -31,7 +31,7 @@ const Solicitudes = () => {
   const theme = useTheme();
 
   const [filtrosVisibles, setFiltrosVisibles] = useState(false);
-  const [ordenamiento, setOrdenamiento] = useState(null);
+  const [ordenamiento, setOrdenamiento] = useState("");
   const [textoFiltro, setTextoFiltro] = useState("");
 
   const [modalAbierto, setModalAbierto] = useState(null);

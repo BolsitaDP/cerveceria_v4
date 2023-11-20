@@ -187,7 +187,10 @@ function App() {
         />
 
         <Modal open={crearCopia} onClose={() => setCrearCopia(false)}>
-          <PreguntarCrearCopia data={data} />
+          <PreguntarCrearCopia
+            data={data}
+            onClose={() => setCrearCopia(false)}
+          />
         </Modal>
       </ThemeProvider>
     </div>

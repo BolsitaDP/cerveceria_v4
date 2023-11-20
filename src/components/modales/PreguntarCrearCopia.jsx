@@ -15,8 +15,11 @@ import {
   creacionMasDeUnaCopia,
 } from "../../redux/slices/contenedoresSlice";
 import { addToHistory } from "../../redux/slices/historySlice";
+import BasicModal from "../MUIComponents/BasicModal";
+import { CardActions, Card, Button, CardContent } from "@mui/material";
+// import { Card, CardActions, Button, CardContent } from "@mui/material";
 
-const PreguntaCrearCopia = ({ responder, data }) => {
+const PreguntaCrearCopia = ({ data, onClose }) => {
   const contenedores = useSelector((state) => state.contenedores);
 
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -25,7 +28,7 @@ const PreguntaCrearCopia = ({ responder, data }) => {
     if (r === "si") {
       crearCopia();
     } else {
-      responder();
+      onClose();
     }
   };
 
@@ -60,61 +63,62 @@ const PreguntaCrearCopia = ({ responder, data }) => {
       const respuestas = await Promise.all(
         elementosParaProcesar.map(async (elementoCopia, index) => {
           console.log(elementoCopia);
+
           try {
-            if (elementoCopia.codigoNombre?.split(" ")[1]) {
-              const respuesta = await postData.postActualizarEstadoCopia(
-                elementoCopia
-              );
-              console.log("Respuesta recibida:", respuesta);
-              numDePeticionesCompletas++;
-              dispatch(
-                addToHistory({
-                  codigo: elementoCopia.codigoNombre,
-                  tipoDeCambio: "Asignación a programación",
-                  valorPrevio: "Solicitudes",
-                  valorNuevo: `${elementoCopia.salonProgramado} ${elementoCopia.fecha}`,
-                  notificado: 0,
-                  fechaDelCambio: fechaActual,
-                  horaDelCambio: horaActual,
-                  propiedad: null,
-                  editor: editorEstado,
-                  id: uuid(),
-                  versionDelCambio: versionEstado,
-                  // orden: posicionDestino,
-                  tipo: "solicitud",
-                  elemento: elementosEnteros[index],
-                })
-              );
+            const respuesta = await postData.postActualizarEstadoCopia(
+              elementoCopia
+            );
+            console.log("Respuesta recibida:", respuesta);
+            numDePeticionesCompletas++;
+            dispatch(
+              addToHistory({
+                codigo: elementoCopia.codigoNombre,
+                tipoDeCambio: "Asignación a programación",
+                valorPrevio: "Solicitudes",
+                valorNuevo: `${elementoCopia.salonProgramado} ${elementoCopia.fecha}`,
+                notificado: 0,
+                fechaDelCambio: fechaActual,
+                horaDelCambio: horaActual,
+                propiedad: null,
+                editor: editorEstado,
+                id: uuid(),
+                versionDelCambio: versionEstado,
+                // orden: posicionDestino,
+                tipo: "solicitud",
+                elemento: elementosEnteros[index],
+              })
+            );
 
-              return respuesta; // Retorna la respuesta para Promise.all
-            } else {
-              const respuesta = await postData.postActualizarEstadoProducto([
-                elementoCopia,
-              ]);
-              console.log("Respuesta recibida:", respuesta);
-              numDePeticionesCompletas++;
+            return respuesta; // Retorna la respuesta para Promise.all
 
-              dispatch(
-                addToHistory({
-                  codigo: elementosEnteros[index].codigoNombre,
-                  tipoDeCambio: "Asignación a programación",
-                  valorPrevio: "Solicitudes",
-                  valorNuevo: `${elementoCopia.salonProgramado} ${elementoCopia.fecha}`,
-                  notificado: 0,
-                  fechaDelCambio: fechaActual,
-                  horaDelCambio: horaActual,
-                  propiedad: null,
-                  editor: editorEstado,
-                  id: uuid(),
-                  versionDelCambio: versionEstado,
-                  // orden: posicionDestino,
-                  tipo: "solicitud",
-                  elemento: elementosEnteros[index],
-                })
-              );
+            // else {
+            //   const respuesta = await postData.postActualizarEstadoProducto([
+            //     elementoCopia,
+            //   ]);
+            //   console.log("Respuesta recibida:", respuesta);
+            //   numDePeticionesCompletas++;
 
-              return elementosEnteros[index];
-            }
+            //   dispatch(
+            //     addToHistory({
+            //       codigo: elementosEnteros[index].codigoNombre,
+            //       tipoDeCambio: "Asignación a programación",
+            //       valorPrevio: "Solicitudes",
+            //       valorNuevo: `${elementoCopia.salonProgramado} ${elementoCopia.fecha}`,
+            //       notificado: 0,
+            //       fechaDelCambio: fechaActual,
+            //       horaDelCambio: horaActual,
+            //       propiedad: null,
+            //       editor: editorEstado,
+            //       id: uuid(),
+            //       versionDelCambio: versionEstado,
+            //       // orden: posicionDestino,
+            //       tipo: "solicitud",
+            //       elemento: elementosEnteros[index],
+            //     })
+            //   );
+
+            //   return elementosEnteros[index];
+            // }
           } catch (error) {
             toast.error(
               `Hubo un error en la creación de solicitudes. ${error}`
@@ -126,11 +130,11 @@ const PreguntaCrearCopia = ({ responder, data }) => {
       if (numDePeticionesCompletas === elementosParaProcesar.length) {
         dispatch(
           creacionMasDeUnaCopia({
-            respuestas,
+            respuestas, //TODO: las respuestas falta enviarlas a clonar, luego settearlas en el calendario
           })
         );
 
-        responder();
+        onClose();
         setLoaderVisible(false);
       }
     } catch (error) {
@@ -142,38 +146,45 @@ const PreguntaCrearCopia = ({ responder, data }) => {
     setLoaderVisible(true);
 
     if (reparticion) {
-      // Luego puedes llamar a esta función con un array de elementos que desees procesar
       let elementosParaProcesar = [];
-
-      Object.values(reparticion[0]).forEach((el) => {
-        if (el.codigoNombre?.split(" ")[1]) {
-          elementosParaProcesar.push({
-            id: el.id,
-            cantidad: el.cantidad,
-            codigoNombre: el.codigoNombre,
-            estado: "Programado",
-            salonProgramado: el.salonProgramado,
-            fecha: el.fecha,
-            orden: 0,
-            velocidadesSalonProducto: el.velocidadesSalonProducto,
-          });
-        } else if (el.codigoNombre) {
-          elementosParaProcesar.push({
-            id: el.id,
-            estado: "Programado",
-            salonProgramado: el.salonProgramado,
-            fecha: el.fecha,
-            orden: el.orden,
-            cantidad: el.cantidad,
-            velocidadesSalonProducto: el.velocidadesSalonProducto,
-          });
-        }
-      });
-
       let elementosEnteros = Object.values(reparticion[0]);
 
-      procesarElementos({ elementosParaProcesar, elementosEnteros });
-      toast(`Se dividió exitosamente la producción`);
+      // Utilizar Promise.all para manejar operaciones asincrónicas
+      Promise.all(
+        elementosEnteros.map((el) =>
+          postData
+            .postActualizarEstadoCopia(el)
+            .then((res) => {
+              let objResuesta = JSON.parse(JSON.stringify(res.data));
+              objResuesta.idDnd = uuid();
+              elementosParaProcesar.push({
+                id: objResuesta.id,
+                estado: "Programado",
+                salonProgramado: objResuesta.salonProgramado,
+                fecha: objResuesta.fecha,
+                orden: objResuesta.orden,
+                cantidad: objResuesta.cantidad,
+                velocidadesSalonProducto: objResuesta.velocidadesSalonProducto,
+              });
+            })
+            .catch((error) => {
+              toast.error(
+                "Ha ocurrido un error creando las copias de la solicitud: " +
+                  error
+              );
+            })
+        )
+      )
+        .then(() => {
+          // Luego de que todas las promesas se resuelven
+          procesarElementos({ elementosParaProcesar, elementosEnteros });
+          toast("Se dividió exitosamente la producción");
+        })
+        .catch((error) => {
+          // Manejar errores generales aquí
+          console.error("Error general:", error);
+          toast.error("Ha ocurrido un error general");
+        });
     } else {
       let [nombre, fecha] = destino[1].split("&");
 
@@ -199,9 +210,9 @@ const PreguntaCrearCopia = ({ responder, data }) => {
         let elementoArrastradoCopiaEditable = JSON.parse(
           JSON.stringify(elementoArrastradoCopia)
         );
-        let [codigoOrg, diferenciador] =
-          elementoArrastradoCopiaEditable.codigoNombre.split(" ");
-        elementoArrastradoCopiaEditable.codigoNombre = `${codigoOrg} ${diferenciador}`;
+        // let [codigoOrg, diferenciador] =
+        //   elementoArrastradoCopiaEditable.codigoNombre.split(" ");
+        // elementoArrastradoCopiaEditable.codigoNombre = `${codigoOrg} ${diferenciador}`;
         elementoArrastradoCopiaEditable.fecha = destinoCopia[1];
         elementoArrastradoCopiaEditable.salonProgramado = destinoCopia[0];
         elementoArrastradoCopiaEditable.idDnd = uuid();
@@ -249,12 +260,12 @@ const PreguntaCrearCopia = ({ responder, data }) => {
           .then((respuesta) => {
             dispatch(
               creacionCopia({
-                elementoArrastradoCopia: respuesta,
+                elementoArrastradoCopia: respuesta.data,
                 elementoOriginal: elementoArrastradoEditable,
               })
             );
 
-            responder();
+            onClose();
             setLoaderVisible(false);
           })
           .catch((error) => {
@@ -298,33 +309,51 @@ const PreguntaCrearCopia = ({ responder, data }) => {
   if (reparticion) {
     let primerElementoArrastrado = reparticion[0].elementoArrastradoEditable;
 
-    let [, salonId] = primerElementoArrastrado.salonProgramado.split("_");
+    let salonId = primerElementoArrastrado.salonProgramado;
 
     return (
-      <div>
-        <div>Información</div>
-        <div>
-          <div>
+      <BasicModal titulo={"Dividir solicitud"}>
+        <Card>
+          <CardContent>
             El elemento que quiere arrastrar supera la cantidad restante del
             salón, ¿desea crear una copia en el salón {salonId} los días
             {/*  eslint-disable-next-line array-callback-return */}
-            {Object.values(reparticion[0]).map((element) => {
+            {Object.values(reparticion[0]).map((element, index, array) => {
               if (typeof element === "object") {
-                let [dia, fecha] = element?.fecha?.split("&");
-                return ` ${dia} ${fecha} `;
+                let [dia] = element?.fecha?.split("&");
+                if (index === array.length - 1) {
+                  return ` y ${dia} `;
+                } else {
+                  return ` ${dia}, `;
+                }
               }
             })}{" "}
             con las cantidades faltantes?
-          </div>
-          <div>
-            <button onClick={() => handleRespuesta("si")}>Sí</button>
-            <button onClick={() => handleRespuesta("no")}>No</button>
-          </div>
-        </div>
-      </div>
+          </CardContent>
+          <CardActions
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => handleRespuesta("si")}>
+              Sí
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => handleRespuesta("no")}>
+              No
+            </Button>
+          </CardActions>
+        </Card>
+      </BasicModal>
     );
   } else {
-    let [, idSalonOriginal] = destino[0].split("_");
+    let idSalonOriginal = destino[0];
 
     let [, fechaCopia] = destinoCopia;
     let [nombreCopia, diaCopia] = fechaCopia.split("&");

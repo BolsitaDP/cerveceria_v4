@@ -383,23 +383,17 @@ const contenedoresSlice = createSlice({
       action.payload.respuestas.forEach((el) => {
         let elEdit = JSON.parse(JSON.stringify(el));
         elEdit.idDnd = uuid();
-        if (el.codigoNombre.split(" ")[1]) {
-          state.calendario[elEdit.salonProgramado].dias[
-            elEdit.fecha
-          ].contenido.push(elEdit);
-        } else {
-          let solIndex = state.solicitudes.findIndex(
-            (x) => x.codigoNombre === el.codigoNombre
-          );
+        let solIndex = state.solicitudes.findIndex(
+          (x) => x.codigoNombre === el.codigoNombre
+        );
 
-          const updatedContenido = [...state.solicitudes];
-          updatedContenido.splice(solIndex, 1);
-          state.solicitudes = updatedContenido;
+        const updatedContenido = [...state.solicitudes];
+        updatedContenido.splice(solIndex, 1);
+        state.solicitudes = updatedContenido;
 
-          state.calendario[elEdit.salonProgramado].dias[
-            elEdit.fecha
-          ].contenido.splice(elEdit.orden, 0, elEdit);
-        }
+        state.calendario[elEdit.salonProgramado].dias[
+          elEdit.fecha
+        ].contenido.splice(elEdit.orden, 0, elEdit);
 
         let capacidadSalonPorDia;
 

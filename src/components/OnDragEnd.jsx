@@ -167,7 +167,7 @@ const onDragEnd = (
   // Obtenemos las horas disponibles en el dia
   let horasDisponiblesEnElDia = getHorasDisponiblesEnElDia(destino);
 
-  let elementosACopiar = [];
+  let reparticion = [];
 
   // Creamos variable para validar posteriormente
   let tiempoARestarEnElDia = 0;
@@ -296,9 +296,6 @@ const onDragEnd = (
         }
         // Si el tiempo a restar es mayor al tiempo disponible
         else {
-          // Obtenemos el día siguiente, nombre y fecha
-          let diaSiguiente = getDiaSiguienteDe(destino);
-
           // Si directamente no hay horas disponibles, se notifica que no hay capacidad
           if (horasDisponiblesEnElDia <= 0) {
             let [dia, fecha] = destino[1].split("&");
@@ -308,196 +305,52 @@ const onDragEnd = (
             return;
           }
 
-          // Si es solicitud y hay algunas horas disponibles
           if (solicitud) {
-            // Se determinan las horas disponbles
-            let horasDeDiferencia =
-              tiempoARestarEnElDia - horasDisponiblesEnElDia;
+            // Obtenemos el día siguiente, nombre y fecha
+            let diaSiguiente = getDiaSiguienteDe(destino);
 
-            //Se calcula la cantidad que haría falta por asignar
-            let cantidadNuevaElementoNuevo =
-              horasDeDiferencia * capacidadSalonPorDia;
+            let salon = destino[0];
 
-            // Creamos un elemento copia y le asignamos la cantidad faltante
-            let elementoArrastradoCopia = JSON.parse(
-              JSON.stringify(elementoArrastrado)
-            );
-            elementoArrastradoCopia.idDnd = uuid();
-            elementoArrastradoCopia.cantidad = Math.round(
-              cantidadNuevaElementoNuevo
-            );
-            elementoArrastradoCopia.fecha = diaSiguiente;
+            let reparticion = [];
 
-            // Si el día siguiente ya se creó
-            if (
-              contenedoresActualizados.calendario[destino[0]].dias[diaSiguiente]
+            let elementoCopia = JSON.parse(JSON.stringify(elementoArrastrado));
+
+            diaSiguiente = destino[1];
+
+            while (
+              elementoCopia.cantidad / capacidadSalonPorDia >
+              horasDisponiblesEnElDia
             ) {
-              let horasDisponiblesDiaSiguiente = getHorasDisponiblesEnElDia([
-                destino[0],
+              reparticion.push({
+                ...elementoCopia,
+                cantidad: capacidadSalonPorDia * horasDisponiblesEnElDia,
+                fecha: diaSiguiente,
+                salonProgramado: salon,
+                idDnd: uuid(),
+              });
+
+              elementoCopia.cantidad -=
+                capacidadSalonPorDia * horasDisponiblesEnElDia;
+
+              horasDisponiblesEnElDia = getHorasDisponiblesEnElDia([
+                salon,
                 diaSiguiente,
               ]);
-
-              let tiempoARestarElementoArrastradoCopia =
-                elementoArrastradoCopia.cantidad / capacidadSalonPorDia;
-
-              if (
-                horasDisponiblesDiaSiguiente >=
-                tiempoARestarElementoArrastradoCopia
-              ) {
-                dispatcher("Creación elemento copia", {
-                  elementoArrastrado,
-                  elementoArrastradoCopia,
-                  destino,
-                  destinoCopia: [destino[0], diaSiguiente],
-                  indexElementoArrastrado: posicionDestino,
-                });
-              } else {
-                if (horasDisponiblesDiaSiguiente <= 0) {
-                  return;
-                }
-
-                let horasDisponiblesDia = getHorasDisponiblesEnElDia(destino);
-
-                let cantidadPrimero =
-                  horasDisponiblesDia * capacidadSalonPorDia;
-
-                let elementoArrastradoEditable = JSON.parse(
-                  JSON.stringify(elementoArrastrado)
-                );
-
-                elementoArrastradoEditable.fecha = destino[1];
-                elementoArrastradoEditable.salonProgramado = destino[0];
-                elementoArrastradoEditable.cantidad = cantidadPrimero;
-                elementoArrastradoEditable.orden = posicionDestino;
-
-                let cantidadSegundo =
-                  horasDisponiblesDiaSiguiente * capacidadSalonPorDia;
-
-                elementoArrastradoCopia.cantidad = cantidadSegundo;
-                elementoArrastradoCopia.fecha = diaSiguiente;
-                elementoArrastradoCopia.idDndn = uuid();
-                elementoArrastradoCopia.salonProgramado = destino[0];
-
-                let elementoArrastradoTercero = JSON.parse(
-                  JSON.stringify(elementoArrastradoCopia)
-                );
-
-                let tercerDia = getDiaSiguienteDe([destino[0], diaSiguiente]);
-                let horasDisponiblesTercerDia = getHorasDisponiblesEnElDia([
-                  destino[0],
-                  tercerDia,
-                ]);
-
-                if (
-                  elementoArrastrado.cantidad -
-                    cantidadPrimero -
-                    cantidadSegundo >
-                  0
-                ) {
-                  elementoArrastradoTercero.idDndn = uuid();
-                  elementoArrastradoTercero.cantidad =
-                    elementoArrastrado.cantidad -
-                    cantidadPrimero -
-                    cantidadSegundo;
-                  elementoArrastradoTercero.fecha = tercerDia;
-                  elementoArrastradoTercero.salonProgramado = destino[0];
-
-                  if (
-                    elementoArrastradoTercero.cantidad / capacidadSalonPorDia >
-                    horasDisponiblesTercerDia
-                  ) {
-                    let cantidadTercero =
-                      capacidadSalonPorDia * horasDisponiblesTercerDia;
-
-                    elementoArrastradoTercero.cantidad = cantidadTercero;
-
-                    let elementoArrastradoCuarto = JSON.parse(
-                      JSON.stringify(elementoArrastradoTercero)
-                    );
-
-                    let cuartoDia = getDiaSiguienteDe([destino[0], tercerDia]);
-                    let horasDisponiblesCuartoDia = getHorasDisponiblesEnElDia([
-                      destino[0],
-                      cuartoDia,
-                    ]);
-
-                    elementoArrastradoCuarto.idDndn = uuid();
-                    elementoArrastradoCuarto.cantidad =
-                      elementoArrastrado.cantidad -
-                      cantidadPrimero -
-                      cantidadSegundo -
-                      cantidadTercero;
-                    elementoArrastradoCuarto.fecha = cuartoDia;
-                    elementoArrastradoCuarto.salonProgramado = destino[0];
-
-                    if (
-                      elementoArrastradoCuarto.cantidad / capacidadSalonPorDia >
-                      horasDisponiblesCuartoDia
-                    ) {
-                      let cantidadCuarto =
-                        capacidadSalonPorDia * horasDisponiblesCuartoDia;
-
-                      elementoArrastradoCuarto.cantidad = cantidadCuarto;
-
-                      let elementoArrastradoQuinto = JSON.parse(
-                        JSON.stringify(elementoArrastradoCuarto)
-                      );
-
-                      let quintoDia = getDiaSiguienteDe([
-                        destino[0],
-                        cuartoDia,
-                      ]);
-                      let horasDisponiblesQuintoDia =
-                        getHorasDisponiblesEnElDia([destino[0], quintoDia]);
-
-                      elementoArrastradoQuinto.idDndn = uuid();
-                      elementoArrastradoQuinto.cantidad =
-                        elementoArrastrado.cantidad -
-                        cantidadPrimero -
-                        cantidadSegundo -
-                        cantidadTercero -
-                        cantidadCuarto;
-                      elementoArrastradoQuinto.fecha = quintoDia;
-                      elementoArrastradoQuinto.salonProgramado = destino[0];
-
-                      elementosACopiar.push({
-                        elementoArrastradoEditable,
-                        elementoArrastradoCopia,
-                        elementoArrastradoTercero,
-                        elementoArrastradoCuarto,
-                        elementoArrastradoQuinto,
-                        indexElementoArrastrado: posicionDestino,
-                      });
-                    } else {
-                      elementosACopiar.push({
-                        elementoArrastradoEditable,
-                        elementoArrastradoCopia,
-                        elementoArrastradoTercero,
-                        elementoArrastradoCuarto,
-                        indexElementoArrastrado: posicionDestino,
-                      });
-                    }
-                  } else {
-                    elementosACopiar.push({
-                      elementoArrastradoEditable,
-                      elementoArrastradoCopia,
-                      elementoArrastradoTercero,
-                      indexElementoArrastrado: posicionDestino,
-                    });
-                  }
-                } else {
-                  elementosACopiar.push({
-                    elementoArrastradoEditable,
-                    elementoArrastradoCopia,
-                    indexElementoArrastrado: posicionDestino,
-                  });
-                }
-
-                dispatcher("Creación elemento copia", {
-                  elementosACopiar,
-                });
-              }
+              diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
             }
+
+            reparticion.push({
+              ...elementoCopia,
+              fecha: diaSiguiente,
+              salonProgramado: salon,
+              idDnd: uuid(),
+            });
+
+            console.log(reparticion);
+
+            dispatcher("Creación elemento copia", {
+              reparticion,
+            });
           }
           // Si es acción y se está intentando asignar a un día sin la capacidad necesaria.
           else {
