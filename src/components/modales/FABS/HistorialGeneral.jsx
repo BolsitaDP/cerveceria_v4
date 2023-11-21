@@ -43,7 +43,7 @@ const HistorialGeneral = () => {
       flex: 1,
       minWidth: 200,
       renderCell: ({ row }) => {
-        if (row.valorPrevio) {
+        if (row.valorPrevio && typeof row.valorPrevio !== "object") {
           let fecha = row.valorPrevio?.split("&");
           if (fecha[1]) {
             let [, dia] = fecha[0].split(" ");
@@ -62,6 +62,9 @@ const HistorialGeneral = () => {
           } else if (row.valorPrevio.indexOf("000Z") !== -1) {
             return moment(row.valorPrevio).utc().format("DD-MM-YYYY");
           }
+        } else if (typeof row.valorPrevio === "object") {
+          let fechaMoment = moment(row.valorPrevio.$d);
+          return fechaMoment.format("DD/MM/YYYY");
         }
       },
     },
@@ -71,7 +74,7 @@ const HistorialGeneral = () => {
       flex: 1,
       minWidth: 200,
       renderCell: ({ row }) => {
-        if (row.valorNuevo) {
+        if (row.valorNuevo && typeof row.valorNuevo !== "object") {
           let fecha = row.valorNuevo?.split("&");
           if (fecha[1]) {
             let [, dia] = fecha[0].split(" ");
@@ -90,6 +93,9 @@ const HistorialGeneral = () => {
           } else if (row.valorNuevo.indexOf("000Z") !== -1) {
             return moment(row.valorNuevo).utc().format("DD-MM-YYYY");
           }
+        } else if (typeof row.valorNuevo === "object") {
+          let fechaMoment = moment(row.valorNuevo.$d);
+          return fechaMoment.format("DD/MM/YYYY");
         }
       },
     },

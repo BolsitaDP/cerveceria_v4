@@ -33,6 +33,11 @@ import {
 } from "./redux/slices/historySlice";
 import PreguntarCrearCopia from "./components/modales/PreguntarCrearCopia.jsx";
 
+import dayjs from "dayjs";
+import { es } from "dayjs/locale/es";
+
+dayjs.locale("es");
+
 function App() {
   const dispatch = useDispatch();
 

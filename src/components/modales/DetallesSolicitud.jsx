@@ -33,7 +33,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
 
   // Crea un objeto de fecha con la fecha parseada
 
-  const [fechaRequeridoPara, setFechaRequeridoPara] = useState(null);
+  const [fechaRequeridoPara, setFechaRequeridoPara] = useState(
+    solicitudAbierta.fechaRequiere
+  );
   const [observacionesInput, setObservacionesInput] = useState(
     solicitudAbierta.observaciones
   );
@@ -56,15 +58,15 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
 
   const solicitudEditada = JSON.parse(JSON.stringify(solicitudAbierta));
 
-  const formatoFecha = "DD/MM/YYYY";
+  // const formatoFecha = "DD/MM/YYYY";
 
-  console.log(dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha }));
+  // console.log(dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha }));
 
-  useEffect(() => {
-    setFechaRequeridoPara(
-      dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha })
-    );
-  }, []);
+  // useEffect(() => {
+  //   setFechaRequeridoPara(
+  //     dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha })
+  //   );
+  // }, []);
 
   console.log(fechaRequeridoPara);
   console.log(fechaRequeridoPara);
@@ -150,31 +152,34 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   };
 
   useEffect(() => {
-    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
-    let editedProperty = {
-      codigo: solicitudAbierta.codigoNombre,
-      tipoDeCambio: "Propiedad",
-      propiedad: "reqPara",
-      valorPrevio: dayjs(solicitudAbierta.fechaRequiere),
-      valorNuevo: fechaRequeridoPara,
-      notificado: 0,
-      fechaDelCambio: fechaActual,
-      horaDelCambio: horaActual,
-      versionDelCambio: versionEstado,
-      editor: editorEstado,
-    };
-    // if (solicitudAbierta.fechaRequiere !== solicitudEditada.fechaRequiere) {
-    dispatch(addToHistory(editedProperty));
-    // }
+    if (
+      (valorPrevio || solicitudAbierta.fechaRequiere) !== fechaRequeridoPara
+    ) {
+      let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+      let editedProperty = {
+        codigo: solicitudAbierta.codigoNombre,
+        tipoDeCambio: "Propiedad",
+        propiedad: "reqPara",
+        valorPrevio: solicitudAbierta.fechaRequiere,
+        valorNuevo: fechaRequeridoPara,
+        notificado: 0,
+        fechaDelCambio: fechaActual,
+        horaDelCambio: horaActual,
+        versionDelCambio: versionEstado,
+        editor: editorEstado,
+      };
+      // if (solicitudAbierta.fechaRequiere !== solicitudEditada.fechaRequiere) {
+      dispatch(addToHistory(editedProperty));
+      // }
 
-    solicitudEditada.fechaRequiere = fechaRequeridoPara;
-    // if (destino && destino[1]) {
-    //   solicitudEditada.fecha = destino[1];
-    //   solicitudEditada.salonProgramado = destino[0];
-    // }
+      solicitudEditada.fechaRequiere = fechaRequeridoPara;
+      // if (destino && destino[1]) {
+      //   solicitudEditada.fecha = destino[1];
+      //   solicitudEditada.salonProgramado = destino[0];
+      // }
 
-    dispatch(updatePropiedadesSolicitud(solicitudEditada));
-
+      dispatch(updatePropiedadesSolicitud(solicitudEditada));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fechaRequeridoPara]);
 
@@ -407,7 +412,10 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
             value={fechaRequeridoPara}
             onBlur={handleBlurred}
             variant="standard"
-            onChange={(newValue) => setFechaRequeridoPara(newValue)}
+            onChange={(newValue) => {
+              setValorPrevio(fechaRequeridoPara);
+              setFechaRequeridoPara(newValue);
+            }}
           />
         </LocalizationProvider>
 

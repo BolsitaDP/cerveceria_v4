@@ -5,6 +5,7 @@ import postData from "../../requests/postData";
 import { toast } from "react-toastify";
 import obtenerDiaSiguienteNombre from "../../helpers/obtenerDiaSiguienteNombre";
 import obtenerDiaSiguienteFecha from "../../helpers/obtenerDiaSiguienteFecha";
+import dayjs from "dayjs";
 
 const contenedoresSlice = createSlice({
   name: "contenedores",
@@ -19,6 +20,12 @@ const contenedoresSlice = createSlice({
       action.payload.forEach((solicitud) => {
         solicitud.idDnd = uuid();
         state.solicitudes.push(solicitud);
+        if (solicitud.fechaRequiere?.indexOf("000Z") === -1) {
+          let [dia, mes, anio] = solicitud.fechaRequiere.split("/");
+          let fechaJs = new Date(anio, mes - 1, dia);
+          let fechaDayJs = dayjs(fechaJs);
+          solicitud.fechaRequiere = fechaDayJs;
+        }
       });
     },
     setSolicitudes: (state, action) => {
