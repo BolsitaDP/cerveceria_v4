@@ -64,7 +64,7 @@ const HistorialGeneral = () => {
           }
         } else if (typeof row.valorPrevio === "object") {
           let fechaMoment = moment(row.valorPrevio.$d);
-          return fechaMoment.format("DD/MM/YYYY");
+          return fechaMoment.format("DD-MM-YYYY");
         }
       },
     },
@@ -95,7 +95,7 @@ const HistorialGeneral = () => {
           }
         } else if (typeof row.valorNuevo === "object") {
           let fechaMoment = moment(row.valorNuevo.$d);
-          return fechaMoment.format("DD/MM/YYYY");
+          return fechaMoment.format("DD-MM-YYYY");
         }
       },
     },
@@ -117,18 +117,18 @@ const HistorialGeneral = () => {
       flex: 1,
       minWidth: 100,
     },
-    {
-      field: "version",
-      headerName: "Versión",
-      flex: 1,
-      minWidth: 100,
-    },
-    {
-      field: "estado",
-      headerName: "Estado",
-      flex: 1,
-      minWidth: 100,
-    },
+    // {
+    //   field: "version",
+    //   headerName: "Versión",
+    //   flex: 1,
+    //   minWidth: 100,
+    // },
+    // {
+    //   field: "estado",
+    //   headerName: "Estado",
+    //   flex: 1,
+    //   minWidth: 100,
+    // },
   ];
 
   return (
