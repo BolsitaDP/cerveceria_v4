@@ -25,10 +25,10 @@ const FABS = [
     icon: <PictureAsPdfRoundedIcon />,
     tooltip: "PDF",
   },
-  // {
-  //   icon: <AssessmentRoundedIcon />,
-  //   tooltip: "Reportes",
-  // },
+  {
+    icon: <AssessmentRoundedIcon />,
+    tooltip: "Reportes por productos",
+  },
   // {
   //   icon: <DonutLargeRoundedIcon />,
   //   tooltip: "Programado y producido",
@@ -121,7 +121,7 @@ const MUIFloatingButton = () => {
       </Modal>
 
       <Modal
-        open={modalAbierto === "Reportes"}
+        open={modalAbierto === "Reportes por productos"}
         onClose={() => setModalAbierto(null)}>
         <Reportes />
       </Modal>

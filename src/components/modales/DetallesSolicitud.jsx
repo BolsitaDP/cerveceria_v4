@@ -68,9 +68,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   //   );
   // }, []);
 
-  console.log(fechaRequeridoPara);
-  console.log(fechaRequeridoPara);
-  console.log(dayjs(solicitudAbierta.fechaRequiere));
+  // console.log(fechaRequeridoPara);
+  // console.log(fechaRequeridoPara);
+  // console.log(dayjs(solicitudAbierta.fechaRequiere));
 
   const handleCantidadChange = (e) => {
     let { value } = e.target;
@@ -406,10 +406,10 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
           variant="standard"
         />
 
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             label="Requerido para"
-            value={fechaRequeridoPara}
+            value={dayjs(fechaRequeridoPara)}
             onBlur={handleBlurred}
             variant="standard"
             onChange={(newValue) => {

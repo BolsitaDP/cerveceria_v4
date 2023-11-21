@@ -28,8 +28,8 @@ const CrearAccion = () => {
   const theme = useTheme();
 
   const [textoNombre, setTextoNombre] = useState("");
-  const [minutosAccion, setMinutosAccion] = useState(null);
-  const [tipoAccion, setTipoAccion] = useState(null);
+  const [minutosAccion, setMinutosAccion] = useState("");
+  const [tipoAccion, setTipoAccion] = useState("");
 
   const handleChangeTextoNombre = (e) => {
     setTextoNombre(e.target.value);
