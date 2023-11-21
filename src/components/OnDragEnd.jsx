@@ -333,7 +333,7 @@ const onDragEnd = (
               diaSiguiente,
             ]);
 
-            diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
+            // diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
 
             while (
               elementoCopia.cantidad / capacidadSalonPorDia >
@@ -353,11 +353,12 @@ const onDragEnd = (
                 capacidadSalonPorDia * horasDisponiblesEnElDia
               );
 
+              diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
+
               horasDisponiblesEnElDia = getHorasDisponiblesEnElDia([
                 salon,
                 diaSiguiente,
               ]);
-              diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
             }
 
             reparticion.push({

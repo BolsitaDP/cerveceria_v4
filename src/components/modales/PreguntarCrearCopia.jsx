@@ -180,9 +180,8 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
 
     // -------------
   };
-  let primerElementoArrastrado = reparticion[0].elementoArrastradoEditable;
 
-  let salonId = primerElementoArrastrado.salonProgramado;
+  let salonId = reparticion[0].salonProgramado;
 
   return (
     <BasicModal titulo={"Dividir solicitud"}>
@@ -191,7 +190,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
           El elemento que quiere arrastrar supera la cantidad restante del
           salón, ¿desea crear una copia en el salón {salonId} los días
           {/*  eslint-disable-next-line array-callback-return */}
-          {Object.values(reparticion[0]).map((element, index, array) => {
+          {reparticion.map((element, index, array) => {
             if (typeof element === "object") {
               let [dia] = element?.fecha?.split("&");
               if (index === array.length - 1) {
