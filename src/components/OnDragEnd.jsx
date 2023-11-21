@@ -315,7 +315,25 @@ const onDragEnd = (
 
             let elementoCopia = JSON.parse(JSON.stringify(elementoArrastrado));
 
-            diaSiguiente = destino[1];
+            reparticion.push({
+              ...elementoCopia,
+              cantidad: Math.round(
+                capacidadSalonPorDia * horasDisponiblesEnElDia
+              ),
+              fecha: destino[1],
+              salonProgramado: salon,
+              idDnd: uuid(),
+            });
+
+            elementoCopia.cantidad -=
+              capacidadSalonPorDia * horasDisponiblesEnElDia;
+
+            horasDisponiblesEnElDia = getHorasDisponiblesEnElDia([
+              salon,
+              diaSiguiente,
+            ]);
+
+            diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
 
             while (
               elementoCopia.cantidad / capacidadSalonPorDia >
@@ -323,14 +341,17 @@ const onDragEnd = (
             ) {
               reparticion.push({
                 ...elementoCopia,
-                cantidad: capacidadSalonPorDia * horasDisponiblesEnElDia,
+                cantidad: Math.round(
+                  capacidadSalonPorDia * horasDisponiblesEnElDia
+                ),
                 fecha: diaSiguiente,
                 salonProgramado: salon,
                 idDnd: uuid(),
               });
 
-              elementoCopia.cantidad -=
-                capacidadSalonPorDia * horasDisponiblesEnElDia;
+              elementoCopia.cantidad -= Math.round(
+                capacidadSalonPorDia * horasDisponiblesEnElDia
+              );
 
               horasDisponiblesEnElDia = getHorasDisponiblesEnElDia([
                 salon,
@@ -354,7 +375,7 @@ const onDragEnd = (
           }
           // Si es acción y se está intentando asignar a un día sin la capacidad necesaria.
           else {
-            toast("La capacidad del salón está llena este día");
+            toast.warn("La capacidad del salón está llena este día");
 
             return;
           }
