@@ -1,0 +1,4 @@
+Al cambiar cantidades hay errores
+El tema de la fecha es un error en sí mismo
+Necesito poder eliminar solicitudes
+Las acciones al crearse se tienen que devolver y de allí crearlas en el DOM

@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import BasicModal from "../MUIComponents/BasicModal";
 import { BarChart } from "@mui/x-charts";
+import { Box } from "@mui/material";
 
 const EstadisticasSalon = ({ estadisticasSalon }) => {
   const contenedoresEstado = useSelector((state) => state.contenedores);
@@ -47,13 +48,15 @@ const EstadisticasSalon = ({ estadisticasSalon }) => {
 
   return (
     <BasicModal titulo={"Estadísticas del salón " + estadisticasSalon}>
-      <BarChart
-        xAxis={[{ scaleType: "band", data: labelsXAxis }]}
-        series={[{ data: solicitudes }]}
-        width={800}
-        height={300}
-        colors={["#007aff"]}
-      />
+      <Box sx={{ width: "100%", height: "100%", padding: "20px" }}>
+        <BarChart
+          xAxis={[{ scaleType: "band", data: labelsXAxis }]}
+          series={[{ data: solicitudes }]}
+          width={800}
+          height={300}
+          colors={["#007aff"]}
+        />
+      </Box>
     </BasicModal>
   );
 };
