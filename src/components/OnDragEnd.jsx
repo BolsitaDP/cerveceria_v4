@@ -373,6 +373,8 @@ const onDragEnd = (
             dispatcher("Creación elemento copia", {
               reparticion,
             });
+
+            // TODO: Eliminar el elementoArrastrado, ya que se crearon copias a partir de este y el original se puede eliminar
           }
           // Si es acción y se está intentando asignar a un día sin la capacidad necesaria.
           else {

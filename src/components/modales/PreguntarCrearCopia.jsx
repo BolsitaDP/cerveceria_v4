@@ -44,93 +44,29 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
 
   // ---------------------------
 
-  async function procesarElementos({
-    elementosParaProcesar,
-    elementosEnteros,
-  }) {
-    let numDePeticionesCompletas = 0;
-    let fechaHoraActual = getFechaHoraActual();
-    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
-
+  async function procesarElementos(elementosParaProcesar) {
     try {
-      const respuestas = await Promise.all(
+      await Promise.all(
         elementosParaProcesar.map(async (elementoCopia, index) => {
-          console.log(elementoCopia);
-
           try {
-            const respuesta = await postData.postActualizarEstadoCopia(
-              elementoCopia
-            );
-            console.log("Respuesta recibida:", respuesta);
-            numDePeticionesCompletas++;
-            dispatch(
-              addToHistory({
-                codigo: elementoCopia.codigoNombre,
-                tipoDeCambio: "Asignación a programación",
-                valorPrevio: "Solicitudes",
-                valorNuevo: `${elementoCopia.salonProgramado} ${elementoCopia.fecha}`,
-                notificado: 0,
-                fechaDelCambio: fechaActual,
-                horaDelCambio: horaActual,
-                propiedad: null,
-                editor: editorEstado,
-                id: uuid(),
-                versionDelCambio: versionEstado,
-                // orden: posicionDestino,
-                tipo: "solicitud",
-                elemento: elementosEnteros[index],
-              })
-            );
+            const respuesta = await postData.postActualizarEstadoProducto([
+              elementoCopia,
+            ]);
 
+            console.log(respuesta);
             return respuesta; // Retorna la respuesta para Promise.all
-
-            // else {
-            //   const respuesta = await postData.postActualizarEstadoProducto([
-            //     elementoCopia,
-            //   ]);
-            //   console.log("Respuesta recibida:", respuesta);
-            //   numDePeticionesCompletas++;
-
-            //   dispatch(
-            //     addToHistory({
-            //       codigo: elementosEnteros[index].codigoNombre,
-            //       tipoDeCambio: "Asignación a programación",
-            //       valorPrevio: "Solicitudes",
-            //       valorNuevo: `${elementoCopia.salonProgramado} ${elementoCopia.fecha}`,
-            //       notificado: 0,
-            //       fechaDelCambio: fechaActual,
-            //       horaDelCambio: horaActual,
-            //       propiedad: null,
-            //       editor: editorEstado,
-            //       id: uuid(),
-            //       versionDelCambio: versionEstado,
-            //       // orden: posicionDestino,
-            //       tipo: "solicitud",
-            //       elemento: elementosEnteros[index],
-            //     })
-            //   );
-
-            //   return elementosEnteros[index];
-            // }
           } catch (error) {
             toast.error(
               `Hubo un error en la creación de solicitudes. ${error}`
             );
           }
         })
-      );
-
-      if (numDePeticionesCompletas === elementosParaProcesar.length) {
-        dispatch(
-          creacionMasDeUnaCopia({
-            respuestas, //TODO: las respuestas falta enviarlas a clonar, luego settearlas en el calendario
-          })
-        );
-
+      ).then(() => {
         onClose();
         setLoaderVisible(false);
-      }
+      });
     } catch (error) {
+      console.log(error);
       toast(`Hubo un error en la creación de solicitudes. ${error}`);
     }
   }
@@ -139,11 +75,14 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
     setLoaderVisible(true);
 
     let elementosParaProcesar = [];
-    let elementosEnteros = Object.values(reparticion[0]);
+    let copias = [];
+
+    let fechaHoraActual = getFechaHoraActual();
+    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
 
     // Utilizar Promise.all para manejar operaciones asincrónicas
     Promise.all(
-      elementosEnteros.map((el) =>
+      reparticion.map((el) =>
         postData
           .postActualizarEstadoCopia(el)
           .then((res) => {
@@ -158,6 +97,27 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
               cantidad: objResuesta.cantidad,
               velocidadesSalonProducto: objResuesta.velocidadesSalonProducto,
             });
+
+            dispatch(
+              addToHistory({
+                codigo: objResuesta.codigoNombre,
+                tipoDeCambio: "Asignación a programación",
+                valorPrevio: "Solicitudes",
+                valorNuevo: `${objResuesta.salonProgramado} ${objResuesta.fecha}`,
+                notificado: 0,
+                fechaDelCambio: fechaActual,
+                horaDelCambio: horaActual,
+                propiedad: null,
+                editor: editorEstado,
+                id: uuid(),
+                versionDelCambio: versionEstado,
+                // orden: posicionDestino,
+                tipo: "solicitud",
+                elemento: objResuesta,
+              })
+            );
+
+            copias.push(objResuesta);
           })
           .catch((error) => {
             toast.error(
@@ -168,15 +128,17 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
       )
     )
       .then(() => {
+        console.log(elementosParaProcesar);
         // Luego de que todas las promesas se resuelven
-        procesarElementos({ elementosParaProcesar, elementosEnteros });
+        procesarElementos(elementosParaProcesar);
+        dispatch(creacionMasDeUnaCopia(copias));
+
         toast("Se dividió exitosamente la producción");
       })
       .catch((error) => {
-        // Manejar errores generales aquí
-        console.error("Error general:", error);
-        toast.error("Ha ocurrido un error general");
-      });
+        toast.error("Ha ocurrido un error " + error);
+      })
+      .finally(() => onClose());
 
     // -------------
   };
