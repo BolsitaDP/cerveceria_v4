@@ -69,6 +69,10 @@ const Reportes = () => {
     setElementosEnGrid(newRows);
   };
 
+  useEffect(() => {
+    handleChangeProduct(productoABuscar);
+  }, [productoABuscar]);
+
   console.log(elementosEnGrid);
 
   let columns = [

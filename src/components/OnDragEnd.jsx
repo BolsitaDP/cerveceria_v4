@@ -361,20 +361,21 @@ const onDragEnd = (
               ]);
             }
 
-            reparticion.push({
-              ...elementoCopia,
-              fecha: diaSiguiente,
-              salonProgramado: salon,
-              idDnd: uuid(),
-            });
-
-            console.log(reparticion);
+            if (elementoCopia.cantidad > 0) {
+              reparticion.push({
+                ...elementoCopia,
+                fecha: diaSiguiente,
+                salonProgramado: salon,
+                idDnd: uuid(),
+              });
+            }
 
             dispatcher("Creación elemento copia", {
               reparticion,
             });
 
             // TODO: Eliminar el elementoArrastrado, ya que se crearon copias a partir de este y el original se puede eliminar
+            // TODO: ¿Qué pasa cuando supera el domingo? Hacer que se asigne a día no creado aún
           }
           // Si es acción y se está intentando asignar a un día sin la capacidad necesaria.
           else {
