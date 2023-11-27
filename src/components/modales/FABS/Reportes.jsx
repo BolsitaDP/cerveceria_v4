@@ -46,8 +46,6 @@ const Reportes = () => {
   });
 
   const handleChangeProduct = (newValue) => {
-    console.log(newValue);
-
     let newRows = [];
 
     Object.values(contenedoresEstado.calendario).forEach((salon) => {
@@ -65,15 +63,13 @@ const Reportes = () => {
       });
     });
 
-    // TODO: El valor se settea en dos ticks, quizá haciendo que la lectura y discriminación se haga desde arriba (?)
     setElementosEnGrid(newRows);
   };
 
   useEffect(() => {
     handleChangeProduct(productoABuscar);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productoABuscar]);
-
-  console.log(elementosEnGrid);
 
   let columns = [
     {
