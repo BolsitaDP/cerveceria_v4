@@ -99,7 +99,9 @@ const Calendario = () => {
   if (fechasSeleccionadas[1]) {
     Object.values(salones[salonSeleccionadoEstado].dias).forEach(
       (dia, index) => {
-        porcentajesDeOcupacion.push(100 - Math.round(dia.horas * (100 / 24)));
+        if (fechasSeleccionadas.includes(dia.fecha)) {
+          porcentajesDeOcupacion.push(100 - Math.round(dia.horas * (100 / 24)));
+        }
       }
     );
   }

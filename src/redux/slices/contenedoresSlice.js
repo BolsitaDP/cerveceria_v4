@@ -20,7 +20,7 @@ const contenedoresSlice = createSlice({
       action.payload.forEach((solicitud) => {
         solicitud.idDnd = uuid();
         state.solicitudes.push(solicitud);
-        if (solicitud.fechaRequiere?.indexOf("000Z") === -1) {
+        if (solicitud.fechaRequiere?.indexOf("000Z") !== -1) {
           let [dia, mes, anio] = solicitud.fechaRequiere.split("/");
           let fechaJs = new Date(anio, mes - 1, dia);
           let fechaDayJs = dayjs(fechaJs);
@@ -42,9 +42,6 @@ const contenedoresSlice = createSlice({
         let salon = solicitud.salonProgramado;
         solicitud.idDnd = uuid();
         state.calendario[salon].dias[fecha]?.contenido?.push(solicitud);
-
-        console.log(fecha);
-        console.log(salon);
 
         let capacidadSalon;
         solicitud.velocidadesSalonProducto.forEach((linea) => {
