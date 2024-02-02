@@ -22,7 +22,9 @@ const EstadisticasSalon = ({ estadisticasSalon }) => {
 
   let solicitudes = Array(7).fill(0);
 
-  fechasSeleccionadas.forEach((fecha, index) => {
+  let sieteDias = fechasSeleccionadas.slice(0, 7);
+
+  sieteDias.forEach((fecha, index) => {
     diasContenido.forEach((dia) => {
       if (dia.fecha === fecha) {
         let cantidadDia = 0;
@@ -32,7 +34,7 @@ const EstadisticasSalon = ({ estadisticasSalon }) => {
           }
         });
 
-        const index = fechasSeleccionadas.indexOf(dia.fecha);
+        const index = sieteDias.indexOf(dia.fecha);
         if (index !== -1) {
           solicitudes[index] += parseInt(cantidadDia);
         }
