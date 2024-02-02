@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useSelector } from "react-redux";
-import { DataGrid, esES } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 
 const Reportes = () => {
   const [productoABuscar, setProductoABuscar] = useState([]);
@@ -30,9 +30,11 @@ const Reportes = () => {
 
   let productosNombres = [];
 
+  let sieteDias = fechasSeleccionadas.slice(0, 7);
+
   Object.values(contenedoresEstado.calendario).forEach((salon) => {
     Object.values(salon.dias).forEach((dia) => {
-      if (fechasSeleccionadas.includes(dia.fecha)) {
+      if (sieteDias.includes(dia.fecha)) {
         if (dia.contenido.length > 0) {
           let contenidoDia = dia.contenido;
           contenidoDia.forEach((el) => {
@@ -50,7 +52,7 @@ const Reportes = () => {
 
     Object.values(contenedoresEstado.calendario).forEach((salon) => {
       Object.values(salon.dias).forEach((dia) => {
-        if (fechasSeleccionadas.includes(dia.fecha)) {
+        if (sieteDias.includes(dia.fecha)) {
           if (dia.contenido.length > 0) {
             let contenidoDia = dia.contenido;
             contenidoDia.forEach((el) => {
@@ -142,6 +144,7 @@ const Reportes = () => {
         }}>
         <Box sx={{ flexGrow: 1, width: "100%" }}>
           <DataGrid
+            slots={{ toolbar: GridToolbar }}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             rows={elementosEnGrid}
             pageSizeOptions={[10]}

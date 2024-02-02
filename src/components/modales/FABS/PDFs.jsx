@@ -27,6 +27,8 @@ const PDFs = () => {
     (state) => state.history.salonSeleccionado
   );
 
+  let sieteDias = fechasSeleccionadas.slice(0, 7);
+
   const handleChangeTipoDeReporte = (e) => {
     if (e.target.value !== "Diario") {
       setDiasSeleccionado([]);
@@ -101,7 +103,7 @@ const PDFs = () => {
           let diasDelSalon =
             contenedoresEstado.calendario[salonSeleccionadoEstado].dias;
           Object.values(diasDelSalon).forEach((diaDelSalon) => {
-            fechasSeleccionadas.forEach((fecha) => {
+            sieteDias.forEach((fecha) => {
               if (diaDelSalon.fecha === fecha) {
                 let cont = diaDelSalon.contenido;
                 cont.forEach((c) => {
@@ -119,7 +121,7 @@ const PDFs = () => {
     salonesSeleccionados.forEach((salon) => {
       Object.values(contenedoresEstado.calendario[salon].dias).forEach(
         (dia) => {
-          fechasSeleccionadas.forEach((fecha) => {
+          sieteDias.forEach((fecha) => {
             if (dia.fecha === fecha) {
               let cont = dia.contenido;
               cont.forEach((c) => {
