@@ -268,16 +268,16 @@ const contenedoresSlice = createSlice({
       }
     },
     updatePropiedadesSolicitud: (state, action) => {
-      const { codigoNombre } = action.payload;
+      const { codigoNombre, id } = action.payload;
       state.solicitudes = state.solicitudes.map((solicitud) => {
-        if (solicitud.codigoNombre === codigoNombre) {
+        if (solicitud.id === id) {
           return action.payload;
         }
         return solicitud;
       });
 
       let solicitudActualizada = state.solicitudes.find(
-        (solicitud) => solicitud.codigoNombre === codigoNombre
+        (solicitud) => solicitud.id === id
       );
 
       if (solicitudActualizada) {

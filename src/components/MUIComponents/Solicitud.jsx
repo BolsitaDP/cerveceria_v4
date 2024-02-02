@@ -22,10 +22,8 @@ const Solicitud = ({
       <NumericFormat
         {...other}
         getInputRef={ref}
-        onValueChange={(values) => {
-          // Aquí puedes aplicar lógica adicional si es necesario
-        }}
-        thousandSeparator // Agregar el manejador onBlur personalizado
+        onValueChange={(values) => {}}
+        thousandSeparator
       />
     );
   });
