@@ -264,7 +264,7 @@ const Calendario = () => {
                         }}></Box>
                       <Box>
                         {`${
-                          porcentajesDeOcupacion[index]
+                          porcentajesDeOcupacion[index] > 0
                             ? porcentajesDeOcupacion[index]
                             : "0"
                         }%`}
@@ -314,8 +314,8 @@ const Calendario = () => {
                   key={salon}>
                   {Object.entries(dias).map(([diaNombre, diaInfo]) => {
                     const { contenido, fecha } = diaInfo;
-                    const fechaSeleccionada =
-                      fechasSeleccionadas.includes(fecha);
+                    let sieteDias = fechasSeleccionadas.slice(0, 7);
+                    const fechaSeleccionada = sieteDias.includes(fecha);
 
                     if (!fechaSeleccionada) {
                       return null; // No se renderiza nada si la fecha no coincide

@@ -12,7 +12,7 @@ const obtenerFechasDeLaSemana = (fecha) => {
   let lunes = new Date(fechajs.getTime() - diaSemana * 86400000);
   const fechasSemana = [];
 
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 14; i++) {
     const fechaDia = new Date(lunes.getTime() + i * 86400000);
     const formattedFechaDia = `${fechaDia
       .getDate()
