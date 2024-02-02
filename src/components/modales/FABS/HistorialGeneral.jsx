@@ -44,6 +44,9 @@ const HistorialGeneral = () => {
       minWidth: 200,
       renderCell: ({ row }) => {
         if (row.valorPrevio && typeof row.valorPrevio !== "object") {
+          if (typeof row.valorPrevio === "number") {
+            return row.valorPrevio;
+          }
           let fecha = row.valorPrevio?.split("&");
           if (fecha[1]) {
             let [, dia] = fecha[0].split(" ");
@@ -75,6 +78,9 @@ const HistorialGeneral = () => {
       minWidth: 200,
       renderCell: ({ row }) => {
         if (row.valorNuevo && typeof row.valorNuevo !== "object") {
+          if (typeof row.valorNuevo === "number") {
+            return row.valorNuevo;
+          }
           let fecha = row.valorNuevo?.split("&");
           if (fecha[1]) {
             let [, dia] = fecha[0].split(" ");
