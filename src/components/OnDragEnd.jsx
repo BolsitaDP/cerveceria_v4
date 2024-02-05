@@ -185,7 +185,7 @@ const onDragEnd = (
   if (solicitud) {
     elementoArrastrado.velocidadesSalonProducto.forEach((linea) => {
       if (linea.Linea === idLinea) {
-        capacidadSalonPorDia = linea.Velocidad * 60;
+        capacidadSalonPorDia = linea.Velocidad;
       }
     });
     tiempoARestarEnElDia = Math.round(

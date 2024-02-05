@@ -47,7 +47,7 @@ const contenedoresSlice = createSlice({
         solicitud.velocidadesSalonProducto.forEach((linea) => {
           if (linea.Linea === salon) {
             // let minutosRestar = elementoArrastrado.cantidad / linea.Velocidad;
-            capacidadSalon = linea.Velocidad * 60;
+            capacidadSalon = linea.Velocidad;
           }
         });
 
@@ -308,7 +308,7 @@ const contenedoresSlice = createSlice({
 
         solicitudActualizada.velocidadesSalonProducto.forEach((linea) => {
           if (linea.Linea === solicitudActualizada.salonProgramado) {
-            capacidadSalonPorDia = linea.Velocidad * 60;
+            capacidadSalonPorDia = linea.Velocidad;
           }
         });
 
@@ -358,7 +358,7 @@ const contenedoresSlice = createSlice({
 
       elementoOriginal.velocidadesSalonProducto.forEach((linea) => {
         if (linea.Linea === elementoOriginal.salonProgramado) {
-          capacidadSalonPorDia = linea.Velocidad * 60;
+          capacidadSalonPorDia = linea.Velocidad;
         }
       });
 
@@ -382,7 +382,7 @@ const contenedoresSlice = createSlice({
 
         el.velocidadesSalonProducto.forEach((linea) => {
           if (linea.Linea === el.salonProgramado) {
-            capacidadSalonPorDia = linea.Velocidad * 60;
+            capacidadSalonPorDia = linea.Velocidad;
           }
         });
 
