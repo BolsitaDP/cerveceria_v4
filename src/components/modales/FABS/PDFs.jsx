@@ -8,6 +8,8 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
@@ -17,6 +19,7 @@ const PDFs = () => {
 
   const [diasSeleccionado, setDiasSeleccionado] = useState([]);
   const [salonesSeleccionados, setSalonesSeleccionados] = useState([]);
+  const [checkedTotales, setCheckedTotales] = useState(true);
 
   const nombreDiasDeLaSemana = useSelector(
     (state) => state.dates.nombreDiasDeLaSemana
@@ -39,7 +42,41 @@ const PDFs = () => {
     setTipoDeReporte(e.target.value);
   };
 
-  let columns = [];
+  let columasTotales = [
+    {
+      field: "codigoNombre",
+      headerName: "Código",
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) => {
+        if (!params.row.codigoNombre) {
+          return "Actividad";
+        }
+      },
+    },
+    {
+      field: "producto",
+      headerName: "Producto",
+      flex: 1,
+      minWidth: 250,
+      renderCell: (params) => {
+        if (!params.row.producto) {
+          return params.row.nombreDeLaAccion;
+        }
+      },
+    },
+    {
+      field: "cantidad",
+      headerName: "Cantidad total",
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) => {
+        if (!params.row.cantidad) {
+          return "-";
+        }
+      },
+    },
+  ];
 
   let columnasReporteDiario = [
     {
@@ -93,6 +130,11 @@ const PDFs = () => {
       minWidth: 150,
     },
   ];
+
+  const handleCheckedTotales = () => {
+    setCheckedTotales(!checkedTotales);
+    // ----------------------------- AQUÍ VOY, TODO: CAMBIAR LAS ROWS DEPENDIENDO DE SI SON LOS TOTALES O NO -----------
+  };
 
   const uniqueRows = new Set();
 
@@ -150,6 +192,22 @@ const PDFs = () => {
   }
 
   const rows = Array.from(uniqueRows);
+
+  const totales = [];
+
+  rows.forEach((prod) => {
+    const existingProduct = totales.find(
+      (x) => x.codigoNombre === prod.codigoNombre
+    );
+
+    if (existingProduct) {
+      // Si ya existe un producto con el mismo codigoNombre, sumamos la cantidad
+      existingProduct.cantidad += prod.cantidad;
+    } else {
+      // Si no existe, agregamos el producto a la lista de totales
+      totales.push({ ...prod }); // Creamos una copia del objeto para evitar mutaciones no deseadas
+    }
+  });
 
   return (
     <BasicModal titulo={"Creación de PDF"}>
@@ -233,6 +291,13 @@ const PDFs = () => {
           </Select>
         </FormControl>
 
+        <FormControlLabel
+          control={
+            <Switch checked={checkedTotales} onChange={handleCheckedTotales} />
+          }
+          label="Totales"
+        />
+
         {/* <Button variant="contained" disableElevation>
           Generar reporte
         </Button> */}
@@ -251,14 +316,14 @@ const PDFs = () => {
               slots={{ toolbar: GridToolbar }}
               // getRowHeight={() => "auto"}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-              rows={rows}
+              rows={checkedTotales ? totales : rows}
               pageSizeOptions={[10]}
               initialState={{
                 pagination: {
                   paginationModel: { page: 0, pageSize: 10 },
                 },
               }}
-              columns={columnasReporteDiario}
+              columns={checkedTotales ? columasTotales : columnasReporteDiario}
               getRowId={(row) => row.id || row.Id}
             />
           </Box>
