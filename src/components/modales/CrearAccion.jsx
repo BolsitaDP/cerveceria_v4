@@ -22,6 +22,8 @@ import { toast } from "react-toastify";
 import { v4 as uuid } from "uuid";
 import { useDispatch } from "react-redux";
 import { createAccion } from "../../redux/slices/contenedoresSlice";
+import { useSelector } from "react-redux";
+import postData from "../../requests/postData";
 
 const CrearAccion = () => {
   const dispatch = useDispatch();
@@ -30,6 +32,8 @@ const CrearAccion = () => {
   const [textoNombre, setTextoNombre] = useState("");
   const [minutosAccion, setMinutosAccion] = useState("");
   const [tipoAccion, setTipoAccion] = useState("");
+
+  const acciones = useSelector((state) => state.contenedores.acciones);
 
   const handleChangeTextoNombre = (e) => {
     setTextoNombre(e.target.value);
@@ -58,29 +62,59 @@ const CrearAccion = () => {
         minutosAccion > 0 &&
         tipoAccion
       ) {
-        dispatch(
-          createAccion({
-            idDnd: uuid(),
-            duracion: parseInt(minutosAccion),
-            estado: 1,
-            nombreDeLaAccion: textoNombre,
-            tipo: tipoAccion,
-          })
+        let exists = acciones.find(
+          (accion) => accion.nombreDeLaAccion === acciones.nombreDeLaAccion
         );
+
+        if (!exists) {
+          try {
+            postData
+              .postCrearAccion({
+                idDnd: uuid(),
+                duracion: parseInt(minutosAccion),
+                estado: 1,
+                nombreDeLaAccion: textoNombre,
+                tipo: tipoAccion,
+              })
+              .then((res) => dispatch(createAccion(res)))
+              .then(() => {
+                toast.success("Actividad creada correctamente");
+              });
+          } catch (error) {
+            toast.error("Ha ocurrido un error: " + error);
+          }
+        } else {
+          toast.error("Ya existe una actividad con este mismo nombre");
+        }
       } else {
         toast("La actividad debe tener nombre, duración y tipo");
       }
     } else {
       if (textoNombre && textoNombre !== "") {
-        dispatch(
-          createAccion({
-            idDnd: uuid(),
-            duracion: 0,
-            estado: 1,
-            nombreDeLaAccion: textoNombre,
-            tipo: tipoAccion,
-          })
+        let exists = acciones.find(
+          (accion) => accion.nombreDeLaAccion === acciones.nombreDeLaAccion
         );
+
+        if (!exists) {
+          try {
+            postData
+              .postCrearAccion({
+                idDnd: uuid(),
+                duracion: 0,
+                estado: 1,
+                nombreDeLaAccion: textoNombre,
+                tipo: tipoAccion,
+              })
+              .then((res) => dispatch(createAccion(res)))
+              .then(() => {
+                toast.success("Actividad creada correctamente");
+              });
+          } catch (error) {
+            toast.error("Ha ocurrido un error: " + error);
+          }
+        } else {
+          toast.error("Ya existe una actividad con este mismo nombre");
+        }
       } else {
         toast("La actividad debe tener nombre");
       }

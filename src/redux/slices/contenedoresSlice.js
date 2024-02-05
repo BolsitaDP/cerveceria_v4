@@ -96,21 +96,7 @@ const contenedoresSlice = createSlice({
       // });
     },
     createAccion: (state, action) => {
-      let exists = state.acciones.find(
-        (accion) => accion.nombreDeLaAccion === action.payload.nombreDeLaAccion
-      );
-      if (!exists) {
-        try {
-          postData.postCrearAccion(action.payload);
-          // .then(() => state.acciones.push(action.payload));
-          state.acciones.push(action.payload);
-          toast.success("Actividad creada correctamente");
-        } catch (error) {
-          toast.error("Ha ocurrido un error: " + error);
-        }
-      } else {
-        toast.error("Ya existe una actividad con este mismo nombre");
-      }
+      state.acciones.push(action.payload.data);
     },
     deteleAccionCalendario: (state, action) => {
       console.log(action.payload);
