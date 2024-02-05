@@ -211,7 +211,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
     solicitudAbierta.velocidadesSalonProducto.forEach((linea) => {
       if (linea.Linea === salonSeleccionadoEstado) {
         // let minutosRestar = elementoArrastrado.cantidad / linea.Velocidad;
-        capacidadSalon = linea.Velocidad * 24;
+        capacidadSalon = linea.Velocidad * 60;
       }
     });
 
