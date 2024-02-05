@@ -35,6 +35,7 @@ import PreguntarCrearCopia from "./components/modales/PreguntarCrearCopia.jsx";
 
 import dayjs from "dayjs";
 import { es } from "dayjs/locale/es";
+import Loader from "./components/modales/Loader.jsx";
 
 dayjs.locale("es");
 
@@ -43,6 +44,7 @@ function App() {
 
   const [crearCopia, setCrearCopia] = useState(false);
   const [data, setData] = useState(null);
+  const [appCargada, setAppCargada] = useState(false);
 
   // Data de estado global
   const contenedores = useSelector((state) => state.contenedores);
@@ -80,8 +82,9 @@ function App() {
       }
     };
 
-    setInitialData().then((data) => console.log(data));
-    // .then(() => setAppCargada(true))
+    setInitialData()
+      .then((data) => console.log(data))
+      .then(() => setAppCargada(true));
     // .catch((error) => console.error("Error setting initial data:", error));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,33 +150,37 @@ function App() {
     <div className="App">
       <ThemeProvider theme={TemaClaro}>
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Box
-            sx={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-            }}>
+          {!appCargada ? (
+            <Loader />
+          ) : (
             <Box
               sx={{
-                width: "35%",
+                width: "100%",
                 height: "100%",
-                padding: "1%",
                 display: "flex",
-                flexDirection: "column",
-                gap: "1%",
               }}>
-              <Solicitudes />
-              <Acciones />
+              <Box
+                sx={{
+                  width: "35%",
+                  height: "100%",
+                  padding: "1%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1%",
+                }}>
+                <Solicitudes />
+                <Acciones />
+              </Box>
+              <Box
+                sx={{
+                  width: "65%",
+                  height: "100%",
+                  padding: "1%",
+                }}>
+                <Calendario />
+              </Box>
             </Box>
-            <Box
-              sx={{
-                width: "65%",
-                height: "100%",
-                padding: "1%",
-              }}>
-              <Calendario />
-            </Box>
-          </Box>
+          )}
         </DragDropContext>
 
         <MUIFloatingButton />
