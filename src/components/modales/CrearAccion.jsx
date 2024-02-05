@@ -71,7 +71,7 @@ const CrearAccion = () => {
             postData
               .postCrearAccion({
                 idDnd: uuid(),
-                duracion: parseInt(minutosAccion),
+                duracion: parseFloat(minutosAccion),
                 estado: 1,
                 nombreDeLaAccion: textoNombre,
                 tipo: tipoAccion,

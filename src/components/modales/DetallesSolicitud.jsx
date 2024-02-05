@@ -10,6 +10,7 @@ import getFechaHoraActual from "../../helpers/getFechaHoraActual";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import {
+  deleteSolicitud,
   particionSolicitudSinProgramar,
   updatePropiedadesSolicitud,
 } from "../../redux/slices/contenedoresSlice";
@@ -23,13 +24,12 @@ import HistoryIcon from "@mui/icons-material/History";
 import dayjs from "dayjs";
 import "dayjs/locale/en-gb";
 import { NumericFormat } from "react-number-format";
+import HistorialSolicitud from "./HistorialSolicitud";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   const dispatch = useDispatch();
 
   const theme = useTheme();
-
-  console.log(solicitudAbierta.fechaRequiere);
 
   // Crea un objeto de fecha con la fecha parseada
 
@@ -45,6 +45,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   const [valueAPartir, setValueAPartir] = useState(null);
   const [editedPropertyState, setEditedPropertyState] = useState(null);
   const [openPartir, setOpenPartir] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
+
+  const [codigoSolicitud, setCodigoSolicitud] = useState(null);
 
   const versionEstado = useSelector((state) => state.history.version);
   const editorEstado = useSelector((state) => state.history.editor);
@@ -271,9 +274,26 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
 
   const handleCalendarChange = (date) => {};
 
-  const handleMostrarHistorial = () => {};
+  const handleMostrarHistorial = (cod) => {
+    setOpenHistory(!openHistory);
+    setCodigoSolicitud(cod);
+    // TODO: Recibo el id, necesito abrir el historial relacionado con ese id
+  };
 
-  const handleBorrarSolicitud = () => {};
+  const handleBorrarSolicitud = (obj) => {
+    try {
+      postData
+        .postDeleteSolicitud(obj)
+        .then((res) => {
+          dispatch(deleteSolicitud(obj));
+        })
+        .then(() => {
+          toast.success("Solicitud borrada exitosamente");
+        });
+    } catch (error) {
+      toast.error("Ha ocurrido un error: " + error);
+    }
+  };
 
   return (
     <BasicModal
@@ -300,7 +320,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
             <Tooltip title="Mostrar historial de cambios" arrow>
               <IconButton
                 sx={{ color: theme.palette.primary.contrast }}
-                onClick={handleMostrarHistorial}
+                onClick={() =>
+                  handleMostrarHistorial(solicitudAbierta.codigoNombre)
+                }
                 edge="end">
                 <HistoryIcon />
               </IconButton>
@@ -308,7 +330,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
             <Tooltip title="Eliminar solicitud" arrow>
               <IconButton
                 sx={{ color: theme.palette.primary.contrast }}
-                onClick={handleBorrarSolicitud}
+                onClick={() => handleBorrarSolicitud(solicitudAbierta)}
                 edge="end">
                 <DeleteIcon />
               </IconButton>
@@ -319,172 +341,176 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
       tipo={
         solicitudAbierta.pais === "Guatemala" ? "nacional" : "internacional"
       }>
-      <Box
-        sx={{
-          width: "60vw",
-          height: "70vh",
-          padding: "20px",
-          display: "flex",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          gap: "0 50px",
-          overflow: "auto",
-        }}>
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Nombre"
-          defaultValue={solicitudAbierta.producto}
-          variant="standard"
-        />
-
-        <TextField
-          label="Cantidad"
-          name="cantidad"
-          // defaultValue={solicitudAbierta.cantidad}
-          // variant="standard"value={Math.round(cantidadInput)}
-          value={cantidadInput}
-          onBlur={handleBlurred}
-          onChange={handleCantidadChange}
-          InputProps={{
-            inputComponent: NumericFormatCustom,
-          }}
-        />
-
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Marca"
-          defaultValue={solicitudAbierta.marca}
-          variant="standard"
-        />
-
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Fórmula"
-          defaultValue={solicitudAbierta.formula}
-          variant="standard"
-        />
-
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Volumen"
-          defaultValue={solicitudAbierta.volumen}
-          variant="standard"
-        />
-
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Envase"
-          defaultValue={solicitudAbierta.envase}
-          variant="standard"
-        />
-
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Empaque"
-          defaultValue={solicitudAbierta.empaque}
-          variant="standard"
-        />
-
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Tapa"
-          defaultValue={solicitudAbierta.tapa}
-          variant="standard"
-        />
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label="Requerido para"
-            value={dayjs(fechaRequeridoPara)}
-            onBlur={handleBlurred}
+      {openHistory ? (
+        <HistorialSolicitud solicitud={codigoSolicitud} />
+      ) : (
+        <Box
+          sx={{
+            width: "60vw",
+            height: "70vh",
+            padding: "20px",
+            display: "flex",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            gap: "0 50px",
+            overflow: "auto",
+          }}>
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Nombre"
+            defaultValue={solicitudAbierta.producto}
             variant="standard"
-            onChange={(newValue) => {
-              setValorPrevio(fechaRequeridoPara);
-              setFechaRequeridoPara(newValue);
+          />
+
+          <TextField
+            label="Cantidad"
+            name="cantidad"
+            // defaultValue={solicitudAbierta.cantidad}
+            // variant="standard"value={Math.round(cantidadInput)}
+            value={cantidadInput}
+            onBlur={handleBlurred}
+            onChange={handleCantidadChange}
+            InputProps={{
+              inputComponent: NumericFormatCustom,
             }}
           />
-        </LocalizationProvider>
 
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="País destino"
-          defaultValue={solicitudAbierta.paisDestino}
-          variant="standard"
-        />
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Marca"
+            defaultValue={solicitudAbierta.marca}
+            variant="standard"
+          />
 
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Fecha de producción"
-          defaultValue={solicitudAbierta.fechaProduccion}
-          variant="standard"
-        />
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Fórmula"
+            defaultValue={solicitudAbierta.formula}
+            variant="standard"
+          />
 
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Fecha de expiración"
-          defaultValue={solicitudAbierta.fechaExpiración}
-          variant="standard"
-        />
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Volumen"
+            defaultValue={solicitudAbierta.volumen}
+            variant="standard"
+          />
 
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Salón"
-          defaultValue={solicitudAbierta.salon}
-          variant="standard"
-        />
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Envase"
+            defaultValue={solicitudAbierta.envase}
+            variant="standard"
+          />
 
-        <TextField
-          InputProps={{
-            readOnly: true,
-          }}
-          label="Versión"
-          defaultValue={solicitudAbierta.version}
-          variant="standard"
-        />
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Empaque"
+            defaultValue={solicitudAbierta.empaque}
+            variant="standard"
+          />
 
-        <TextField
-          label="Observaciones"
-          multiline
-          rows={3}
-          name="observaciones"
-          onChange={handleObservacionesChange}
-          value={observacionesInput}
-          onBlur={handleBlurred}
-        />
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Tapa"
+            defaultValue={solicitudAbierta.tapa}
+            variant="standard"
+          />
 
-        <TextField
-          label="Observaciones generales"
-          multiline
-          InputProps={{
-            readOnly: true,
-          }}
-          rows={3}
-          defaultValue={solicitudAbierta.observacionesGenerales}
-          variant="standard"
-        />
-      </Box>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Requerido para"
+              value={dayjs(fechaRequeridoPara)}
+              onBlur={handleBlurred}
+              variant="standard"
+              onChange={(newValue) => {
+                setValorPrevio(fechaRequeridoPara);
+                setFechaRequeridoPara(newValue);
+              }}
+            />
+          </LocalizationProvider>
+
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="País destino"
+            defaultValue={solicitudAbierta.paisDestino}
+            variant="standard"
+          />
+
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Fecha de producción"
+            defaultValue={solicitudAbierta.fechaProduccion}
+            variant="standard"
+          />
+
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Fecha de expiración"
+            defaultValue={solicitudAbierta.fechaExpiración}
+            variant="standard"
+          />
+
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Salón"
+            defaultValue={solicitudAbierta.salon}
+            variant="standard"
+          />
+
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Versión"
+            defaultValue={solicitudAbierta.version}
+            variant="standard"
+          />
+
+          <TextField
+            label="Observaciones"
+            multiline
+            rows={3}
+            name="observaciones"
+            onChange={handleObservacionesChange}
+            value={observacionesInput}
+            onBlur={handleBlurred}
+          />
+
+          <TextField
+            label="Observaciones generales"
+            multiline
+            InputProps={{
+              readOnly: true,
+            }}
+            rows={3}
+            defaultValue={solicitudAbierta.observacionesGenerales}
+            variant="standard"
+          />
+        </Box>
+      )}
 
       <Modal open={openPartir} onClose={() => setOpenPartir(false)}>
         <PreguntarPartirSolicitudSinProgramar

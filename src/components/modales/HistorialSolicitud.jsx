@@ -1,16 +1,21 @@
 import React from "react";
-import BasicModal from "../../MUIComponents/BasicModal";
-import { Box } from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
-import moment from "moment";
+import { Box } from "@mui/material";
+import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { v4 as uuid } from "uuid";
+import moment from "moment";
 
-const HistorialGeneral = () => {
+const HistorialSolicitud = (cod) => {
   const historialEstado = useSelector((state) => state.history.cambios);
 
-  let rows = historialEstado;
+  let rows = [];
+
+  historialEstado.forEach((reg) => {
+    if (reg.codigo === cod.solicitud) {
+      rows.push(reg);
+    }
+  });
+
   let columns = [
     {
       field: "tipoDeCambio",
@@ -134,39 +139,37 @@ const HistorialGeneral = () => {
   ];
 
   return (
-    <BasicModal titulo={"Historial general"}>
+    <Box
+      sx={{
+        width: "60vw",
+        height: "70vh",
+      }}>
       <Box
         sx={{
-          height: "60vh",
-          width: "70vw",
+          display: "flex",
+          minHeight: "180px",
+          height: "100%",
+          width: "100%",
         }}>
-        <Box
-          sx={{
-            display: "flex",
-            minHeight: "180px",
-            height: "100%",
-            width: "100%",
-          }}>
-          <Box sx={{ flexGrow: 1, width: "100%" }}>
-            <DataGrid
-              slots={{ toolbar: GridToolbar }}
-              // getRowHeight={() => "auto"}
-              localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-              rows={rows}
-              pageSizeOptions={[10]}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 10 },
-                },
-              }}
-              columns={columns}
-              getRowId={(row) => uuid()}
-            />
-          </Box>
+        <Box sx={{ flexGrow: 1, width: "100%" }}>
+          <DataGrid
+            slots={{ toolbar: GridToolbar }}
+            // getRowHeight={() => "auto"}
+            localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+            rows={rows}
+            pageSizeOptions={[10]}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
+            columns={columns}
+            getRowId={(row) => uuid()}
+          />
         </Box>
       </Box>
-    </BasicModal>
+    </Box>
   );
 };
 
-export default HistorialGeneral;
+export default HistorialSolicitud;

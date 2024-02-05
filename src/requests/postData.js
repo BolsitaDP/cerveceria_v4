@@ -183,6 +183,10 @@ const postData = {
       velocidadesSalonProducto: body.velocidadesSalonProducto,
     });
   },
+
+  postDeleteSolicitud(body) {
+    return peticion.post("ProgramacionController/delete", body);
+  },
 };
 
 export default postData;

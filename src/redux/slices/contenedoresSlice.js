@@ -391,8 +391,32 @@ const contenedoresSlice = createSlice({
       });
     },
     particionSolicitudSinProgramar: (state, action) => {
-      console.log(action.payload);
       state.solicitudes.push(action.payload);
+    },
+    deleteSolicitud: (state, action) => {
+      if (action.payload.fecha) {
+        state.calendario[action.payload.salonProgramado].dias[
+          action.payload.fecha
+        ].contenido = state.calendario[action.payload.salonProgramado].dias[
+          action.payload.fecha
+        ].contenido.filter((sol) => sol.id !== action.payload.id);
+
+        let capacidadSalonPorDia;
+
+        action.payload.velocidadesSalonProducto.forEach((linea) => {
+          if (linea.Linea === action.payload.salonProgramado) {
+            capacidadSalonPorDia = linea.Velocidad;
+          }
+        });
+
+        state.calendario[action.payload.salonProgramado].dias[
+          action.payload.fecha
+        ].horas += action.payload.cantidad / capacidadSalonPorDia;
+      } else {
+        state.solicitudes = state.solicitudes.filter(
+          (sol) => sol.id !== action.payload.id
+        );
+      }
     },
   },
 });
@@ -416,5 +440,6 @@ export const {
   removeHorasDia,
   creacionCopia,
   creacionMasDeUnaCopia,
+  deleteSolicitud,
 } = contenedoresSlice.actions;
 export default contenedoresSlice.reducer;
