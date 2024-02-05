@@ -101,11 +101,16 @@ const onDragEnd = (
 
   // Función para obtener las horas del día correspondiente
   const getHorasDisponiblesEnElDia = (destino) => {
-    if (destino[1]) {
-      let horasIniciales =
-        contenedoresActualizados.calendario[destino[0]].dias[destino[1]].horas;
+    try {
+      if (destino[1]) {
+        let horasIniciales =
+          contenedoresActualizados.calendario[destino[0]].dias[destino[1]]
+            .horas;
 
-      return horasIniciales;
+        return horasIniciales;
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

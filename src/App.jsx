@@ -151,39 +151,37 @@ function App() {
     <div className="App">
       <ThemeProvider theme={TemaClaro}>
         <DragDropContext onDragEnd={handleDragEnd}>
-          <ErrorBoundary>
-            {!appCargada ? (
-              <Loader />
-            ) : (
+          {!appCargada ? (
+            <Loader />
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+              }}>
               <Box
                 sx={{
-                  width: "100%",
+                  width: "35%",
                   height: "100%",
+                  padding: "1%",
                   display: "flex",
+                  flexDirection: "column",
+                  gap: "1%",
                 }}>
-                <Box
-                  sx={{
-                    width: "35%",
-                    height: "100%",
-                    padding: "1%",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1%",
-                  }}>
-                  <Solicitudes />
-                  <Acciones />
-                </Box>
-                <Box
-                  sx={{
-                    width: "65%",
-                    height: "100%",
-                    padding: "1%",
-                  }}>
-                  <Calendario />
-                </Box>
+                <Solicitudes />
+                <Acciones />
               </Box>
-            )}
-          </ErrorBoundary>
+              <Box
+                sx={{
+                  width: "65%",
+                  height: "100%",
+                  padding: "1%",
+                }}>
+                <Calendario />
+              </Box>
+            </Box>
+          )}
         </DragDropContext>
 
         <MUIFloatingButton />

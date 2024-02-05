@@ -96,7 +96,7 @@ const contenedoresSlice = createSlice({
       // });
     },
     createAccion: (state, action) => {
-      state.acciones.push(action.payload.data);
+      state.acciones.push({ ...action.payload.data, idDnd: uuid() });
     },
     deteleAccionCalendario: (state, action) => {
       console.log(action.payload);

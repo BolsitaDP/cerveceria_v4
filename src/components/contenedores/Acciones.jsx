@@ -71,9 +71,9 @@ const Acciones = () => {
               {acciones.map((accion, index) => {
                 return (
                   <Draggable
-                    draggableId={accion.Id}
+                    draggableId={accion.idDnd}
                     index={index}
-                    key={accion.Id}>
+                    key={accion.idDnd}>
                     {(provided, snapshot) => (
                       <Box
                         // sx={{ height: "45px" }}
