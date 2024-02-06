@@ -10,6 +10,8 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useSelector } from "react-redux";
@@ -19,6 +21,8 @@ const Reportes = () => {
   const [productoABuscar, setProductoABuscar] = useState([]);
 
   const [elementosEnGrid, setElementosEnGrid] = useState([]);
+
+  const [checkedTotales, setCheckedTotales] = useState(false);
 
   // const [productosSelect, setProductosSelect] = useState([]);
 
@@ -94,6 +98,39 @@ const Reportes = () => {
     },
   ];
 
+  let columnsTotalesActivo = [
+    {
+      field: "producto",
+      headerName: "Producto",
+      flex: 1,
+      minWidth: 250,
+    },
+    {
+      field: "cantidad",
+      headerName: "Cantidad",
+      flex: 1,
+      minWidth: 250,
+    },
+  ];
+
+  const handleCheckedTotales = () => {
+    setCheckedTotales(!checkedTotales);
+  };
+
+  const totales = [];
+
+  elementosEnGrid.forEach((prod) => {
+    const existingProduct = totales.find(
+      (x) => x.codigoNombre === prod.codigoNombre
+    );
+
+    if (existingProduct) {
+      existingProduct.cantidad += prod.cantidad;
+    } else {
+      totales.push({ ...prod });
+    }
+  });
+
   return (
     <BasicModal titulo={"Reportes por productos"}>
       <Box
@@ -106,7 +143,7 @@ const Reportes = () => {
           alignItems: "center",
           gap: "10px",
           maxHeight: "70px",
-          backgroundColor: theme.palette.primary.main,
+          // backgroundColor: theme.palette.primary.main,
         }}>
         <Autocomplete
           disablePortal
@@ -132,6 +169,12 @@ const Reportes = () => {
             />
           )}
         />
+        <FormControlLabel
+          control={
+            <Switch checked={checkedTotales} onChange={handleCheckedTotales} />
+          }
+          label="Totales"
+        />
       </Box>
       <Box
         sx={{
@@ -146,14 +189,14 @@ const Reportes = () => {
           <DataGrid
             slots={{ toolbar: GridToolbar }}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-            rows={elementosEnGrid}
+            rows={checkedTotales ? totales : elementosEnGrid}
             pageSizeOptions={[10]}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 10 },
               },
             }}
-            columns={columns}
+            columns={checkedTotales ? columnsTotalesActivo : columns}
             getRowId={(row) => row.id}
           />
         </Box>

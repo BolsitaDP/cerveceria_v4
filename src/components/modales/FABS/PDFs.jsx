@@ -133,7 +133,6 @@ const PDFs = () => {
 
   const handleCheckedTotales = () => {
     setCheckedTotales(!checkedTotales);
-    // ----------------------------- AQUÍ VOY, TODO: CAMBIAR LAS ROWS DEPENDIENDO DE SI SON LOS TOTALES O NO -----------
   };
 
   const uniqueRows = new Set();
@@ -201,11 +200,9 @@ const PDFs = () => {
     );
 
     if (existingProduct) {
-      // Si ya existe un producto con el mismo codigoNombre, sumamos la cantidad
       existingProduct.cantidad += prod.cantidad;
     } else {
-      // Si no existe, agregamos el producto a la lista de totales
-      totales.push({ ...prod }); // Creamos una copia del objeto para evitar mutaciones no deseadas
+      totales.push({ ...prod });
     }
   });
 
