@@ -178,7 +178,7 @@ const PDFs = () => {
 
     Object.values(salones).forEach((salon) => {
       Object.values(salon.dias).forEach((dia) => {
-        fechasSeleccionadas.forEach((fecha) => {
+        sieteDias.forEach((fecha) => {
           if (dia.fecha === fecha) {
             let cont = dia.contenido;
             cont.forEach((c) => {

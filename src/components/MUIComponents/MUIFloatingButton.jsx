@@ -11,6 +11,7 @@ import Insumos from "../modales/FABS/Insumos";
 import PDFs from "../modales/FABS/PDFs";
 import Reportes from "../modales/FABS/Reportes";
 import ProgramadoProducido from "../modales/FABS/ProgramadoProducido";
+import ReporteTotal from "../modales/FABS/ReporteTotal";
 
 const FABS = [
   {
@@ -28,6 +29,10 @@ const FABS = [
   {
     icon: <AssessmentRoundedIcon />,
     tooltip: "Reportes por productos",
+  },
+  {
+    icon: <AssessmentRoundedIcon />,
+    tooltip: "Reporte total",
   },
   // {
   //   icon: <DonutLargeRoundedIcon />,
@@ -128,6 +133,12 @@ const MUIFloatingButton = () => {
         open={modalAbierto === "Programado y producido"}
         onClose={() => setModalAbierto(null)}>
         <ProgramadoProducido />
+      </Modal>
+
+      <Modal
+        open={modalAbierto === "Reporte total"}
+        onClose={() => setModalAbierto(null)}>
+        <ReporteTotal />
       </Modal>
     </Box>
   );
