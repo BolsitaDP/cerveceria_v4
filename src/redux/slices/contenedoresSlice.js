@@ -102,8 +102,6 @@ const contenedoresSlice = createSlice({
       console.log(action.payload);
       let dia = action.payload.fecha;
       let salon = action.payload.salonProgramado;
-      // let contenidoContenido = action.payload.contenidoContenido;
-      // let contenidoId = action.payload.contenidoId;
 
       try {
         postData.postEliminarAccionesProgramadas({
@@ -167,24 +165,6 @@ const contenedoresSlice = createSlice({
       let solicitudesUpdatear = [];
 
       action.payload.contenidoDia.forEach((elemento, index) => {
-        // console.log(elemento);
-        // let exists2 = solicitudesUpdatear.find(
-        //   (x) => x.id === action.payload.elementoArrastrado.id
-        // );
-
-        // if (!exists2) {
-        //   solicitudesUpdatear.push({
-        //     id: action.payload.elementoArrastrado.id,
-        //     estado: action.payload.destino[1] ? "Programado" : "",
-        //     salonProgramado: action.payload.destino[1]
-        //       ? action.payload.destino[0]
-        //       : "",
-        //     fecha: action.payload.destino[1] ? action.payload.destino[1] : "",
-        //     orden: action.payload.index,
-        //     cantidad: action.payload.elementoArrastrado.cantidad,
-        //   });
-        // }
-
         if (elemento.codigoNombre) {
           let exists3 = solicitudesUpdatear.find((x) => x.id === elemento.id);
 
@@ -394,32 +374,34 @@ const contenedoresSlice = createSlice({
       state.solicitudes.push(action.payload);
     },
     deleteSolicitud: (state, action) => {
-      if (action.payload.fecha) {
-        state.calendario[action.payload.salonProgramado].dias[
-          action.payload.fecha
-        ].contenido = state.calendario[action.payload.salonProgramado].dias[
-          action.payload.fecha
-        ].contenido.filter((sol) => sol.id !== action.payload.id);
+      const { fecha, id, cantidad, salonProgramado, velocidadesSalonProducto } =
+        action.payload;
 
-        let capacidadSalonPorDia;
+      if (fecha) {
+        const diaSalon = state.calendario[salonProgramado].dias[fecha];
 
-        action.payload.velocidadesSalonProducto.forEach((linea) => {
-          if (linea.Linea === action.payload.salonProgramado) {
-            capacidadSalonPorDia = linea.Velocidad;
-          }
-        });
+        diaSalon.contenido = diaSalon.contenido.filter((sol) => sol.id !== id);
 
-        state.calendario[action.payload.salonProgramado].dias[
-          action.payload.fecha
-        ].horas += action.payload.cantidad / capacidadSalonPorDia;
-      } else {
-        state.solicitudes = state.solicitudes.filter(
-          (sol) => sol.id !== action.payload.id
+        const capacidadSalonPorDia = capacidaSalonPorDia(
+          velocidadesSalonProducto,
+          salonProgramado
         );
+
+        diaSalon.horas += cantidad / capacidadSalonPorDia;
+      } else {
+        state.solicitudes = state.solicitudes.filter((sol) => sol.id !== id);
       }
     },
   },
 });
+
+const capacidaSalonPorDia = (velocidadesSalonProducto, salonProgramado) => {
+  for (const linea of velocidadesSalonProducto) {
+    if (linea.Linea === salonProgramado) {
+      return linea.Velocidad;
+    }
+  }
+};
 
 export const {
   setSolicitudes,
@@ -441,5 +423,6 @@ export const {
   creacionCopia,
   creacionMasDeUnaCopia,
   deleteSolicitud,
+  updateTipoRequerimientoSolicitud,
 } = contenedoresSlice.actions;
 export default contenedoresSlice.reducer;

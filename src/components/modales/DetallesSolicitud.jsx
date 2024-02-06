@@ -1,6 +1,14 @@
 import React, { useEffect } from "react";
 import BasicModal from "../MUIComponents/BasicModal";
-import { Box, IconButton, Modal, TextField, Tooltip } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Modal,
+  TextField,
+  Tooltip,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
@@ -48,6 +56,10 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
   const [openHistory, setOpenHistory] = useState(false);
 
   const [codigoSolicitud, setCodigoSolicitud] = useState(null);
+
+  const [solNacional, setSolNacional] = useState(
+    solicitudAbierta.tipoRequerimiento === "PRODUCCIÓN LOCAL" ? true : false
+  );
 
   const versionEstado = useSelector((state) => state.history.version);
   const editorEstado = useSelector((state) => state.history.editor);
@@ -295,10 +307,43 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
     }
   };
 
+  const handleChangeNacionalInternacional = (sol) => {
+    setSolNacional(!solNacional);
+    let solTIpoRequerimientoCambiado = {
+      ...sol,
+      tipoRequerimiento: solNacional ? "EXPORTACIÓN" : "PRODUCCIÓN LOCAL",
+    };
+
+    try {
+      dispatch(updatePropiedadesSolicitud(solTIpoRequerimientoCambiado));
+      // postData
+      //   .postActualizarPropiedades(solTIpoRequerimientoCambiado)
+      //   .then((res) => {
+      //   });
+    } catch (error) {
+      toast.error(
+        "Ha ocurrido un error modificando el destino de la solicitud: " + error
+      );
+    }
+  };
+
   return (
     <BasicModal
       titulo={
         <Box sx={{ width: "55vw", display: "flex" }}>
+          <Box>
+            <FormControlLabel
+              label={solNacional ? "Local" : "Exportación"}
+              control={
+                <Switch
+                  checked={solNacional}
+                  onChange={() =>
+                    handleChangeNacionalInternacional(solicitudAbierta)
+                  }
+                />
+              }
+            />
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -338,9 +383,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
           </Box>
         </Box>
       }
-      tipo={
-        solicitudAbierta.pais === "Guatemala" ? "nacional" : "internacional"
-      }>
+      tipo={solNacional ? "nacional" : "internacional"}>
       {openHistory ? (
         <HistorialSolicitud solicitud={codigoSolicitud} />
       ) : (

@@ -31,7 +31,7 @@ const Solicitud = ({
   return (
     <Card
       variant={
-        solicitud.pais === "Guatemala"
+        solicitud.tipoRequerimiento === "PRODUCCIÓN LOCAL"
           ? "solicitud nacional"
           : "solicitud internacional"
       }

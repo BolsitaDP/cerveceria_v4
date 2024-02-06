@@ -66,6 +66,7 @@ const postData = {
       observacionesGenerales: body.observacionesGenerales,
       cantidadExportacion: body.cantidadExportacion,
       velocidadesSalonProducto: body.velocidadesSalonProducto,
+      tipoRequerimiento: body.tipoRequerimiento,
     });
   },
 

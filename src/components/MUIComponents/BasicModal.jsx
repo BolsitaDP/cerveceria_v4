@@ -33,7 +33,7 @@ const BasicModal = ({ titulo, children, tipo = null }) => {
                 : theme.palette.primary.internacional
               : "",
           }}>
-          <p>{titulo}</p>
+          <div>{titulo}</div>
         </Card>
         <Box
           sx={{
