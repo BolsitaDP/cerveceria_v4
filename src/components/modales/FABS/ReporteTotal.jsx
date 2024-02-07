@@ -3,14 +3,12 @@ import BasicModal from "../../MUIComponents/BasicModal";
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
+import { v4 as uuid } from "uuid";
 
 const ReporteTotal = () => {
   const contenedoresEstado = useSelector((state) => state.contenedores);
-  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
 
   let salones = contenedoresEstado.calendario;
-
-  let sieteDias = fechasSeleccionadas.slice(0, 7);
 
   let rows = [];
 
@@ -22,24 +20,60 @@ const ReporteTotal = () => {
       diasFechas.push(x);
     });
 
-  diasFechas.forEach((dia) => {
-    Object.values(salones).forEach((salon) => {
-      console.log(salon);
-    });
-  });
-
   let columns = [
-    { field: "dia", headerName: "Día de la semana", width: 150 },
+    {
+      field: "dia",
+      headerName: "Día de la semana",
+      width: 150,
+      renderCell: ({ row }) => {
+        let [nombre, fecha] = row.dia.split("&");
+        let [dia, mes] = fecha.split("/");
+
+        return `${nombre} ${dia}/${mes}`;
+      },
+    },
     ...Object.keys(salones).map((salon, index) => ({
-      field: "salon_" + (index + 1),
+      field: salon,
       headerName: salon,
       width: 100,
+      renderCell: (row) => {
+        let salon = row.field;
+        row[salon];
+      },
     })),
+    {
+      field: "total",
+      headerName: "Total",
+      width: 150,
+    },
   ];
 
-  console.log(diasFechas);
+  let rows7 = new Array(7);
+
+  let nombreSalones = [];
+
+  Object.keys(salones).forEach((salon) => {
+    nombreSalones.push(salon);
+  });
+
+  rows7 = diasFechas.map((dia) => {
+    let fullData = {
+      dia,
+      salones: nombreSalones.map((salon) => salon),
+    };
+
+    nombreSalones.forEach((salon) => {
+      let dataXSalonXDia = salones[salon].dias[dia].contenido;
+
+      fullData[salon] = dataXSalonXDia;
+    });
+
+    return fullData;
+  });
+
+  console.log(rows7);
+  console.log(nombreSalones);
   console.log(columns);
-  console.log(rows);
   console.log(salones);
 
   return (
@@ -57,17 +91,16 @@ const ReporteTotal = () => {
         }}>
         <DataGrid
           slots={{ toolbar: GridToolbar }}
-          // getRowHeight={() => "auto"}
           localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-          rows={rows}
+          rows={rows7}
           pageSizeOptions={[10]}
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
+              paginationModel: { page: 0, pageSize: 7 },
             },
           }}
           columns={columns}
-          getRowId={(row) => row.id || row.Id}
+          getRowId={(row) => uuid()}
         />
       </Box>
     </BasicModal>
