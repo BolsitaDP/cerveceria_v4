@@ -1,4 +1,2 @@
-Al cambiar cantidades hay errores
-El tema de la fecha es un error en sí mismo
-Necesito poder eliminar solicitudes
-Las acciones al crearse se tienen que devolver y de allí crearlas en el DOM
+En reportes generales agregar 2 switches, uno para decidir si ver los tamaños en pequeño y otro para asignar colores por productos; de igual manera reducir tamaño de las columnas a 90 o similar
+En reportes general agregar un total en la parte de abajo que totalice los productos por salones
