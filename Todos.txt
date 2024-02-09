@@ -1,2 +1,3 @@
-En reportes generales agregar 2 switches, uno para decidir si ver los tamaños en pequeño y otro para asignar colores por productos; de igual manera reducir tamaño de las columnas a 90 o similar
+En reportes generales agregar 2 switches, uno para decidir si ver los tamaños en pequeño y otro para asignar colores por productos (generar aleatoriamente dentro de colores anteriormente designados (estaba pensando en algunos 256 colores de tono pastel)); de igual manera reducir tamaño de las columnas a 90 o similar
+En reportes generales agregar switch para ver u ocultar actividades.
 En reportes general agregar un total en la parte de abajo que totalice los productos por salones
