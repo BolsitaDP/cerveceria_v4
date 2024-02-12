@@ -141,16 +141,20 @@ const ReporteTotal = () => {
               margin: "5px 0",
               fontSize: switchTamanoPequeno ? "8px" : "12px",
             }}>
-            {contenido.map((sol, index) =>
-              sinAcciones ? (
+            {contenido.map((sol, index) => {
+              let colorBySol =
+                row.row.prodsConColor[sol.codigoNombre || sol.nombreDeLaAccion]
+                  .color;
+              return sinAcciones ? (
                 sol.codigoNombre ? (
                   <div
                     key={index}
                     style={{
-                      backgroundColor:
-                        sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
-                          ? "rgba(92, 101, 192, 0.4)"
-                          : "rgba(240, 93, 103, 0.4)",
+                      backgroundColor: switchColoresPorProductos
+                        ? colorBySol && colorBySol
+                        : sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
+                        ? "rgba(92, 101, 192, 0.4)"
+                        : "rgba(240, 93, 103, 0.4)",
                       padding: "5px",
                       borderRadius: "5px",
                     }}>
@@ -168,10 +172,11 @@ const ReporteTotal = () => {
                 <div
                   key={index}
                   style={{
-                    backgroundColor:
-                      sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
-                        ? "rgba(92, 101, 192, 0.4)"
-                        : "rgba(240, 93, 103, 0.4)",
+                    backgroundColor: switchColoresPorProductos
+                      ? colorBySol && colorBySol
+                      : sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
+                      ? "rgba(92, 101, 192, 0.4)"
+                      : "rgba(240, 93, 103, 0.4)",
                     padding: "5px",
                     borderRadius: "5px",
                   }}>
@@ -182,8 +187,8 @@ const ReporteTotal = () => {
                     {sol.cantidad} {sol.unidadMedida}
                   </strong>
                 </div>
-              )
-            )}
+              );
+            })}
           </div>
         );
       },
@@ -250,19 +255,31 @@ const ReporteTotal = () => {
     return items.find((i) => i.codigoNombre === codigoNombre);
   }
 
+  function obtenerColorAleatorio() {
+    return todosLosColores[Math.floor(Math.random() * todosLosColores.length)];
+  }
+
   let rows7 = new Array(8);
 
   rows7 = diasFechas.map((dia, index) => {
+    let prodsConColor = {};
+
     let fullData = {
       dia,
       index,
       total: 0,
       totalXProducto: [],
+      prodsConColor,
     };
 
     //Construcción de productos por día por salón
     nombreSalones.forEach((salon) => {
       let dataXSalonXDia = salones[salon].dias[dia].contenido;
+
+      dataXSalonXDia.forEach((sol) => {
+        let x = sol.codigoNombre || sol.nombreDeLaAccion;
+        prodsConColor[x] = { color: obtenerColorAleatorio() };
+      });
 
       fullData[salon] = dataXSalonXDia;
     });
@@ -290,6 +307,8 @@ const ReporteTotal = () => {
   });
 
   rows7.push("TOTAL");
+
+  let solicitudesConColores = {};
 
   const handleCheckedTotales = () => {
     setSwitchTamanoPequeno(!switchTamanoPequeno);
@@ -330,7 +349,7 @@ const ReporteTotal = () => {
             label="Sin acciones"
           />
 
-          {/* <FormControlLabel
+          <FormControlLabel
             control={
               <Switch
                 checked={switchColoresPorProductos}
@@ -340,7 +359,7 @@ const ReporteTotal = () => {
               />
             }
             label="Color por producto"
-          /> */}
+          />
         </Box>
         <Box sx={{ width: "100%", height: "90%" }}>
           <DataGrid

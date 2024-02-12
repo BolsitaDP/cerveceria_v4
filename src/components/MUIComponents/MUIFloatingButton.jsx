@@ -5,6 +5,7 @@ import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import BallotRoundedIcon from "@mui/icons-material/BallotRounded";
 import PictureAsPdfRoundedIcon from "@mui/icons-material/PictureAsPdfRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
+import SummarizeIcon from "@mui/icons-material/Summarize";
 import DonutLargeRoundedIcon from "@mui/icons-material/DonutLargeRounded";
 import HistorialGeneral from "../modales/FABS/HistorialGeneral";
 import Insumos from "../modales/FABS/Insumos";
@@ -31,7 +32,7 @@ const FABS = [
     tooltip: "Reportes por productos",
   },
   {
-    icon: <AssessmentRoundedIcon />,
+    icon: <SummarizeIcon />,
     tooltip: "Reporte total",
   },
   // {
