@@ -308,8 +308,6 @@ const ReporteTotal = () => {
 
   rows7.push("TOTAL");
 
-  let solicitudesConColores = {};
-
   const handleCheckedTotales = () => {
     setSwitchTamanoPequeno(!switchTamanoPequeno);
   };
