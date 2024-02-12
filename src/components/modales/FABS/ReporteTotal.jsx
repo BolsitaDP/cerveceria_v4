@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import BasicModal from "../../MUIComponents/BasicModal";
-import { Box } from "@mui/material";
+import { Box, FormControlLabel, Switch } from "@mui/material";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
+import generarColores from "../../../helpers/generadorColores";
 
 const ReporteTotal = () => {
   const [switchColoresPorProductos, setSwitchColoresPorProductos] =
     useState(false);
   const [switchTamanoPequeno, setSwitchTamanoPequeno] = useState(false);
 
+  const [sinAcciones, setSinAcciones] = useState(false);
+
   const contenedoresEstado = useSelector((state) => state.contenedores);
 
-  let salones = contenedoresEstado.calendario;
+  const todosLosColores = generarColores();
 
-  let rows = [];
+  let salones = contenedoresEstado.calendario;
 
   let diasFechas = [];
 
@@ -34,23 +37,101 @@ const ReporteTotal = () => {
     {
       field: "dia",
       headerName: "Día de la semana",
-      width: 150,
+      width: switchTamanoPequeno ? 90 : 150,
       renderCell: ({ row }) => {
-        let [nombre, fecha] = row.dia.split("&");
-        let [dia, mes] = fecha.split("/");
+        if (row.dia) {
+          let [nombre, fecha] = row.dia.split("&");
+          let [dia, mes] = fecha.split("/");
 
-        return (
-          <span style={{ fontSize: "8px" }}>{`${nombre} ${dia}/${mes}`}</span>
-        );
+          return (
+            <span
+              style={{
+                fontSize: switchTamanoPequeno ? "8px" : "12px",
+              }}>{`${nombre} ${dia}/${mes}`}</span>
+          );
+        } else {
+          return (
+            <span
+              style={{
+                fontSize: switchTamanoPequeno ? "8px" : "12px",
+              }}>
+              TOTAL
+            </span>
+          );
+        }
       },
     },
     ...Object.keys(salones).map((salon, index) => ({
       field: salon,
       headerName: salon,
-      width: 90,
+      width: switchTamanoPequeno ? 90 : 150,
       renderCell: (row) => {
         let salon = row.field;
         let contenido = row.row[salon];
+        if (!contenido) {
+          let totalXProducto = [];
+          Object.keys(salones[salon].dias).forEach((key) => {
+            salones[salon].dias[key].contenido.forEach((item) => {
+              const codigoNombre = item.codigoNombre || "Acción";
+              const itemExistente = encontrarItem(totalXProducto, codigoNombre);
+
+              if (itemExistente) {
+                itemExistente.cantidad += item.cantidad;
+              } else {
+                totalXProducto.push({ ...item });
+              }
+            });
+          });
+
+          return (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                margin: "5px 0",
+                fontSize: switchTamanoPequeno ? "8px" : "12px",
+              }}>
+              {totalXProducto.map((sol, index) =>
+                sinAcciones ? (
+                  sol.codigoNombre ? (
+                    <div
+                      key={index}
+                      style={{
+                        backgroundColor: "rgba(0, 122, 255, 0.4)",
+                        padding: "5px",
+                        borderRadius: "5px",
+                      }}>
+                      {sol.producto} ({sol.codigoNombre})
+                      <br />
+                      <strong>
+                        {sol.cantidad} {sol.unidadMedida}
+                      </strong>
+                    </div>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  <div
+                    key={index}
+                    style={{
+                      backgroundColor: "rgba(0, 122, 255, 0.4)",
+                      padding: "5px",
+                      borderRadius: "5px",
+                    }}>
+                    {sol.producto || sol.nombreDeLaAccion} (
+                    {sol.codigoNombre || sol.tipo})
+                    <br />
+                    <strong>
+                      {sol.cantidad} {sol.unidadMedida}
+                    </strong>
+                  </div>
+                )
+              )}
+            </div>
+          );
+        }
+
         return (
           <div
             style={{
@@ -58,26 +139,51 @@ const ReporteTotal = () => {
               flexDirection: "column",
               gap: "10px",
               margin: "5px 0",
-              fontSize: "8px",
+              fontSize: switchTamanoPequeno ? "8px" : "12px",
             }}>
-            {contenido.map((sol, index) => (
-              <div
-                key={index}
-                style={{
-                  backgroundColor:
-                    sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
-                      ? "rgba(92, 101, 192, 0.4)"
-                      : "rgba(240, 93, 103, 0.4)",
-                  padding: "5px",
-                  borderRadius: "5px",
-                }}>
-                {sol.producto} ({sol.codigoNombre})
-                <br />
-                <strong>
-                  {sol.cantidad} {sol.unidadMedida}
-                </strong>
-              </div>
-            ))}
+            {contenido.map((sol, index) =>
+              sinAcciones ? (
+                sol.codigoNombre ? (
+                  <div
+                    key={index}
+                    style={{
+                      backgroundColor:
+                        sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
+                          ? "rgba(92, 101, 192, 0.4)"
+                          : "rgba(240, 93, 103, 0.4)",
+                      padding: "5px",
+                      borderRadius: "5px",
+                    }}>
+                    {sol.producto || sol.nombreDeLaAccion} (
+                    {sol.codigoNombre || sol.tipo})
+                    <br />
+                    <strong>
+                      {sol.cantidad} {sol.unidadMedida}
+                    </strong>
+                  </div>
+                ) : (
+                  ""
+                )
+              ) : (
+                <div
+                  key={index}
+                  style={{
+                    backgroundColor:
+                      sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
+                        ? "rgba(92, 101, 192, 0.4)"
+                        : "rgba(240, 93, 103, 0.4)",
+                    padding: "5px",
+                    borderRadius: "5px",
+                  }}>
+                  {sol.producto || sol.nombreDeLaAccion} (
+                  {sol.codigoNombre || sol.tipo})
+                  <br />
+                  <strong>
+                    {sol.cantidad} {sol.unidadMedida}
+                  </strong>
+                </div>
+              )
+            )}
           </div>
         );
       },
@@ -85,34 +191,109 @@ const ReporteTotal = () => {
     {
       field: "total",
       headerName: "Total",
-      width: 150,
+      width: switchTamanoPequeno ? 90 : 150,
       renderCell: ({ row }) => {
-        // console.log(row);
+        let cont = row.totalXProducto;
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              margin: "5px 0",
+              fontSize: switchTamanoPequeno ? "8px" : "12px",
+            }}>
+            {cont?.map((sol, index) =>
+              sinAcciones ? (
+                sol.codigoNombre ? (
+                  <div
+                    key={index}
+                    style={{
+                      backgroundColor: "rgba(0, 122, 255, 0.4)",
+                      padding: "5px",
+                      borderRadius: "5px",
+                    }}>
+                    {sol.producto} ({sol.codigoNombre})
+                    <br />
+                    <strong>
+                      {sol.cantidad} {sol.unidadMedida}
+                    </strong>
+                  </div>
+                ) : (
+                  ""
+                )
+              ) : (
+                <div
+                  key={index}
+                  style={{
+                    backgroundColor: "rgba(0, 122, 255, 0.4)",
+                    padding: "5px",
+                    borderRadius: "5px",
+                  }}>
+                  {sol.producto || sol.nombreDeLaAccion} (
+                  {sol.codigoNombre || sol.tipo})
+                  <br />
+                  <strong>
+                    {sol.cantidad} {sol.unidadMedida}
+                  </strong>
+                </div>
+              )
+            )}
+          </div>
+        );
       },
     },
   ];
 
-  let rows7 = new Array(7);
+  function encontrarItem(items, codigoNombre) {
+    return items.find((i) => i.codigoNombre === codigoNombre);
+  }
+
+  let rows7 = new Array(8);
 
   rows7 = diasFechas.map((dia, index) => {
-    nombreSalones.map((salon) => console.log(salon));
-    // El total se tiene que poner desde acá en un propiedad "total" que es la que se renderiza
-
     let fullData = {
       dia,
-      salones: nombreSalones.map((salon) => salon),
       index,
-      total: "s",
+      total: 0,
+      totalXProducto: [],
     };
 
+    //Construcción de productos por día por salón
     nombreSalones.forEach((salon) => {
       let dataXSalonXDia = salones[salon].dias[dia].contenido;
 
       fullData[salon] = dataXSalonXDia;
     });
 
+    //Construcción de total por día
+    Object.keys(salones).forEach((key) => {
+      salones[key].dias[dia].contenido.forEach((item) => {
+        const codigoNombre = item.codigoNombre || "Acción";
+        const itemExistente = encontrarItem(
+          fullData.totalXProducto,
+          codigoNombre
+        );
+
+        if (itemExistente) {
+          itemExistente.cantidad += item.cantidad;
+        } else {
+          fullData.totalXProducto.push({ ...item });
+        }
+
+        fullData.total += item.cantidad;
+      });
+    });
+
     return fullData;
   });
+
+  rows7.push("TOTAL");
+
+  const handleCheckedTotales = () => {
+    setSwitchTamanoPequeno(!switchTamanoPequeno);
+  };
 
   return (
     <BasicModal titulo={"Reporte total"}>
@@ -126,21 +307,57 @@ const ReporteTotal = () => {
           height: "80vh",
           width: "max-content",
           maxWidth: "80vw",
+          flexDirection: "column",
         }}>
-        <DataGrid
-          slots={{ toolbar: GridToolbar }}
-          localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-          rows={rows7}
-          pageSizeOptions={[10]}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 7 },
-            },
-          }}
-          getRowHeight={() => "auto"}
-          columns={columns}
-          getRowId={(row) => uuid()}
-        />
+        <Box sx={{ width: "100%", marginTop: "25px" }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={switchTamanoPequeno}
+                onChange={handleCheckedTotales}
+              />
+            }
+            label="Tamaño reducido"
+          />
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={sinAcciones}
+                onChange={() => setSinAcciones(!sinAcciones)}
+              />
+            }
+            label="Sin acciones"
+          />
+
+          {/* <FormControlLabel
+            control={
+              <Switch
+                checked={switchColoresPorProductos}
+                onChange={() =>
+                  setSwitchColoresPorProductos(!switchColoresPorProductos)
+                }
+              />
+            }
+            label="Color por producto"
+          /> */}
+        </Box>
+        <Box sx={{ width: "100%", height: "90%" }}>
+          <DataGrid
+            slots={{ toolbar: GridToolbar }}
+            localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+            rows={rows7}
+            pageSizeOptions={[8, 10]}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 8 },
+              },
+            }}
+            getRowHeight={() => "auto"}
+            columns={columns}
+            getRowId={(row) => uuid()}
+          />
+        </Box>
       </Box>
     </BasicModal>
   );
