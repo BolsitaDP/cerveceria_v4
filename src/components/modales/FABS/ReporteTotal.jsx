@@ -344,7 +344,7 @@ const ReporteTotal = () => {
                 onChange={() => setSinAcciones(!sinAcciones)}
               />
             }
-            label="Sin acciones"
+            label="Sin actividades"
           />
 
           <FormControlLabel

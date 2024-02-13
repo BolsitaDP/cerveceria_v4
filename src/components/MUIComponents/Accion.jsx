@@ -74,7 +74,9 @@ const Accion = ({
             {accion.nombreDeLaAccion.length >= 22 && "..."}
           </Tooltip>
         </Box>
-        <Box sx={{ width: "80%", textAlign: "right" }}>{accion.tipo}</Box>
+        <Box sx={{ width: "80%", textAlign: "right" }}>
+          {accion.tipo.charAt(0).toUpperCase() + accion.tipo.slice(1)}
+        </Box>
       </Box>
     </Card>
   );

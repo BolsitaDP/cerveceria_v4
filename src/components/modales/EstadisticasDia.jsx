@@ -4,6 +4,7 @@ import BasicModal from "../MUIComponents/BasicModal";
 import { Box } from "@mui/material";
 
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
+import convertirFecha from "../../helpers/convertirFechaLegible";
 
 const EstadisticasDia = ({ estadisticasDia }) => {
   const contenedoresEstado = useSelector((state) => state.contenedores);
@@ -56,7 +57,40 @@ const EstadisticasDia = ({ estadisticasDia }) => {
       minWidth: 120,
       renderCell: (params) => {
         if (!params.row.tipo) {
-          return "-";
+          return "Producción";
+        } else {
+          return (
+            params.row.tipo.charAt(0).toUpperCase() + params.row.tipo.slice(1)
+          );
+        }
+      },
+    },
+    {
+      field: "tiempo",
+      headerName: "Tiempo",
+      flex: 1,
+      minWidth: 250,
+      renderCell: (params) => {
+        if (params.row.nombreDeLaAccion) {
+          return `${params.row.duracion || params.row.tiempo || "N/A"} 
+          ${
+            !params.row.duracion && !params.row.tiempo
+              ? ""
+              : params.row.duracion === 1 || params.row.tiempo === 1
+              ? "hora"
+              : "horas"
+          } `;
+        } else {
+          let cantidad = params.row.cantidad;
+          let velocidades = params.row.velocidadesSalonProducto;
+          let velocidad;
+          velocidades.forEach((vel) => {
+            if (vel.Linea === salonSeleccionadoEstado) {
+              velocidad = cantidad / vel.Velocidad;
+            }
+          });
+
+          return `${velocidad.toFixed(2)} horas`;
         }
       },
     },
@@ -73,12 +107,16 @@ const EstadisticasDia = ({ estadisticasDia }) => {
     },
   ];
 
+  let fechaLegible = convertirFecha(
+    `${estadisticasDia.split("/")[0]}/${estadisticasDia.split("/")[1]}`
+  );
+
   return (
     <BasicModal
       titulo={`Estadísticas del día ${nombreDiasDeLaSemana[
         fechasSeleccionadas.indexOf(estadisticasDia)
       ].toLowerCase()}
-        ${estadisticasDia.split("/")[0]}/${estadisticasDia.split("/")[1]} `}>
+       ${fechaLegible} en el salón ${salonSeleccionadoEstado} `}>
       <Box
         sx={{
           display: "flex",
