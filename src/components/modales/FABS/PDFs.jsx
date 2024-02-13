@@ -25,10 +25,10 @@ const PDFs = () => {
     (state) => state.dates.nombreDiasDeLaSemana
   );
   const contenedoresEstado = useSelector((state) => state.contenedores);
-  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
   const salonSeleccionadoEstado = useSelector(
     (state) => state.history.salonSeleccionado
   );
+  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
 
   let sieteDias = fechasSeleccionadas.slice(0, 7);
 

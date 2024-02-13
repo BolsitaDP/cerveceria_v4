@@ -5,6 +5,7 @@ import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import generarColores from "../../../helpers/generadorColores";
+import obtenerDiasDeLaSemana from "../../../helpers/obtenerDiasDeLaSemana";
 
 const ReporteTotal = () => {
   const [switchColoresPorProductos, setSwitchColoresPorProductos] =
@@ -18,6 +19,12 @@ const ReporteTotal = () => {
   const todosLosColores = generarColores();
 
   let salones = contenedoresEstado.calendario;
+
+  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
+
+  let sieteDias = fechasSeleccionadas.slice(0, 7);
+
+  let fechasSemanaCompletas = obtenerDiasDeLaSemana(sieteDias);
 
   let diasFechas = [];
 
@@ -142,6 +149,7 @@ const ReporteTotal = () => {
               fontSize: switchTamanoPequeno ? "8px" : "12px",
             }}>
             {contenido.map((sol, index) => {
+              console.log(sol);
               let colorBySol =
                 row.row.prodsConColor[sol.codigoNombre || sol.nombreDeLaAccion]
                   .color;
@@ -176,7 +184,13 @@ const ReporteTotal = () => {
                       ? colorBySol && colorBySol
                       : sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
                       ? "rgba(92, 101, 192, 0.4)"
-                      : "rgba(240, 93, 103, 0.4)",
+                      : sol.codigoNombre
+                      ? "rgba(240, 93, 103, 0.4)"
+                      : sol.tipo === "correctiva"
+                      ? "rgba(111, 149, 255, 0.4)"
+                      : sol.tipo === "operativa"
+                      ? "rgba(250, 161, 145, 0.4)"
+                      : "rgba(111, 214, 115, 0.4)",
                     padding: "5px",
                     borderRadius: "5px",
                   }}>
@@ -200,6 +214,7 @@ const ReporteTotal = () => {
       renderCell: ({ row }) => {
         let cont = row.totalXProducto;
 
+        console.log(cont);
         return (
           <div
             style={{
@@ -261,7 +276,7 @@ const ReporteTotal = () => {
 
   let rows7 = new Array(8);
 
-  rows7 = diasFechas.map((dia, index) => {
+  rows7 = fechasSemanaCompletas.map((dia, index) => {
     let prodsConColor = {};
 
     let fullData = {
