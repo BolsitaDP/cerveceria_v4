@@ -39,6 +39,12 @@ const CrearAccion = () => {
     setTextoNombre(e.target.value);
   };
 
+  const handleKeyDown = (event) => {
+    // Evitar que se escriba la coma (,)
+    if (event.key === "," || event.key === "Comma") {
+      event.preventDefault();
+    }
+  };
   const handleChangeMinutos = (e) => {
     setMinutosAccion(e.target.value);
   };
@@ -170,6 +176,7 @@ const CrearAccion = () => {
             sx={{ maxWidth: "200px" }}
             value={minutosAccion}
             onChange={handleChangeMinutos}
+            onKeyDown={handleKeyDown}
             inputProps={{ min: 0 }}
             endAdornment={<InputAdornment position="end">Horas</InputAdornment>}
             size="small"

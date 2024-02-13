@@ -211,6 +211,7 @@ const PDFs = () => {
       <Box
         sx={{
           padding: "10px",
+          width: "70vw",
           minWidth: "max-content",
           display: "flex",
           justifyContent: "center",
@@ -235,7 +236,11 @@ const PDFs = () => {
         </FormControl>
 
         <FormControl
-          sx={{ m: 1, minWidth: 200 }}
+          sx={{
+            m: 1,
+            minWidth: 200,
+            visibility: tipoDeReporte !== "Diario" ? "hidden" : "visible",
+          }}
           size="small"
           disabled={tipoDeReporte !== "Diario"}>
           <InputLabel id="seleccionDeDiaLabel">Selecciona los días</InputLabel>
@@ -261,7 +266,11 @@ const PDFs = () => {
         </FormControl>
 
         <FormControl
-          sx={{ m: 1, minWidth: 210 }}
+          sx={{
+            m: 1,
+            minWidth: 210,
+            visibility: tipoDeReporte !== "Semanal" ? "hidden" : "visible",
+          }}
           size="small"
           disabled={tipoDeReporte !== "Semanal"}>
           <InputLabel id="seleccionDeSalonLabel">

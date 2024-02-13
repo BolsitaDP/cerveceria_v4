@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import BasicModal from "../../MUIComponents/BasicModal";
-import { Box } from "@mui/material";
+import { Box, ButtonGroup, Button } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
@@ -8,9 +8,41 @@ import moment from "moment";
 import { v4 as uuid } from "uuid";
 
 const HistorialGeneral = () => {
+  const [filtrosSeleccionados, setFiltrosSeleccionados] = useState([]);
+
   const historialEstado = useSelector((state) => state.history.cambios);
 
-  let rows = historialEstado;
+  const handleClickFiltro = (nombre) => {
+    // Función para actualizar el estado `filtrosSeleccionados`
+
+    const nuevoEstado = filtrosSeleccionados.includes(nombre)
+      ? filtrosSeleccionados.filter((nombreActual) => nombreActual !== nombre)
+      : [...filtrosSeleccionados, nombre];
+
+    setFiltrosSeleccionados(nuevoEstado);
+  };
+
+  console.log(historialEstado);
+
+  let filtros = [
+    "Asignación a programación",
+    "Cambio de día",
+    "Propiedad",
+    "Devolución a planeación",
+  ];
+
+  let rows = [];
+
+  if (filtrosSeleccionados.length > 0) {
+    historialEstado.forEach((reg) => {
+      if (filtrosSeleccionados.includes(reg.tipoDeCambio)) {
+        rows.push(reg);
+      }
+    });
+  } else {
+    rows = historialEstado;
+  }
+
   let columns = [
     {
       field: "tipoDeCambio",
@@ -137,7 +169,7 @@ const HistorialGeneral = () => {
     <BasicModal titulo={"Historial general"}>
       <Box
         sx={{
-          height: "60vh",
+          height: "70vh",
           width: "70vw",
         }}>
         <Box
@@ -146,8 +178,32 @@ const HistorialGeneral = () => {
             minHeight: "180px",
             height: "100%",
             width: "100%",
+            flexDirection: "column",
           }}>
-          <Box sx={{ flexGrow: 1, width: "100%" }}>
+          <Box
+            sx={{
+              margin: "10px 0",
+              width: "100%",
+            }}>
+            <ButtonGroup sx={{ display: "flex", justifyContent: "center" }}>
+              {filtros.map((filtro, index) => {
+                return (
+                  <Button
+                    key={index}
+                    id={filtro}
+                    variant={
+                      filtrosSeleccionados.includes(filtro)
+                        ? "contained"
+                        : "outlined"
+                    }
+                    onClick={() => handleClickFiltro(filtro)}>
+                    {filtro === "Propiedad" ? "Propiedades" : filtro}
+                  </Button>
+                );
+              })}
+            </ButtonGroup>
+          </Box>
+          <Box sx={{ flexGrow: 1, width: "100%", height: "40%" }}>
             <DataGrid
               slots={{ toolbar: GridToolbar }}
               // getRowHeight={() => "auto"}

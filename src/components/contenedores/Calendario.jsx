@@ -138,14 +138,14 @@ const Calendario = () => {
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Notificar cambios" arrow>
+            {/* <Tooltip title="Notificar cambios" arrow>
               <IconButton
                 sx={{ color: theme.palette.primary.contrast }}
                 onClick={() => handleMostrarModal("notificarCambios")}
                 edge="end">
                 <BackupRoundedIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip title="Estadísticas generales" arrow>
               <IconButton

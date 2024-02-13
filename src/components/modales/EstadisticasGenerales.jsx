@@ -3,7 +3,7 @@ import React from "react";
 import BasicModal from "../MUIComponents/BasicModal";
 import { useSelector } from "react-redux";
 
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 
 const EstadisticasGenerales = () => {
   const contenedoresEstado = useSelector((state) => state.contenedores);
@@ -12,10 +12,10 @@ const EstadisticasGenerales = () => {
     (state) => state.history.salonSeleccionado
   );
 
-  console.log(contenedoresEstado);
+  let fechasSliced = fechasSeleccionadas.slice(0, 7);
 
   let salones = contenedoresEstado.calendario;
-  let cantidadesPorSalon = new Array(7).fill(0);
+  let produccionGeneral = new Array(7).fill(0);
   let nombresSalones = [];
 
   let keysSalones = Object.keys(salones);
@@ -25,20 +25,21 @@ const EstadisticasGenerales = () => {
     nombresSalones.push(salon.id);
 
     let dias = salon.dias;
-    let cant = 0;
-    Object.values(dias).forEach((dia) => {
-      if (fechasSeleccionadas.includes(dia.fecha)) {
+    let horasT = 0;
+    Object.values(dias).forEach((dia, i) => {
+      if (i >= 7) return;
+      horasT += dia.horas;
+
+      if (fechasSliced.includes(dia.fecha)) {
         dia.contenido.forEach((el) => {
           if (el.codigoNombre) {
-            cant += el.cantidad;
           }
         });
       }
     });
-    cantidadesPorSalon[index] = cant;
-  });
 
-  console.log(cantidadesPorSalon);
+    produccionGeneral[index] = 168 - horasT.toFixed(2);
+  });
 
   // let diasContenido = Object.values(
   //   contenedoresEstado.calendario[salonSeleccionado].dias
@@ -57,10 +58,16 @@ const EstadisticasGenerales = () => {
 
   return (
     <BasicModal titulo={"Estadísticas generales"}>
+      <Box sx={{ fontSize: "18px", marginTop: "10px" }}>
+        Horas de ocupación{" "}
+        <Tooltip title="24 horas x 7 días" arrow>
+          (máx. 168 horas)
+        </Tooltip>
+      </Box>
       <Box sx={{ width: "100%", height: "100%", padding: "20px" }}>
         <BarChart
           xAxis={[{ scaleType: "band", data: nombresSalones }]}
-          series={[{ data: cantidadesPorSalon }]}
+          series={[{ data: produccionGeneral }]}
           width={600}
           height={300}
           colors={["#007aff"]}
