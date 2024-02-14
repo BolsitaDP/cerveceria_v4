@@ -80,13 +80,31 @@ const ReporteTotal = () => {
           Object.keys(salones[salon].dias).forEach((key) => {
             if (!fechasSemanaCompletas.includes(key)) return;
             salones[salon].dias[key].contenido.forEach((item) => {
-              const codigoNombre = item.codigoNombre || "Acción";
+              const codigoNombre = item.codigoNombre || item.tipo;
               const itemExistente = encontrarItem(totalXProducto, codigoNombre);
+
+              let velocidad;
+              let horasOcupadas;
+              if (item.velocidadesSalonProducto) {
+                item.velocidadesSalonProducto?.forEach((linea) => {
+                  if (linea.Linea === salon) {
+                    velocidad = linea.Velocidad;
+                  }
+                });
+                horasOcupadas = item.cantidad / velocidad;
+              } else {
+                horasOcupadas = item.duracion;
+              }
 
               if (itemExistente) {
                 itemExistente.cantidad += item.cantidad;
+                if (item.velocidadesSalonProducto) {
+                  itemExistente.horasOcupadas += horasOcupadas;
+                } else {
+                  itemExistente.horasOcupadas += item.duracion;
+                }
               } else {
-                totalXProducto.push({ ...item });
+                totalXProducto.push({ ...item, horasOcupadas });
               }
             });
           });
@@ -113,7 +131,8 @@ const ReporteTotal = () => {
                       {sol.producto} ({sol.codigoNombre})
                       <br />
                       <strong>
-                        {sol.cantidad} {sol.unidadMedida}
+                        {sol.cantidad} {sol.unidadMedida} <br />
+                        {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>
                     </div>
                   ) : (
@@ -131,7 +150,11 @@ const ReporteTotal = () => {
                     {sol.codigoNombre || sol.tipo})
                     <br />
                     <strong>
-                      {sol.cantidad} {sol.unidadMedida}
+                      {!sol.tipo && sol.cantidad}
+                      {!sol.tipo && sol.unidadMedida}
+                      {/* {sol.cantidad} {sol.unidadMedida} */}
+                      <br />
+                      {sol.horasOcupadas.toFixed(2) + " horas"}
                     </strong>
                   </div>
                 )
@@ -238,6 +261,8 @@ const ReporteTotal = () => {
                         <br />
                         <strong>
                           {sol.cantidad} {sol.unidadMedida}
+                          <br />
+                          {sol.horasOcupadas.toFixed(2) + " horas"}
                         </strong>
                       </div>
                     ) : (
@@ -256,6 +281,8 @@ const ReporteTotal = () => {
                       <br />
                       <strong>
                         {sol.cantidad} {sol.unidadMedida}
+                        <br />
+                        {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>
                     </div>
                   );
@@ -268,7 +295,9 @@ const ReporteTotal = () => {
   ];
 
   function encontrarItem(items, codigoNombre) {
-    return items.find((i) => i.codigoNombre === codigoNombre);
+    return items.find(
+      (i) => i.codigoNombre === codigoNombre || i.tipo === codigoNombre
+    );
   }
 
   function obtenerColorAleatorio() {
@@ -309,10 +338,24 @@ const ReporteTotal = () => {
           codigoNombre
         );
 
+        let velocidad;
+        let horasOcupadas;
+        if (item.velocidadesSalonProducto) {
+          item.velocidadesSalonProducto?.forEach((linea) => {
+            if (linea.Linea === key) {
+              velocidad = linea.Velocidad;
+            }
+          });
+          horasOcupadas = item.cantidad / velocidad;
+        } else {
+          horasOcupadas = item.duracion;
+        }
+
         if (itemExistente) {
           itemExistente.cantidad += item.cantidad;
+          itemExistente.horasOcupadas += horasOcupadas;
         } else {
-          fullData.totalXProducto.push({ ...item });
+          fullData.totalXProducto.push({ ...item, horasOcupadas });
         }
 
         fullData.total += item.cantidad;
