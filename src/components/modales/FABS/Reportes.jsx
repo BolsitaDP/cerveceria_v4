@@ -28,7 +28,6 @@ const Reportes = () => {
 
   const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
   const contenedoresEstado = useSelector((state) => state.contenedores);
-  console.log(contenedoresEstado);
 
   const theme = useTheme();
 
@@ -155,19 +154,22 @@ const Reportes = () => {
           }}
           id="combo-box-demo"
           options={productosNombres}
+          getOptionLabel={(option) => option}
           sx={{
             minWidth: "50%",
             "& .MuiAutocomplete-tag": { flexWrap: "nowrap" },
           }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              sx={{ width: "100%" }}
-              color="secondary"
-              variant="standard"
-              label="Producto"
-            />
-          )}
+          renderInput={(params) => {
+            return (
+              <TextField
+                {...params}
+                sx={{ width: "100%" }}
+                color="secondary"
+                variant="standard"
+                label="Producto"
+              />
+            );
+          }}
         />
         <FormControlLabel
           control={

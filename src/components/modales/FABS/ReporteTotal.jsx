@@ -78,6 +78,7 @@ const ReporteTotal = () => {
         if (!contenido) {
           let totalXProducto = [];
           Object.keys(salones[salon].dias).forEach((key) => {
+            if (!fechasSemanaCompletas.includes(key)) return;
             salones[salon].dias[key].contenido.forEach((item) => {
               const codigoNombre = item.codigoNombre || "Acción";
               const itemExistente = encontrarItem(totalXProducto, codigoNombre);
@@ -149,10 +150,9 @@ const ReporteTotal = () => {
               fontSize: switchTamanoPequeno ? "8px" : "12px",
             }}>
             {contenido.map((sol, index) => {
-              console.log(sol);
               let colorBySol =
-                row.row.prodsConColor[sol.codigoNombre || sol.nombreDeLaAccion]
-                  .color;
+                row.row.prodsConColor[sol.codigoNombre || sol.tipo].color;
+
               return sinAcciones ? (
                 sol.codigoNombre ? (
                   <div
@@ -214,7 +214,6 @@ const ReporteTotal = () => {
       renderCell: ({ row }) => {
         let cont = row.totalXProducto;
 
-        console.log(cont);
         return (
           <div
             style={{
@@ -224,42 +223,44 @@ const ReporteTotal = () => {
               margin: "5px 0",
               fontSize: switchTamanoPequeno ? "8px" : "12px",
             }}>
-            {cont?.map((sol, index) =>
-              sinAcciones ? (
-                sol.codigoNombre ? (
-                  <div
-                    key={index}
-                    style={{
-                      backgroundColor: "rgba(0, 122, 255, 0.4)",
-                      padding: "5px",
-                      borderRadius: "5px",
-                    }}>
-                    {sol.producto} ({sol.codigoNombre})
-                    <br />
-                    <strong>
-                      {sol.cantidad} {sol.unidadMedida}
-                    </strong>
-                  </div>
-                ) : (
-                  ""
-                )
-              ) : (
-                <div
-                  key={index}
-                  style={{
-                    backgroundColor: "rgba(0, 122, 255, 0.4)",
-                    padding: "5px",
-                    borderRadius: "5px",
-                  }}>
-                  {sol.producto || sol.nombreDeLaAccion} (
-                  {sol.codigoNombre || sol.tipo})
-                  <br />
-                  <strong>
-                    {sol.cantidad} {sol.unidadMedida}
-                  </strong>
-                </div>
-              )
-            )}
+            {cont
+              ? cont.map((sol, index) => {
+                  return sinAcciones ? (
+                    sol.codigoNombre ? (
+                      <div
+                        key={index}
+                        style={{
+                          backgroundColor: "rgba(0, 122, 255, 0.4)",
+                          padding: "5px",
+                          borderRadius: "5px",
+                        }}>
+                        {sol.producto} ({sol.codigoNombre})
+                        <br />
+                        <strong>
+                          {sol.cantidad} {sol.unidadMedida}
+                        </strong>
+                      </div>
+                    ) : (
+                      ""
+                    )
+                  ) : (
+                    <div
+                      key={index}
+                      style={{
+                        backgroundColor: "rgba(0, 122, 255, 0.4)",
+                        padding: "5px",
+                        borderRadius: "5px",
+                      }}>
+                      {sol.producto || sol.nombreDeLaAccion} (
+                      {sol.codigoNombre || sol.tipo})
+                      <br />
+                      <strong>
+                        {sol.cantidad} {sol.unidadMedida}
+                      </strong>
+                    </div>
+                  );
+                })
+              : ""}
           </div>
         );
       },
@@ -276,9 +277,9 @@ const ReporteTotal = () => {
 
   let rows7 = new Array(8);
 
-  rows7 = fechasSemanaCompletas.map((dia, index) => {
-    let prodsConColor = {};
+  let prodsConColor = {};
 
+  rows7 = fechasSemanaCompletas.map((dia, index) => {
     let fullData = {
       dia,
       index,
@@ -292,7 +293,7 @@ const ReporteTotal = () => {
       let dataXSalonXDia = salones[salon].dias[dia].contenido;
 
       dataXSalonXDia.forEach((sol) => {
-        let x = sol.codigoNombre || sol.nombreDeLaAccion;
+        let x = sol.codigoNombre || sol.tipo;
         prodsConColor[x] = { color: obtenerColorAleatorio() };
       });
 
