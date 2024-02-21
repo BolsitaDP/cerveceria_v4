@@ -139,21 +139,58 @@ const contenedoresSlice = createSlice({
       state.calendario = action.payload;
     },
     setSalonesInicial: (state, action) => {
+      var salones = action.payload;
       action.payload.forEach((salon) => {
         let nombreSalon = salon.Nombre;
         state.calendario[nombreSalon] = {
           id: salon.Nombre,
           dias: {},
+          capacidadLunes: salon.capacidadLunes,
+          capacidadMartes: salon.capacidadMartes,
+          capacidadMiercoles: salon.capacidadMiercoles,
+          capacidadJueves: salon.capacidadJueves,
+          capacidadViernes: salon.capacidadViernes,
+          capacidadSabado: salon.capacidadSabado,
+          capacidadDomingo: salon.capacidadDomingo,
         };
       });
     },
     setDias: (state, action) => {
       Object.values(state.calendario).forEach((salon) => {
         action.payload.forEach((dia) => {
-          let [, fecha] = dia.split("&");
+          let [nombre, fecha] = dia.split("&");
+          let capacidad = 0;
+
+          switch (nombre) {
+            case "Lunes":
+              capacidad = salon.capacidadLunes;
+              break;
+            case "Martes":
+              capacidad = salon.capacidadMartes;
+              break;
+            case "Miércoles":
+              capacidad = salon.capacidadMiercoles;
+              break;
+            case "Jueves":
+              capacidad = salon.capacidadJueves;
+              break;
+            case "Viernes":
+              capacidad = salon.capacidadViernes;
+              break;
+            case "Sábado":
+              capacidad = salon.capacidadSabado;
+              break;
+            case "Domingo":
+              capacidad = salon.capacidadDomingo;
+              break;
+            default:
+              capacidad = 0;
+          }
+
           salon.dias[dia] = {
             contenido: [],
-            horas: 24,
+            horas: capacidad,
+            horasTotales: capacidad,
             fecha: fecha,
           };
         });
@@ -297,7 +334,7 @@ const contenedoresSlice = createSlice({
 
         state.calendario[action.payload.salonProgramado].dias[
           action.payload.fecha
-        ].horas += diferencia / capacidadSalonPorDia;
+        ].horas += parseFloat(diferencia / capacidadSalonPorDia);
 
         solicitudActualizada = state.calendario[
           action.payload.salonProgramado
@@ -342,11 +379,13 @@ const contenedoresSlice = createSlice({
         }
       });
 
-      state.calendario[salonOriginal].dias[fechaOriginal].horas -=
-        elementoOriginal.cantidad / capacidadSalonPorDia;
+      state.calendario[salonOriginal].dias[fechaOriginal].horas -= parseFloat(
+        elementoOriginal.cantidad / capacidadSalonPorDia
+      );
 
-      state.calendario[salonCopia].dias[fechaCopia].horas -=
-        elementoArrastradoCopia.cantidad / capacidadSalonPorDia;
+      state.calendario[salonCopia].dias[fechaCopia].horas -= parseFloat(
+        elementoArrastradoCopia.cantidad / capacidadSalonPorDia
+      );
     },
     creacionMasDeUnaCopia: (state, action) => {
       console.log(action.payload);
@@ -366,8 +405,9 @@ const contenedoresSlice = createSlice({
           }
         });
 
-        state.calendario[el.salonProgramado].dias[el.fecha].horas -=
-          el.cantidad / capacidadSalonPorDia;
+        state.calendario[el.salonProgramado].dias[el.fecha].horas -= parseFloat(
+          el.cantidad / capacidadSalonPorDia
+        );
       });
     },
     particionSolicitudSinProgramar: (state, action) => {

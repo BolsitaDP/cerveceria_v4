@@ -45,6 +45,9 @@ const Calendario = () => {
   const salonSeleccionadoEstado = useSelector(
     (state) => state.history.salonSeleccionado
   );
+  const salonSeleccionado = useSelector(
+    (state) => state.history.salonSeleccionado
+  );
 
   useEffect(() => {
     setModalAbierto("seleccionadorDeFechas");
@@ -100,7 +103,35 @@ const Calendario = () => {
     Object.values(salones[salonSeleccionadoEstado].dias).forEach(
       (dia, index) => {
         if (fechasSeleccionadas.includes(dia.fecha)) {
-          porcentajesDeOcupacion.push(100 - Math.round(dia.horas * (100 / 24)));
+          let contenidoDia = dia.contenido;
+          let sumaDelDia = 0;
+
+          contenidoDia.forEach((sol) => {
+            if (sol.codigoNombre) {
+              let cantidad = sol.cantidad;
+              let velocidad;
+
+              sol.velocidadesSalonProducto.forEach((x) => {
+                if (x.Linea === salonSeleccionado) {
+                  velocidad = x.Velocidad;
+                }
+              });
+
+              sumaDelDia += cantidad / velocidad;
+            } else {
+              sumaDelDia += sol.duracion;
+            }
+          });
+
+          let porcentajeDeHora;
+          if (dia.horasTotales > 0) {
+            parseFloat((porcentajeDeHora = 100 / dia.horasTotales));
+          } else {
+            porcentajeDeHora = 0;
+          }
+          porcentajesDeOcupacion.push(
+            Math.round(sumaDelDia * porcentajeDeHora)
+          );
         }
       }
     );

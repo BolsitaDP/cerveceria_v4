@@ -28,17 +28,39 @@ const EstadisticasGenerales = () => {
     let horasT = 0;
     Object.values(dias).forEach((dia, i) => {
       if (i >= 7) return;
-      horasT += dia.horas;
 
       if (fechasSliced.includes(dia.fecha)) {
         dia.contenido.forEach((el) => {
           if (el.codigoNombre) {
           }
         });
+
+        let contenidoDia = dia.contenido;
+
+        let sumaDelDia = 0;
+
+        contenidoDia.forEach((sol) => {
+          if (sol.codigoNombre) {
+            let cantidad = sol.cantidad;
+            let velocidad;
+
+            sol.velocidadesSalonProducto.forEach((x) => {
+              if (x.Linea === salonSeleccionado) {
+                velocidad = x.Velocidad;
+              }
+            });
+
+            sumaDelDia += cantidad / velocidad;
+          } else {
+            sumaDelDia += sol.duracion;
+          }
+        });
+
+        horasT += sumaDelDia;
       }
     });
 
-    produccionGeneral[index] = 168 - horasT.toFixed(2);
+    produccionGeneral[index] = horasT.toFixed(2);
   });
 
   // let diasContenido = Object.values(
@@ -58,12 +80,7 @@ const EstadisticasGenerales = () => {
 
   return (
     <BasicModal titulo={"Estadísticas generales"}>
-      <Box sx={{ fontSize: "18px", marginTop: "10px" }}>
-        Horas de ocupación{" "}
-        <Tooltip title="24 horas x 7 días" arrow>
-          (máx. 168 horas)
-        </Tooltip>
-      </Box>
+      <Box sx={{ fontSize: "18px", marginTop: "10px" }}>Horas de ocupación</Box>
       <Box sx={{ width: "100%", height: "100%", padding: "20px" }}>
         <BarChart
           xAxis={[{ scaleType: "band", data: nombresSalones }]}

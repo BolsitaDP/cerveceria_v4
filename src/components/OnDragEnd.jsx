@@ -193,7 +193,7 @@ const onDragEnd = (
         capacidadSalonPorDia = linea.Velocidad;
       }
     });
-    tiempoARestarEnElDia = Math.round(
+    tiempoARestarEnElDia = parseFloat(
       elementoArrastrado.cantidad / capacidadSalonPorDia
     );
   }
@@ -396,7 +396,7 @@ const onDragEnd = (
           // Si hay horas disponibles en el día
           if (horasDisponiblesEnElDia >= tiempoARestarEnElDia) {
             // Se agregan horas al día fuente cuando el elemento se quita
-            diaFuente.horas += parseInt(tiempoARestarEnElDia);
+            diaFuente.horas += parseFloat(tiempoARestarEnElDia);
 
             // Se settea el orden con el destination.index
             elementoArrastrado.orden = posicionDestino;
@@ -437,7 +437,7 @@ const onDragEnd = (
             });
 
             // Se le quitan horas al día destino
-            diaDestino.horas -= parseInt(tiempoARestarEnElDia);
+            diaDestino.horas -= parseFloat(tiempoARestarEnElDia);
           } else {
             toast.error("La capacidad del salón está llena este día");
           }
@@ -502,7 +502,7 @@ const onDragEnd = (
       });
 
       // Se le agregan las horas del elemento quitado
-      diaFuente.horas += parseInt(tiempoARestarEnElDia);
+      diaFuente.horas += parseFloat(tiempoARestarEnElDia);
     }
   }
 
