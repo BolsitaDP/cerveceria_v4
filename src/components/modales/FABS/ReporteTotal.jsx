@@ -124,14 +124,16 @@ const ReporteTotal = () => {
                     <div
                       key={index}
                       style={{
-                        backgroundColor: "rgba(0, 122, 255, 0.4)",
+                        backgroUNColor: "rgba(0, 122, 255, 0.4)",
                         padding: "5px",
                         borderRadius: "5px",
                       }}>
                       {sol.producto} ({sol.codigoNombre})
                       <br />
                       <strong>
-                        {sol.cantidad} {sol.unidadMedida} <br />
+                        {sol.cantidad}{" "}
+                        {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}{" "}
+                        <br />
                         {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>
                     </div>
@@ -142,7 +144,7 @@ const ReporteTotal = () => {
                   <div
                     key={index}
                     style={{
-                      backgroundColor: "rgba(0, 122, 255, 0.4)",
+                      backgroUNColor: "rgba(0, 122, 255, 0.4)",
                       padding: "5px",
                       borderRadius: "5px",
                     }}>
@@ -151,7 +153,8 @@ const ReporteTotal = () => {
                     <br />
                     <strong>
                       {!sol.tipo && sol.cantidad}
-                      {!sol.tipo && sol.unidadMedida}
+                      {!sol.tipo &&
+                        (sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida)}
                       {/* {sol.cantidad} {sol.unidadMedida} */}
                       <br />
                       {sol.horasOcupadas.toFixed(2) + " horas"}
@@ -181,7 +184,7 @@ const ReporteTotal = () => {
                   <div
                     key={index}
                     style={{
-                      backgroundColor: switchColoresPorProductos
+                      backgroUNColor: switchColoresPorProductos
                         ? colorBySol && colorBySol
                         : sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
                         ? "rgba(92, 101, 192, 0.4)"
@@ -193,7 +196,8 @@ const ReporteTotal = () => {
                     {sol.codigoNombre || sol.tipo})
                     <br />
                     <strong>
-                      {sol.cantidad} {sol.unidadMedida}
+                      {sol.cantidad}{" "}
+                      {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                     </strong>
                   </div>
                 ) : (
@@ -203,7 +207,7 @@ const ReporteTotal = () => {
                 <div
                   key={index}
                   style={{
-                    backgroundColor: switchColoresPorProductos
+                    backgroUNColor: switchColoresPorProductos
                       ? colorBySol && colorBySol
                       : sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
                       ? "rgba(92, 101, 192, 0.4)"
@@ -221,7 +225,8 @@ const ReporteTotal = () => {
                   {sol.codigoNombre || sol.tipo})
                   <br />
                   <strong>
-                    {sol.cantidad} {sol.unidadMedida}
+                    {sol.cantidad}{" "}
+                    {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                   </strong>
                 </div>
               );
@@ -253,14 +258,15 @@ const ReporteTotal = () => {
                       <div
                         key={index}
                         style={{
-                          backgroundColor: "rgba(0, 122, 255, 0.4)",
+                          backgroUNColor: "rgba(0, 122, 255, 0.4)",
                           padding: "5px",
                           borderRadius: "5px",
                         }}>
                         {sol.producto} ({sol.codigoNombre})
                         <br />
                         <strong>
-                          {sol.cantidad} {sol.unidadMedida}
+                          {sol.cantidad}{" "}
+                          {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                           <br />
                           {sol.horasOcupadas.toFixed(2) + " horas"}
                         </strong>
@@ -272,7 +278,7 @@ const ReporteTotal = () => {
                     <div
                       key={index}
                       style={{
-                        backgroundColor: "rgba(0, 122, 255, 0.4)",
+                        backgroUNColor: "rgba(0, 122, 255, 0.4)",
                         padding: "5px",
                         borderRadius: "5px",
                       }}>
@@ -280,7 +286,8 @@ const ReporteTotal = () => {
                       {sol.codigoNombre || sol.tipo})
                       <br />
                       <strong>
-                        {sol.cantidad} {sol.unidadMedida}
+                        {sol.cantidad}{" "}
+                        {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                         <br />
                         {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>
