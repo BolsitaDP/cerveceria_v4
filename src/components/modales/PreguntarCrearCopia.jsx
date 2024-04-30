@@ -94,7 +94,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
               salonProgramado: objResuesta.salonProgramado,
               fecha: objResuesta.fecha,
               orden: objResuesta.orden,
-              cantidad: objResuesta.cantidad,
+              cantidad: parseInt(objResuesta.cantidad),
               velocidadesSalonProducto: objResuesta.velocidadesSalonProducto,
             });
 

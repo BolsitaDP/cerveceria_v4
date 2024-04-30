@@ -116,7 +116,7 @@ const contenedoresSlice = createSlice({
         ].dias[dia].contenido.filter(
           (accion) => accion.idDnd !== action.payload.idDnd
         );
-        state.calendario[salon].dias[dia].horas += action.payload.duracion / 60;
+        state.calendario[salon].dias[dia].horas += action.payload.duracion;
         toast.success(`Tarea eliminada exitosamente`);
       } catch (error) {
         toast.error("Ha ocurrido un error: " + error);
