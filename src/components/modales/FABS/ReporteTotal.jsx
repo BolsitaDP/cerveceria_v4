@@ -131,7 +131,7 @@ const ReporteTotal = () => {
                       {sol.producto} ({sol.codigoNombre})
                       <br />
                       <strong>
-                        {sol.cantidad}{" "}
+                        {sol.cantidad.toLocaleString()}{" "}
                         {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}{" "}
                         <br />
                         {sol.horasOcupadas.toFixed(2) + " horas"}
@@ -152,7 +152,7 @@ const ReporteTotal = () => {
                     {sol.codigoNombre || sol.tipo})
                     <br />
                     <strong>
-                      {!sol.tipo && sol.cantidad}
+                      {!sol.tipo && sol.cantidad.toLocaleString()}
                       {!sol.tipo &&
                         (sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida)}
                       {/* {sol.cantidad} {sol.unidadMedida} */}
@@ -196,7 +196,7 @@ const ReporteTotal = () => {
                     {sol.codigoNombre || sol.tipo})
                     <br />
                     <strong>
-                      {sol.cantidad}{" "}
+                      {sol.cantidad.toLocaleString()}{" "}
                       {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                     </strong>
                   </div>
@@ -227,7 +227,7 @@ const ReporteTotal = () => {
                   {sol.codigoNombre || sol.tipo})
                   <br />
                   <strong>
-                    {sol.cantidad}{" "}
+                    {sol.cantidad.toLocaleString()}{" "}
                     {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                   </strong>
                 </div>
@@ -267,7 +267,7 @@ const ReporteTotal = () => {
                         {sol.producto} ({sol.codigoNombre})
                         <br />
                         <strong>
-                          {sol.cantidad}{" "}
+                          {sol.cantidad.toLocaleString()}{" "}
                           {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                           <br />
                           {sol.horasOcupadas.toFixed(2) + " horas"}
@@ -288,7 +288,7 @@ const ReporteTotal = () => {
                       {sol.codigoNombre || sol.tipo})
                       <br />
                       <strong>
-                        {sol.cantidad}{" "}
+                        {sol.cantidad.toLocaleString()}{" "}
                         {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                         <br />
                         {sol.horasOcupadas.toFixed(2) + " horas"}
