@@ -204,6 +204,11 @@ const CrearAccion = () => {
               label="Correctiva"
             />
             <FormControlLabel value="notas" control={<Radio />} label="Notas" />
+            <FormControlLabel
+              value="horario"
+              control={<Radio />}
+              label="Horario"
+            />
           </RadioGroup>
         </FormControl>
 

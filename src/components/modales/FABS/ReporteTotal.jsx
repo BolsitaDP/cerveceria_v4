@@ -217,6 +217,8 @@ const ReporteTotal = () => {
                       ? "rgba(111, 149, 255, 0.4)"
                       : sol.tipo === "operativa"
                       ? "rgba(250, 161, 145, 0.4)"
+                      : sol.tipo === "horario"
+                      ? "rgb(85, 214, 194, 0.4)"
                       : "rgba(111, 214, 115, 0.4)",
                     padding: "5px",
                     borderRadius: "5px",

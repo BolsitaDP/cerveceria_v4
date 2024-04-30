@@ -20,6 +20,8 @@ const Accion = ({
           ? "accion correctiva"
           : accion.tipo === "operativa"
           ? "accion operativa"
+          : accion.tipo === "horario"
+          ? "accion horario"
           : "accion notas"
       }
       sx={{
