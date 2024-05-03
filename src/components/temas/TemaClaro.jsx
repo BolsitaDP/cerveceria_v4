@@ -170,6 +170,8 @@ const TemaClaro = createTheme(
         styleOverrides: {
           root: {
             boxShadow: "none",
+            // width: "40px",
+            // height: "40px",
           },
         },
       },

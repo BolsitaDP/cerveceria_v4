@@ -23,6 +23,7 @@ import { deteleAccionCalendario } from "../../redux/slices/contenedoresSlice";
 
 import { toast } from "react-toastify";
 import BtnDevolverSol from "../BtnDevolverSol";
+import Notificar from "../modales/Notificar";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -170,14 +171,14 @@ const Calendario = () => {
               </IconButton>
             </Tooltip>
 
-            {/* <Tooltip title="Notificar cambios" arrow>
+            <Tooltip title="Notificar cambios" arrow>
               <IconButton
                 sx={{ color: theme.palette.primary.contrast }}
                 onClick={() => handleMostrarModal("notificarCambios")}
                 edge="end">
                 <BackupRoundedIcon />
               </IconButton>
-            </Tooltip> */}
+            </Tooltip>
 
             <Tooltip title="Estadísticas generales" arrow>
               <IconButton
@@ -481,6 +482,11 @@ const Calendario = () => {
         open={modalAbierto === "detallesAccion"}
         onClose={() => setModalAbierto(null)}>
         <ModalDetallesAccion accionAbierta={accionAbierta} />
+      </Modal>
+      <Modal
+        open={modalAbierto === "notificarCambios"}
+        onClose={() => setModalAbierto(null)}>
+        <Notificar />
       </Modal>
     </Box>
   );
