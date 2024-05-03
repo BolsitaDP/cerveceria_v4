@@ -22,6 +22,7 @@ import EstadisticasDia from "../modales/EstadisticasDia";
 import { deteleAccionCalendario } from "../../redux/slices/contenedoresSlice";
 
 import { toast } from "react-toastify";
+import BtnDevolverSol from "../BtnDevolverSol";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -372,9 +373,14 @@ const Calendario = () => {
                               padding: "0 10px",
                               gap: "10px",
                               overflow: "auto",
+                              position: "relative",
                             }}
                             {...provided.droppableProps}
                             ref={provided.innerRef}>
+                            <BtnDevolverSol
+                              id={`${salonNombre}|${diaNombre}`}
+                            />
+
                             {diaConteidoOrganizado.map((contenido, index) => {
                               let contenidoId = null;
                               let contenidoContenido = null;

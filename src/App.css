@@ -21,3 +21,15 @@
   margin-top: 20px;
   font-size: 1.3vw;
 }
+.btnDevolverSolicitudes {
+  /* background-color: blueviolet !important; */
+  position: absolute !important;
+  top: 0;
+  right: 15px;
+  padding: 5px !important;
+}
+
+.svgDevolverSolicitudes {
+  width: 20px !important;
+  height: 20px !important;
+}
