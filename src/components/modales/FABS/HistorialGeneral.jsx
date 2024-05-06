@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import BasicModal from "../../MUIComponents/BasicModal";
-import { Box, ButtonGroup, Button } from "@mui/material";
+import { Box, ButtonGroup, Button, Modal } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { v4 as uuid } from "uuid";
+import Notificar from "../Notificar";
 
 const HistorialGeneral = () => {
   const [filtrosSeleccionados, setFiltrosSeleccionados] = useState([]);
+  const [modalAbierto, setModalAbierto] = useState(null);
 
   const historialEstado = useSelector((state) => state.history.cambios);
+
+  const gridRef = useRef(null);
 
   const handleClickFiltro = (nombre) => {
     // Función para actualizar el estado `filtrosSeleccionados`
@@ -63,7 +67,7 @@ const HistorialGeneral = () => {
       field: "codigo",
       headerName: "Elemento",
       flex: 1,
-      minWidth: 150,
+      minWidth: 100,
     },
     {
       field: "valorPrevio",
@@ -165,8 +169,16 @@ const HistorialGeneral = () => {
     // },
   ];
 
+  const handleExportar = () => {
+    console.log(gridRef.current);
+    setModalAbierto("exportar");
+  };
+
   return (
-    <BasicModal titulo={"Historial general"}>
+    <BasicModal
+      titulo={"Historial general"}
+      exportar
+      funcionAlDarClickExportar={handleExportar}>
       <Box
         sx={{
           height: "70vh",
@@ -210,6 +222,7 @@ const HistorialGeneral = () => {
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
               rows={rows}
               pageSizeOptions={[10]}
+              ref={gridRef}
               initialState={{
                 pagination: {
                   paginationModel: { page: 0, pageSize: 10 },
@@ -217,10 +230,16 @@ const HistorialGeneral = () => {
               }}
               columns={columns}
               getRowId={(row) => uuid()}
+              // getCellClassName={() => "letraPequeñaTabla"}
             />
           </Box>
         </Box>
       </Box>
+      <Modal
+        open={modalAbierto === "exportar"}
+        onClose={() => setModalAbierto(null)}>
+        <Notificar exportar columns={columns} rows={rows} />
+      </Modal>
     </BasicModal>
   );
 };

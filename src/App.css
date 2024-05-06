@@ -47,3 +47,7 @@
 .badgetEnSolicitud.internacional {
   background-color: rgb(0, 0, 255);
 }
+
+.letraPequeñaTabla {
+  font-size: 10px;
+}

@@ -108,7 +108,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
       notificado: 0,
       fechaDelCambio: fechaActual,
       horaDelCambio: horaActual,
-      versionDelCambio: versionEstado,
+      version: versionEstado,
       editor: editorEstado,
     };
 
@@ -180,7 +180,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
         notificado: 0,
         fechaDelCambio: fechaActual,
         horaDelCambio: horaActual,
-        versionDelCambio: versionEstado,
+        version: versionEstado,
         editor: editorEstado,
       };
       // if (solicitudAbierta.fechaRequiere !== solicitudEditada.fechaRequiere) {

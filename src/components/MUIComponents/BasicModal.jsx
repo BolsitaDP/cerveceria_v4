@@ -1,8 +1,15 @@
 import { useTheme } from "@emotion/react";
-import { Box, Card } from "@mui/material";
+import { Box, Card, IconButton, Tooltip } from "@mui/material";
 import React from "react";
+import ShareIcon from "@mui/icons-material/Share";
 
-const BasicModal = ({ titulo, children, tipo = null }) => {
+const BasicModal = ({
+  titulo,
+  children,
+  tipo = null,
+  exportar,
+  funcionAlDarClickExportar,
+}) => {
   const theme = useTheme();
   return (
     <Box
@@ -32,8 +39,22 @@ const BasicModal = ({ titulo, children, tipo = null }) => {
                 ? theme.palette.primary.nacional
                 : theme.palette.primary.internacional
               : "",
+            position: "relative",
           }}>
           <div>{titulo}</div>
+          {exportar && (
+            <div style={{ position: "absolute", right: "20px" }}>
+              <Tooltip title="Exportar" arrow>
+                <IconButton
+                  onClick={funcionAlDarClickExportar}
+                  sx={{
+                    color: theme.palette.primary.contrast,
+                  }}>
+                  <ShareIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
+          )}
         </Card>
         <Box
           sx={{

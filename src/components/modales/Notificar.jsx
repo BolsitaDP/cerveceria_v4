@@ -15,11 +15,11 @@ import {
 import CrearGrupo from "../MUIComponents/CrearGrupo";
 import CrearMiembros from "../MUIComponents/CrearMiembros";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { updateVersion } from "../../redux/slices/historySlice";
+import enviarPDFPorCorreo from "../../helpers/enviarPDFPorCorreo";
 
-const Notificar = () => {
-  const [nombreGrupo, setNombreGrupo] = useState(null);
-  const [correoMiembro, setCorreoMiembro] = useState(null);
-
+const Notificar = ({ exportar, columns, rows }) => {
   const [grupoANotificar, setGrupoANotificar] = useState([]);
 
   const [openModal, setOpenModal] = useState(null);
@@ -30,18 +30,7 @@ const Notificar = () => {
     setOpenModal(modal);
   };
 
-  const names = [
-    "Oliver Hansen",
-    "Van Henry",
-    "April Tucker",
-    "Ralph Hubbard",
-    "Omar Alexander",
-    "Carlos Abbott",
-    "Miriam Wagner",
-    "Bradley Wilkerson",
-    "Virginia Andrews",
-    "Kelly Snyder",
-  ];
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     const {
@@ -50,7 +39,11 @@ const Notificar = () => {
     setGrupoANotificar(typeof value === "string" ? value.split(",") : value);
   };
 
-  const handleEnviarNotificacion = () => {};
+  const handleEnviarCambiosDeVersion = () => {
+    dispatch(updateVersion());
+  };
+
+  const handleEnviarProgramacion = () => {};
 
   let miembrosDeLosGrupos = new Set();
 
@@ -66,6 +59,25 @@ const Notificar = () => {
   });
 
   miembrosDeLosGrupos = Array.from(miembrosDeLosGrupos);
+
+  const handleEnviarPDF = async () => {
+    try {
+      await Promise.all(
+        grupoANotificar.map(async (grupo) => {
+          await enviarPDFPorCorreo(
+            columns,
+            rows,
+            "dataGridPDF",
+            "Título",
+            grupo
+          );
+        })
+      );
+      console.log("Todas las notificaciones han sido enviadas correctamente.");
+    } catch (error) {
+      console.error("Ocurrió un error al enviar las notificaciones:", error);
+    }
+  };
 
   return (
     <>
@@ -140,12 +152,39 @@ const Notificar = () => {
               </Select>
             </FormControl> */}
           </Box>
-          <Button
-            variant="contained"
-            sx={{ width: "50%" }}
-            onClick={handleEnviarNotificacion}>
-            Notificar
-          </Button>
+          {exportar ? (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                gap: "20px",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <Button variant="contained" onClick={handleEnviarPDF}>
+                Enviar pdf
+              </Button>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                gap: "20px",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <Button variant="contained" onClick={handleEnviarProgramacion}>
+                Enviar programación
+              </Button>
+
+              <Button
+                variant="contained"
+                onClick={handleEnviarCambiosDeVersion}>
+                Enviar cambios de versión
+              </Button>
+            </Box>
+          )}
         </Box>
 
         <Modal open={openModal === "grupos"} onClose={() => setOpenModal(null)}>

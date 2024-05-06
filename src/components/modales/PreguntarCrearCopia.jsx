@@ -110,7 +110,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
                 propiedad: null,
                 editor: editorEstado,
                 id: uuid(),
-                versionDelCambio: versionEstado,
+                version: versionEstado,
                 // orden: posicionDestino,
                 tipo: "solicitud",
                 elemento: objResuesta,

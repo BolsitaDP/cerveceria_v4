@@ -144,7 +144,7 @@ const postData = {
       tipoDeCambio: body.tipoDeCambio,
       valorNuevo: body.valorNuevo,
       valorPrevio: body.valorPrevio,
-      version: body.versionDelCambio,
+      version: body.version,
     });
   },
 
