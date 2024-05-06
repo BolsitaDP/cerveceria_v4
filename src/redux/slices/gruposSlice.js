@@ -13,17 +13,17 @@ const gruposSlice = createSlice({
   },
   reducers: {
     createGroup: (state, action) => {
-      let groupsValues = Object.values(state.groups);
+      // let groupsValues = Object.values(state.groups);
       // let lastId = groupsValues[groupsValues.length - 1].id;
 
-      const nuevoGrupo = {
-        idLocal: uuid(),
-        nombre: action.payload.nombre,
-        members: [],
-        // Falta id, que es secuencial y se usa para borrar el grupo
-      };
+      // const nuevoGrupo = {
+      //   idLocal: uuid(),
+      //   nombre: action.payload.nombre,
+      //   members: [],
+      //   // Falta id, que es secuencial y se usa para borrar el grupo
+      // };
 
-      state.groups[action.payload.nombre] = nuevoGrupo;
+      state.groups[action.payload.nombre] = action.payload;
 
       // postCrearGrupos(nuevoGrupo);
     },
@@ -48,19 +48,31 @@ const gruposSlice = createSlice({
       // postEliminarGrupo({ nombre, idLocal });
     },
     createMember: (state, action) => {
-      console.log(action.payload);
-      let grupo = action.payload.grupo;
-      let id = uuid();
-      const nuevoMiembro = {
-        idGrupo: state.groups[action.payload.grupo].idLocal,
-        correo: action.payload.correo,
-        id,
-      };
+      let grupos = action.payload.grupos;
 
-      state.groups[grupo].members.push(nuevoMiembro);
+      grupos.forEach((grupo) => {
+        if (state.groups.hasOwnProperty(grupo)) {
+          let id = uuid();
+          const nuevoMiembro = {
+            idGrupo: state.groups[grupo].idLocal,
+            correo: action.payload.correo,
+            id: id,
+          };
 
-      let groupId = state.groups[grupo].idLocal;
-      let correo = action.payload.correo;
+          const updatedMembers = [...state.groups[grupo].members, nuevoMiembro];
+
+          state.groups = {
+            ...state.groups,
+            [grupo]: {
+              ...state.groups[grupo],
+              members: updatedMembers,
+            },
+          };
+        }
+      });
+
+      // let groupId = state.groups[grupo].idLocal;
+      // let correo = action.payload.correo;
       // let id = action.payload.idLocal;
       // Falta id, que es secuencial y se usa para borrar el miembro
 

@@ -14,14 +14,17 @@ import {
 } from "@mui/material";
 import CrearGrupo from "../MUIComponents/CrearGrupo";
 import CrearMiembros from "../MUIComponents/CrearMiembros";
+import { useSelector } from "react-redux";
 
 const Notificar = () => {
   const [nombreGrupo, setNombreGrupo] = useState(null);
   const [correoMiembro, setCorreoMiembro] = useState(null);
 
-  const [grupoANotificar, setGrupoANotificar] = React.useState([]);
+  const [grupoANotificar, setGrupoANotificar] = useState([]);
 
   const [openModal, setOpenModal] = useState(null);
+
+  const gruposCreadosEstado = useSelector((state) => state.grupos.groups);
 
   const handleOpenModal = (modal) => {
     setOpenModal(modal);
@@ -47,6 +50,23 @@ const Notificar = () => {
     setGrupoANotificar(typeof value === "string" ? value.split(",") : value);
   };
 
+  const handleEnviarNotificacion = () => {};
+
+  let miembrosDeLosGrupos = new Set();
+
+  grupoANotificar.forEach((grupo) => {
+    if (gruposCreadosEstado.hasOwnProperty(grupo)) {
+      let miembrosGrupo = gruposCreadosEstado[grupo].members;
+      miembrosGrupo.forEach((miembro) => {
+        miembrosDeLosGrupos.add(miembro.correo);
+      });
+    } else {
+      console.error(`El grupo "${grupo}" no existe en gruposCreadosEstado`);
+    }
+  });
+
+  miembrosDeLosGrupos = Array.from(miembrosDeLosGrupos);
+
   return (
     <>
       <BasicModal titulo="Notificar">
@@ -56,6 +76,7 @@ const Notificar = () => {
             padding: "30px",
             display: "flex",
             justifyContent: "center",
+            alignItems: "center",
             flexDirection: "column",
             gap: "40px",
           }}>
@@ -92,15 +113,18 @@ const Notificar = () => {
                 sx={{ width: 250 }}
                 onChange={handleChange}
                 input={<OutlinedInput label="Grupos a notificar" />}>
-                {names.map((name) => (
-                  <MenuItem key={name} value={name}>
-                    {name}
+                {Object.keys(gruposCreadosEstado).map((grupo) => (
+                  <MenuItem key={grupo} value={grupo}>
+                    {grupo}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            <FormControl>
+            {grupoANotificar ? <Box>{miembrosDeLosGrupos.join(", ")}</Box> : ""}
+            {/*  */}
+
+            {/* <FormControl>
               <InputLabel>Grupos a notificar</InputLabel>
               <Select
                 multiple
@@ -114,17 +138,23 @@ const Notificar = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Box>
+          <Button
+            variant="contained"
+            sx={{ width: "50%" }}
+            onClick={handleEnviarNotificacion}>
+            Notificar
+          </Button>
         </Box>
 
         <Modal open={openModal === "grupos"} onClose={() => setOpenModal(null)}>
-          <CrearGrupo />
+          <CrearGrupo onClose={() => setOpenModal(null)} />
         </Modal>
         <Modal
           open={openModal === "miembros"}
           onClose={() => setOpenModal(null)}>
-          <CrearMiembros />
+          <CrearMiembros onClose={() => setOpenModal(null)} />
         </Modal>
       </BasicModal>
     </>
