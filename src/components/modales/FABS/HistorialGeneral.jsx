@@ -151,12 +151,12 @@ const HistorialGeneral = () => {
       flex: 1,
       minWidth: 100,
     },
-    // {
-    //   field: "version",
-    //   headerName: "Versión",
-    //   flex: 1,
-    //   minWidth: 100,
-    // },
+    {
+      field: "version",
+      headerName: "Versión",
+      flex: 1,
+      minWidth: 100,
+    },
     // {
     //   field: "estado",
     //   headerName: "Estado",

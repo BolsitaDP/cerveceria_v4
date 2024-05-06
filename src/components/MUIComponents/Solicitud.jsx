@@ -37,9 +37,22 @@ const Solicitud = ({
       }
       sx={{
         width: calendario ? "400px" : "100%",
+        position: "relative",
+        overflow: "visible",
         // minHeight: "65px",
       }}
       onClick={() => handleOpenModalDetalles(solicitud)}>
+      {solicitud.observaciones !== "" ||
+      solicitud.observacionesGenerales !== "" ? (
+        <div
+          className={`badgetEnSolicitud ${
+            solicitud.tipoRequerimiento !== "PRODUCCIÓN LOCAL" &&
+            "internacional"
+          }`}></div>
+      ) : (
+        ""
+      )}
+
       <Typography
         sx={{ width: "100%", fontSize: calendario ? "1.5vh" : "1.8vh" }}>
         <NumericFormatCustom
