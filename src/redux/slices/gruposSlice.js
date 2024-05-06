@@ -29,7 +29,7 @@ const gruposSlice = createSlice({
     },
     setGruposInicial: (state, action) => {
       let grupos = {};
-      action.payload.forEach((grupo) => {
+      action.payload.data.forEach((grupo) => {
         let nombre = grupo.nombre;
         let idLocal = grupo.id;
         grupos[nombre] = {
@@ -79,7 +79,7 @@ const gruposSlice = createSlice({
       // postCrearCorreos({ groupId, correo, id });
     },
     setMiembrosInicial: (state, action) => {
-      action.payload.forEach((correo) => {
+      action.payload.data.forEach((correo) => {
         Object.values(state.groups).forEach((grupo) => {
           if (grupo.idLocal === correo.idGrupo) {
             grupo.members = [...grupo.members, correo];

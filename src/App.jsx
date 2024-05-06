@@ -37,6 +37,10 @@ import dayjs from "dayjs";
 import { es } from "dayjs/locale/es";
 import Loader from "./components/modales/Loader.jsx";
 import ErrorBoundary from "./components/modales/ErrorBoundary.jsx";
+import {
+  setGruposInicial,
+  setMiembrosInicial,
+} from "./redux/slices/gruposSlice.js";
 
 dayjs.locale("es");
 
@@ -76,8 +80,8 @@ function App() {
         dispatch(setAccionesInicial(acciones.data));
         dispatch(setSalonesInicial(salones.data));
         dispatch(setHistorialInicial(historial.data));
-        // dispatch(setGruposInicial(grupos));
-        // dispatch(setMiembrosInicial(correos));
+        dispatch(setGruposInicial(grupos));
+        dispatch(setMiembrosInicial(correos));
       } catch (error) {
         toast.error("Error consultando los datos." + error);
       }
@@ -187,7 +191,7 @@ function App() {
         <MUIFloatingButton />
 
         <ToastContainer
-          position="bottom-center"
+          position="bottom-left"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
