@@ -241,6 +241,7 @@ const HistorialGeneral = () => {
           exportar
           columns={columns}
           rows={rows}
+          origen="historialGeneral"
           titulo="Historial general"
         />
       </Modal>

@@ -232,7 +232,9 @@ const Calendario = () => {
           }
         });
         dispatch(borrarSolicitudesDelState(sol));
-        dispatch(agregarSolicitudesAlState(arraySolicitudesAgrupadasSinFecha));
+      });
+      arraySolicitudesAgrupadasSinFecha.forEach((sol) => {
+        dispatch(agregarSolicitudesAlState(sol));
       });
       accionesAEliminar.forEach((acc) => {
         dispatch(deteleAccionCalendario(acc));

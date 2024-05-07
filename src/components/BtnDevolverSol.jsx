@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import postData from "../requests/postData";
 import { useDispatch } from "react-redux";
 import {
+  agregarSolicitudesAlState,
   borrarSolicitudesDelState,
   deteleAccionCalendario,
 } from "../redux/slices/contenedoresSlice";
@@ -92,6 +93,9 @@ const BtnDevolverSol = ({ id }) => {
       });
       accionesAEliminar.forEach((acc) => {
         dispatch(deteleAccionCalendario(acc));
+      });
+      arraySolicitudesAgrupadasSinFecha.forEach((sol) => {
+        dispatch(agregarSolicitudesAlState(sol));
       });
       toast.success("Día liberado correctamente");
     } catch (error) {
