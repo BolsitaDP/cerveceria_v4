@@ -460,6 +460,7 @@ const ReporteTotal = () => {
           columns={columns}
           rows={rows7}
           titulo="Reporte general"
+          origen="reporteGeneral"
         />
       </Modal>
     </BasicModal>

@@ -10,24 +10,31 @@ const enviarPDFPorCorreo = async (columns, rows, origen, pdfTitle, grupoId) => {
   });
   doc.text(pdfTitle, 10, 10);
 
-  let data = [];
+  console.log(rows);
+  console.log(columns);
 
-  if (origen === "historialGeneral") {
-    data = rows.map((row) => {
-      const rowData = [];
-      columns.forEach((column) => {
-        let cellValue = row[column.field];
-        if (column.field === "valorNuevo") {
-          let [, date] = cellValue.split(" ");
-          let [dia, fecha] = date.split("&");
-
-          cellValue = `${dia} ${fecha}`;
-        }
-        rowData.push(cellValue);
-      });
-      return rowData;
-    });
+  if (origen === "reporteGeneral") {
+    console.log("Origen reporte general");
   }
+
+  const data = rows.map((row) => {
+    const rowData = [];
+    columns.forEach((column) => {
+      let cellValue = row[column.field];
+      if (origen === "historialGeneral") {
+        if (column.field === "valorNuevo") {
+          //  cellValue = formatDateAndDay(cellValue);
+        }
+      } else if (origen === "reporteGeneral") {
+        if (column.field === "dia" && cellValue !== undefined) {
+          let [nombre, fecha] = cellValue.split("&");
+          cellValue = `${nombre} ${fecha}`;
+        }
+      }
+      rowData.push(cellValue);
+    });
+    return rowData;
+  });
 
   doc.autoTable({
     head: [columns.map((column) => column.headerName)],
