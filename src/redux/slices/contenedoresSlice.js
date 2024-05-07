@@ -432,6 +432,24 @@ const contenedoresSlice = createSlice({
         state.solicitudes = state.solicitudes.filter((sol) => sol.id !== id);
       }
     },
+    borrarSolicitudesDelState: (state, action) => {
+      const { fecha, id, cantidad, salonProgramado, velocidadesSalonProducto } =
+        action.payload;
+
+      const diaSalon = state.calendario[salonProgramado].dias[fecha];
+
+      diaSalon.contenido = diaSalon.contenido.filter((sol) => sol.id !== id);
+
+      const capacidadSalonPorDia = capacidaSalonPorDia(
+        velocidadesSalonProducto,
+        salonProgramado
+      );
+
+      diaSalon.horas += cantidad / capacidadSalonPorDia;
+    },
+    agregarSolicitudesAlState: (state, action) => {
+      state.solicitudes.push(action.payload);
+    },
   },
 });
 
@@ -464,5 +482,7 @@ export const {
   creacionMasDeUnaCopia,
   deleteSolicitud,
   updateTipoRequerimientoSolicitud,
+  borrarSolicitudesDelState,
+  agregarSolicitudesAlState,
 } = contenedoresSlice.actions;
 export default contenedoresSlice.reducer;

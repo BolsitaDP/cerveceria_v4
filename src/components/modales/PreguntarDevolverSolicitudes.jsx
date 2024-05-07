@@ -2,13 +2,30 @@ import React from "react";
 import BasicModal from "../MUIComponents/BasicModal";
 import { Box, Button } from "@mui/material";
 
-const PreguntarDevolverSolicitudes = ({ onSiDevolver, onNoDevolver }) => {
+const PreguntarDevolverSolicitudes = ({
+  onSiDevolver,
+  onNoDevolver,
+  id,
+  general,
+  fechas,
+}) => {
+  let diaNombre, dia, fecha, day, month;
+
+  if (!general) {
+    [, diaNombre] = id.split("|");
+    [dia, fecha] = diaNombre.split("&");
+    [day, month] = fecha.split("/");
+  }
+
   return (
     <BasicModal titulo="Devolver solicitudes">
       <Box sx={{ width: "30vw", padding: "30px" }}>
         <Box>
-          ¿Desea realmente devolver todas las solicitudes planeadas devuelta a
-          pendientes por programar?
+          ¿Desea realmente devolver
+          {general
+            ? " todas las solicitudes planeadas "
+            : ` las solicitudes del ${dia} ${day}/${month} `}
+          devuelta a pendientes por programar?
         </Box>
         <Box
           sx={{

@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import getData from "./requests/getData";
 import { useDispatch } from "react-redux";
 import {
+  deleteSolicitud,
   setAcciones,
   setAccionesInicial,
   setAccionesProgramadas,
@@ -115,6 +116,8 @@ function App() {
     } else if (accion === "Creación elemento copia") {
       setCrearCopia(true);
       setData(data);
+    } else if (accion === "Eliminar elemento original") {
+      dispatch(deleteSolicitud(data));
     }
   };
 

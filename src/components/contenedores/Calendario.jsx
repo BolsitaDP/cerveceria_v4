@@ -19,11 +19,18 @@ import { setSalonSeleccionado } from "../../redux/slices/historySlice";
 import DetallesSolicitud from "../modales/DetallesSolicitud";
 import ModalDetallesAccion from "../modales/ModalDetallesAccion";
 import EstadisticasDia from "../modales/EstadisticasDia";
-import { deteleAccionCalendario } from "../../redux/slices/contenedoresSlice";
+import {
+  agregarSolicitudesAlState,
+  borrarSolicitudesDelState,
+  deteleAccionCalendario,
+} from "../../redux/slices/contenedoresSlice";
+import ReplayIcon from "@mui/icons-material/Replay";
 
 import { toast } from "react-toastify";
 import BtnDevolverSol from "../BtnDevolverSol";
 import Notificar from "../modales/Notificar";
+import PreguntarDevolverSolicitudes from "../modales/PreguntarDevolverSolicitudes";
+import postData from "../../requests/postData";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -153,6 +160,89 @@ const Calendario = () => {
     dispatch(deteleAccionCalendario(accion));
   };
 
+  const handleDevolverSolicitudes = () => {
+    setModalAbierto("devolverSolicitudes");
+  };
+
+  const handleNoDevolver = () => {
+    setModalAbierto(null);
+  };
+
+  const handleSiDevolver = () => {
+    setModalAbierto(null);
+
+    let contenidoTotal = [];
+
+    Object.values(salones).forEach((salon) => {
+      Object.values(salon.dias).forEach((dia) => {
+        let sieteDias = fechasSeleccionadas.slice(0, 7);
+        if (sieteDias.includes(dia.fecha)) {
+          dia.contenido.forEach((sol) => {
+            const partes = sol.fecha.split("&");
+            const fechaFormateada = partes[1];
+            const [dia, mes, anio] = fechaFormateada.split("/");
+            const fechaJS = new Date(`${anio}-${mes}-${dia}`);
+            const fechaSolicitud = new Date(fechaJS);
+            const fechaHoy = new Date();
+            if (fechaSolicitud >= fechaHoy) {
+              contenidoTotal.push(sol);
+            }
+          });
+        }
+      });
+    });
+
+    let solicitudesPorIdPadre = {};
+    let accionesAEliminar = [];
+    let solicitudesAEliminar = [];
+
+    contenidoTotal.forEach((sol) => {
+      if (sol.codigoNombre) {
+        solicitudesAEliminar.push(sol);
+        if (solicitudesPorIdPadre[sol.idPadre]) {
+          solicitudesPorIdPadre[sol.idPadre].cantidad += sol.cantidad;
+        } else {
+          solicitudesPorIdPadre[sol.idPadre] = {
+            ...sol,
+          };
+        }
+      } else {
+        accionesAEliminar.push(sol);
+      }
+    });
+
+    // Convierte el objeto de solicitudes por "idPadre" en un array
+    let arraySolicitudesAgrupadas = Object.values(solicitudesPorIdPadre);
+
+    let arraySolicitudesAgrupadasSinFecha = arraySolicitudesAgrupadas.map(
+      (sol) => ({
+        ...sol,
+        fecha: "",
+        salon: "",
+        salonProgramado: "",
+      })
+    );
+
+    try {
+      postData.postActualizarEstadoProducto(arraySolicitudesAgrupadasSinFecha);
+      solicitudesAEliminar.forEach((sol) => {
+        arraySolicitudesAgrupadasSinFecha.forEach((solSinFecha) => {
+          if (sol.id !== solSinFecha.id) {
+            postData.postDeleteSolicitud(sol);
+          }
+        });
+        dispatch(borrarSolicitudesDelState(sol));
+        dispatch(agregarSolicitudesAlState(arraySolicitudesAgrupadasSinFecha));
+      });
+      accionesAEliminar.forEach((acc) => {
+        dispatch(deteleAccionCalendario(acc));
+      });
+      toast.success("Semana liberada correctamente");
+    } catch (error) {
+      toast.error("Error al liberar la semana");
+    }
+  };
+
   return (
     <Box sx={{ height: "100%" }}>
       <Card variant="contenedor">
@@ -186,6 +276,16 @@ const Calendario = () => {
                 onClick={() => handleMostrarModal("estadisticasGenerales")}
                 edge="end">
                 <QueryStatsRoundedIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Devolver solicitudes" arrow>
+              <IconButton
+                onClick={() => handleDevolverSolicitudes()}
+                sx={{
+                  color: theme.palette.primary.contrast,
+                }}>
+                <ReplayIcon />
               </IconButton>
             </Tooltip>
           </Box>
@@ -487,6 +587,16 @@ const Calendario = () => {
         open={modalAbierto === "notificarCambios"}
         onClose={() => setModalAbierto(null)}>
         <Notificar />
+      </Modal>
+      <Modal
+        open={modalAbierto === "devolverSolicitudes"}
+        onClose={() => setModalAbierto(null)}>
+        <PreguntarDevolverSolicitudes
+          onNoDevolver={() => handleNoDevolver()}
+          onSiDevolver={() => handleSiDevolver()}
+          fechas={fechasSeleccionadas}
+          general
+        />
       </Modal>
     </Box>
   );

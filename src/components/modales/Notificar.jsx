@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 import { updateVersion } from "../../redux/slices/historySlice";
 import enviarPDFPorCorreo from "../../helpers/enviarPDFPorCorreo";
 
-const Notificar = ({ exportar, columns, rows }) => {
+const Notificar = ({ exportar, columns, rows, titulo }) => {
   const [grupoANotificar, setGrupoANotificar] = useState([]);
 
   const [openModal, setOpenModal] = useState(null);
@@ -64,13 +64,16 @@ const Notificar = ({ exportar, columns, rows }) => {
     try {
       await Promise.all(
         grupoANotificar.map(async (grupo) => {
-          await enviarPDFPorCorreo(
-            columns,
-            rows,
-            "dataGridPDF",
-            "Título",
-            grupo
-          );
+          if (gruposCreadosEstado.hasOwnProperty(grupo)) {
+            let idGrupo = gruposCreadosEstado[grupo].idLocal;
+            await enviarPDFPorCorreo(
+              columns,
+              rows,
+              "dataGridPDF",
+              titulo,
+              idGrupo
+            );
+          }
         })
       );
       console.log("Todas las notificaciones han sido enviadas correctamente.");

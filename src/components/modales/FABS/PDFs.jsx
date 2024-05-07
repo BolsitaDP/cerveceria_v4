@@ -10,9 +10,11 @@ import {
   Select,
   FormControlLabel,
   Switch,
+  Modal,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
+import Notificar from "../Notificar";
 
 const PDFs = () => {
   const [tipoDeReporte, setTipoDeReporte] = useState("");
@@ -20,6 +22,8 @@ const PDFs = () => {
   const [diasSeleccionado, setDiasSeleccionado] = useState([]);
   const [salonesSeleccionados, setSalonesSeleccionados] = useState([]);
   const [checkedTotales, setCheckedTotales] = useState(true);
+
+  const [modalAbierto, setModalAbierto] = useState(null);
 
   const nombreDiasDeLaSemana = useSelector(
     (state) => state.dates.nombreDiasDeLaSemana
@@ -206,8 +210,15 @@ const PDFs = () => {
     }
   });
 
+  const handleExportar = () => {
+    setModalAbierto("exportar");
+  };
+
   return (
-    <BasicModal titulo={"Creación de PDF"}>
+    <BasicModal
+      titulo={"Creación de PDF"}
+      exportar
+      funcionAlDarClickExportar={handleExportar}>
       <Box
         sx={{
           padding: "10px",
@@ -335,6 +346,16 @@ const PDFs = () => {
           </Box>
         </Box>
       </Box>
+      <Modal
+        open={modalAbierto === "exportar"}
+        onClose={() => setModalAbierto(null)}>
+        <Notificar
+          exportar
+          columns={checkedTotales ? columasTotales : columnasReporteDiario}
+          rows={checkedTotales ? totales : rows}
+          titulo="Reporte parcial"
+        />
+      </Modal>
     </BasicModal>
   );
 };

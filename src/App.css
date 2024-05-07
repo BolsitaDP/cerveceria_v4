@@ -23,10 +23,11 @@
 }
 .btnDevolverSolicitudes {
   /* background-color: blueviolet !important; */
-  position: absolute !important;
+  position: relative !important;
   top: 0;
-  right: 15px;
+  left: -5px;
   padding: 5px !important;
+  z-index: 999;
 }
 
 .svgDevolverSolicitudes {

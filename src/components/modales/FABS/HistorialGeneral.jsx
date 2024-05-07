@@ -170,7 +170,6 @@ const HistorialGeneral = () => {
   ];
 
   const handleExportar = () => {
-    console.log(gridRef.current);
     setModalAbierto("exportar");
   };
 
@@ -238,7 +237,12 @@ const HistorialGeneral = () => {
       <Modal
         open={modalAbierto === "exportar"}
         onClose={() => setModalAbierto(null)}>
-        <Notificar exportar columns={columns} rows={rows} />
+        <Notificar
+          exportar
+          columns={columns}
+          rows={rows}
+          titulo="Historial general"
+        />
       </Modal>
     </BasicModal>
   );

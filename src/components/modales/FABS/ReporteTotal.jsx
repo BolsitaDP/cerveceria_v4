@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import BasicModal from "../../MUIComponents/BasicModal";
-import { Box, FormControlLabel, Switch } from "@mui/material";
+import { Box, FormControlLabel, Modal, Switch } from "@mui/material";
 import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import generarColores from "../../../helpers/generadorColores";
 import obtenerDiasDeLaSemana from "../../../helpers/obtenerDiasDeLaSemana";
+import Notificar from "../Notificar";
 
 const ReporteTotal = () => {
   const [switchColoresPorProductos, setSwitchColoresPorProductos] =
     useState(false);
   const [switchTamanoPequeno, setSwitchTamanoPequeno] = useState(false);
-
+  const [modalAbierto, setModalAbierto] = useState(null);
   const [sinAcciones, setSinAcciones] = useState(false);
 
   const contenedoresEstado = useSelector((state) => state.contenedores);
@@ -380,8 +381,15 @@ const ReporteTotal = () => {
     setSwitchTamanoPequeno(!switchTamanoPequeno);
   };
 
+  const handleExportar = () => {
+    setModalAbierto("exportar");
+  };
+
   return (
-    <BasicModal titulo={"Reporte total"}>
+    <BasicModal
+      titulo={"Reporte total"}
+      exportar
+      funcionAlDarClickExportar={handleExportar}>
       <Box
         sx={{
           padding: "10px",
@@ -444,6 +452,16 @@ const ReporteTotal = () => {
           />
         </Box>
       </Box>
+      <Modal
+        open={modalAbierto === "exportar"}
+        onClose={() => setModalAbierto(null)}>
+        <Notificar
+          exportar
+          columns={columns}
+          rows={rows7}
+          titulo="Reporte general"
+        />
+      </Modal>
     </BasicModal>
   );
 };

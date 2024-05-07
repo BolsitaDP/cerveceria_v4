@@ -96,6 +96,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
               orden: objResuesta.orden,
               cantidad: parseInt(objResuesta.cantidad),
               velocidadesSalonProducto: objResuesta.velocidadesSalonProducto,
+              idPadre: objResuesta.idPadre,
             });
 
             dispatch(
