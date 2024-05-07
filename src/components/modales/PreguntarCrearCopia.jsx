@@ -121,9 +121,6 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
 
             copias.push(objResuesta);
           })
-          .then(() => {
-            dispatch(deleteSolicitud(elementoOriginal));
-          })
           .catch((error) => {
             toast.error(
               "Ha ocurrido un error creando las copias de la solicitud: " +
@@ -133,7 +130,9 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
       )
     )
       .then(() => {
-        console.log(elementosParaProcesar);
+        postData.postDeleteSolicitud(elementoOriginal).then(() => {
+          dispatch(deleteSolicitud(elementoOriginal));
+        });
         // Luego de que todas las promesas se resuelven
         procesarElementos(elementosParaProcesar);
         dispatch(creacionMasDeUnaCopia(copias));
