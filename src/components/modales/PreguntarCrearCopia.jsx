@@ -13,6 +13,7 @@ import postData from "../../requests/postData";
 import {
   creacionCopia,
   creacionMasDeUnaCopia,
+  deleteSolicitud,
 } from "../../redux/slices/contenedoresSlice";
 import { addToHistory } from "../../redux/slices/historySlice";
 import BasicModal from "../MUIComponents/BasicModal";
@@ -40,7 +41,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
 
   const dispatch = useDispatch();
 
-  let { reparticion } = data;
+  let { reparticion, elementoOriginal } = data;
 
   // ---------------------------
 
@@ -119,6 +120,9 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
             );
 
             copias.push(objResuesta);
+          })
+          .then(() => {
+            dispatch(deleteSolicitud(elementoOriginal));
           })
           .catch((error) => {
             toast.error(

@@ -377,6 +377,7 @@ const onDragEnd = (
 
             dispatcher("Creación elemento copia", {
               reparticion,
+              elementoOriginal: elementoArrastrado,
             });
 
             // TODO: Eliminar el elementoArrastrado, ya que se crearon copias a partir de este y el original se puede eliminar

@@ -47,6 +47,7 @@ const Accion = ({
             fontSize: calendario ? "1.8vh" : "2vh",
           }}>
           {accion.tipo !== "notas" &&
+            accion.tipo !== "horario" &&
             parseFloat(accion.duracion.toFixed(2)) + " horas"}
         </Box>
         <Tooltip title="Eliminar actividad" arrow>
