@@ -105,7 +105,7 @@ const ProgramadoProducido = () => {
   return (
     <BasicModal
       titulo={"Requerido, programado y producido"}
-      exportar
+      // exportar
       funcionAlDarClickExportar={handleExportar}>
       <Box
         sx={{
