@@ -29,6 +29,18 @@ const enviarPDFPorCorreo = async (columns, rows, origen, pdfTitle, grupoId) => {
         if (column.field === "dia" && cellValue !== undefined) {
           let [nombre, fecha] = cellValue.split("&");
           cellValue = `${nombre} ${fecha}`;
+        } else if (
+          column.field !== "dia" &&
+          column.field !== "total" &&
+          cellValue !== undefined
+        ) {
+          let arrayProdsCompletos = [];
+          cellValue.forEach((sol) => {
+            arrayProdsCompletos.push(
+              `${sol.producto} - (${sol.codigoNombre}) - ${sol.cantidad}CJ `
+            );
+          });
+          cellValue = arrayProdsCompletos.join(",\n \n");
         }
       }
       rowData.push(cellValue);
