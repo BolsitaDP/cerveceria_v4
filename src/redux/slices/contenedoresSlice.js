@@ -14,6 +14,7 @@ const contenedoresSlice = createSlice({
     calendario: {},
     acciones: [],
     elementoCopia: {},
+    pedidoTotal: [],
   },
   reducers: {
     setSolicitudesInicial: (state, action) => {
@@ -450,6 +451,11 @@ const contenedoresSlice = createSlice({
     agregarSolicitudesAlState: (state, action) => {
       state.solicitudes.push(action.payload);
     },
+    settearPedidoTotal: (state, action) => {
+      action.payload.forEach((sol) => {
+        state.pedidoTotal.push(sol);
+      });
+    },
   },
 });
 
@@ -484,5 +490,6 @@ export const {
   updateTipoRequerimientoSolicitud,
   borrarSolicitudesDelState,
   agregarSolicitudesAlState,
+  settearPedidoTotal,
 } = contenedoresSlice.actions;
 export default contenedoresSlice.reducer;

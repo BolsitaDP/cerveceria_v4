@@ -35,10 +35,10 @@ const FABS = [
     icon: <SummarizeIcon />,
     tooltip: "Reporte total",
   },
-  // {
-  //   icon: <DonutLargeRoundedIcon />,
-  //   tooltip: "Programado y producido",
-  // },
+  {
+    icon: <DonutLargeRoundedIcon />,
+    tooltip: "Programado y producido",
+  },
 ];
 
 const MUIFloatingButton = () => {

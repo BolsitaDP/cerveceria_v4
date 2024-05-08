@@ -20,6 +20,7 @@ import {
   setSolicitudes,
   setSolicitudesInicial,
   setSolicitudesProgramadas,
+  settearPedidoTotal,
   updateEstadoSolicitud,
 } from "./redux/slices/contenedoresSlice";
 
@@ -83,6 +84,8 @@ function App() {
         dispatch(setHistorialInicial(historial.data));
         dispatch(setGruposInicial(grupos));
         dispatch(setMiembrosInicial(correos));
+
+        dispatch(settearPedidoTotal(solicitudesSinProgramar.data));
       } catch (error) {
         toast.error("Error consultando los datos." + error);
       }
@@ -133,6 +136,7 @@ function App() {
         });
       });
       dispatch(setSolicitudesProgramadas(solicitudesFiltradas));
+      dispatch(settearPedidoTotal(solicitudesFiltradas));
     });
     getData.getAccionesProgramadas().then((response) => {
       let accionesFiltradas = [];
