@@ -9,6 +9,7 @@ Se clona el repositorio y se guarda en la carpeta deseada, seguidamente se ejecu
 ## Node-scripts disponibles en el proyecto
 
 Para iniciar el proyecto una vez estando en la carpeta contenedora se ejecutará `npm start`.
+
 Para generar una build a partir del proyecto abierto con sus cambios guardados `npm run build`.
 
 # Generalidades
@@ -16,12 +17,19 @@ Para generar una build a partir del proyecto abierto con sus cambios guardados `
 ## Librerías
 
 [MUI](https://mui.com/material-ui/) para el uso de sus componentes, estilización mediante `themes` y edición de estilos sin necesidad de un archivo `.css`.
+
 [Redux-TK](https://redux.js.org/) para el uso de estados globales.
+
 [Axios](https://axios-http.com/docs/intro) para el manejo de la comunicación con el backend.
+
 [JSpdf](https://artskydj.github.io/jsPDF/docs/jsPDF.html) para la creación de archivos `.pdf` a partir de una configuración simple.
+
 [Moment.js](https://momentjs.com/) y [Day.js](https://day.js.org/) para la utilización y manejo del formato `date` en `js`.
+
 [UUIDv4](https://www.npmjs.com/package/uuidv4) para la creación de `id` únicos.
+
 [React-beautiful-dnd](https://www.npmjs.com/package/react-beautiful-dnd) para la funcionalidad de `drag and drop`.
+
 [Toastify](https://fkhadra.github.io/react-toastify/introduction/) para las alertas de `feedback`.
 
 ## Estructura de carpetas
@@ -29,11 +37,59 @@ Para generar una build a partir del proyecto abierto con sus cambios guardados `
 Se usa una estructura plana dado que en fin último el proyecto solo cuenta con una única página.
 
 - /src
-  - [components](#components)
-  - [helpers](#helpers)
-  - [redux](#redux)
-  - [requests](#requests)
-  - App.jsx
+- [components](#components)
+
+  - [contenedores](#contenedores)
+  - [modales](#modales)
+    - [FABS](#fabs)
+  - [MUI-Components](#mui-components)
+
+- [helpers](#helpers)
+
+- [redux](#redux)
+
+- [requests](#requests)
+
+- [App.jsx](#app.jsx)
+- [setupProxy.js](#proxy)
+
+### Components
+
+Abarca la generalidad de los archivos `.jsx`
+
+#### Contenedores
+
+Se organizan los 3 contenedores donde están los [_Droppable_](#droppable) principales, `solicitudes`, `acciones` y `calendario`.
+
+#### Modales
+
+Como la aplicación es de una única página, la interacción se hace mediante `modales`, cuyos respectivos `.jsx` se encuentran aquí.
+
+##### FABS
+
+Son los `modales` que se usan para la opción de configuración en la parte inferior derecha de la aplicación en el `FAB` _Floating Action Button_.
+
+#### MUI Components
+
+Son componentes generales originales de [MUI](https://mui.com/material-ui/) pero editados y/o compactados, algunos reciben `props` para sus variaciones.
+
+### Helpers
+
+Son las funciones netamente `JavaScript` reutilizables en los componentes `.jsx`.
+
+### Redux
+
+Maneja los `states` de la aplicación en general mediante `slices`.
+**`contenedoresSlice.js`** es el principal, en este se almacenan los datos de las `solicitudes`, las `acciones` y todos los elementos que se encuentren en los días del `calendario`. Este `slice` utiliza algunos `reducers` según se entra a la aplicación y se ejecutan las `peticiones` para que todo se sincronice y exista [Persistencia ](#persistencia) de los datos.
+**`historySlice.js`** es el `slice` que almacena el historial de cambios y permite la interacción con todos los datos de este.
+**`gruposSlice.js`** es el `slice` que controla la creación de [Grupos](#grupos) y [Miembros](#miembros) utilizados con la funcionalidad de exportar los archivos de tabla convertidos a `pdf`.
+
+### Requests
+
+Son las peticiones que se realizan para la conexión con el `backend`, hay 3 archivos en la carpeta:
+**`service.js`** Es el base, a partir de este se realizan las demás, aquí se centraliza la creación de la nueva instancia de [Axios](https://axios-http.com/docs/intro) con la configuración necesaria para el proyecto.
+**`getData.js`** Aquí se centralizan todas las peticiones `get` que se necesitan para la obtención de los datos.
+**`postData.js`** Aquí se centralizan todas las peticiones `post` que se ejecutan con cada interacción dentro de la aplicación.
 
 # Funcionamiento
 
@@ -42,11 +98,12 @@ Se usa una estructura plana dado que en fin último el proyecto solo cuenta con 
 ### Arrastrar y soltar
 
 Al usar la librería de **React-beautiful-dnd** se requiere entonces la creación de tres componentes principales, el contexto de los componentes a utilizar [_DragDropContext_](#dragdropcontext), el componente arrastrado [_Draggable_](#draggable) y el dónde soltar el componente arrastrado [_Droppable_](#droppable).
+
 De esta manera se crea entonces el contexto de la aplicación y los componentes [_Droppable_](#droppable), las solicitudes o pendientes por programar, las acciones o actividades y uno para cada día del calendario para un total de 9 contenedores donde se pueden soltar los elementos arrastrados.
 
 #### DragDropContext
 
-Es el conexto donde los [_Droppable_](#droppable) van a existir, se pueden tener varios contextos por aplicación, pero para el caso solo se utiliza uno.
+Es el contexto donde los [_Droppable_](#droppable) van a existir, se pueden tener varios contextos por aplicación, pero para el caso solo se utiliza uno.
 
 #### Droppable
 
@@ -58,89 +115,58 @@ Para el caso son las tarjetas, tanto de pendientes por programar como de activid
 
 ### Validaciones
 
-Al seleccionar un [_Draggable_](#draggable) y soltarlo en un [_Droppable_](#droppable), se ejecuta el archivo `OnDragEnd.jsx`, el cual recibe su información y la información del `state`. Donde entonces realiza la validación de inicialmente de dónde proviene, puesto que, como se mencionó anteriormente, cada día del calendario es un [_Droppable_](#droppable) por sí solo desde donde se pueden arrastrar [_Draggable_](#draggable).
-Si el `elemento arrastrado` viene de `solicitudes` y va hacia algún día de `calendario`, se valida si el día cuenta con horas suficientes,
+Al seleccionar un [_Draggable_](#draggable) y soltarlo en un [_Droppable_](#droppable), se ejecuta el archivo `OnDragEnd.jsx`, el cual recibe su información y la información del `state`. Donde entonces realiza la validación de inicialmente de dónde proviene, puesto que, como se mencionó anteriormente, cada día del calendario es un [_Droppable_](#droppable) donde se pueden arrastrar [_Draggable_](#draggable).
+
+El siguiente gráfico guía las validaciones pertinentes a la hora de soltar un [_Draggable_](#draggable) en un [_Droppable_](#droppable).
 
 ```mermaid
-graph
-elemento(Elemento arrastrado) -- Viene de  --> solicitudesAccionesInicio(Solicitudes o acciones) -- Va hacia --> solicitudesAccionesFin(Solicitudes o acciones) --> NoEsPosible(No es posible)
-elemento -- Viene de --> DiaCalendarioInicio(Un día del calendario) -- Va hacia --> DiaCalendarioFin(Un día del calendario) --> TiempoDisponible(El día tiene tiempo disponible) --> SiTiempo(Sí) --> SeArrastra(Se arrastra exitosamente)
-TiempoDisponible --> NoTiempo(No)
-NoTiempo --> NoSeArrastra(No se puede)
-DiaCalendarioInicio -- Va hacia --> solicitudesAccionesInicio2(Solicitudes o acciones) --> SeArrastra
-solicitudesAccionesInicio -- Va hacia --> DiaCalendarioInicio2(Un día del calendario)  --> TiempoDisponible2(El día tiene tiempo disponible) --> NoTiempo2(Directamente no tiene tiempo) --> NoSeArrastra
-TiempoDisponible2 --> TiempoParcial(Hay algo de tiempo)
-TiempoDisponible2 --> SiTiempo
 
+graph
+
+elemento(Elemento arrastrado) -- Viene de --> solicitudesAccionesInicio(Solicitudes o acciones) -- Va hacia --> solicitudesAccionesFin(Solicitudes o acciones) --> NoEsPosible(No es posible)
+
+elemento -- Viene de --> DiaCalendarioInicio(Un día del calendario) -- Va hacia --> DiaCalendarioFin(Un día del calendario) --> TiempoDisponible(El día tiene tiempo disponible) --> SiTiempo(Sí) --> SeArrastra(Se arrastra exitosamente)
+
+TiempoDisponible --> NoTiempo(No)
+
+NoTiempo --> NoSeArrastra(No se puede)
+
+DiaCalendarioInicio -- Va hacia --> solicitudesAccionesInicio2(Solicitudes o acciones) --> SeArrastra
+
+TiempoDisponible2 --> TiempoParcial(Hay algo de tiempo)
+
+TiempoParcial --> Division(Se divide entre ese y los siguientes días hasta completar la producción)
+
+solicitudesAccionesInicio -- Va hacia --> DiaCalendarioInicio2(Un día del calendario) --> TiempoDisponible2(El día tiene tiempo disponible) --> NoTiempo2(Directamente no tiene tiempo) --> NoSeArrastra
+
+TiempoDisponible2 --> SiTiempo
 ```
 
-# Getting Started with Create React App
+### Persistencia
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Al utilizar el sistema de [Redux](#redux) con sus `slices`, el sistema tiene una `persistencia` de datos dentro de la aplicación sin mayor complicación, pero al recargar la página se pierden; para que esto no suceda se tiene en el archivo `App.jsx` una lista de [Requests](#requests) que se ejecutan según se inicia la aplicación las cuales traen toda la información desde el `backend` y se `settean` mediante `dispatchers` en los respectivos `slices` donde se procesan y quedan organizados correctamente en el `state` listos para la interacción del usuario con la `app`.
+Para cada interacción que se tenga con la aplicación primero se ejecuta una `petición`, se espera la respuesta y una vez la respuesta es confirmatoria, se procede a enviar el cambio a los `slices`, esto porque hecho de otra manera se podría interactuar con la aplicación, realizar varios cambios y si el `backend` devuelve algún error no se reflejaría en la `app`, y los cambios solo serían válidos mientras no se recargue la página.
 
-## Available Scripts
+### PDF
 
-In the project directory, you can run:
+Para la creación de archivos `PDF` está la opción de utilizar dos librerías diferentes, [MUI](https://mui.com/material-ui/) y [JSpdf](https://artskydj.github.io/jsPDF/docs/jsPDF.html), esto debido a que con `MUI` inicialmente las tablas cuando tienen pocos datos se visualizan correctamente y tienen mejor estética, además de que está completamente integrado con los demás `componentes` de la aplicación y también permite su `export` a `.csv` _formato de Excel_; pero si las tablas contienen demasiada información su visualización no es muy clara se optó por utilizar una segunda librería para estos casos puntuales donde se requiere una mayor configuración de los datos para su correcta visualización y permite mucha mayor cantidad de los mismos.
 
-### `npm start`
+### Exportación de datos
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Se utiliza para los archivos `PDF` creados anteriormente con [MUI](https://mui.com/material-ui/) o con [JSpdf](https://artskydj.github.io/jsPDF/docs/jsPDF.html). Se maneja un sistema de [Grupos](#grupos) y [Miembros](#miembros) para el envío por correo.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+#### Grupos
 
-### `npm test`
+Se crean desde el componente `Notificar.jsx`, funcionan como contenedores para almacenar diferentes correos de [Miembros](#miembros), se pueden crear cuantos grupos se desee y su función es facilitar el envío de correos a personas de un mismo sector.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Miembros
 
-### `npm run build`
+Se crean desde el componente `Notificar.jsx` digitando el correo y asignándolo a uno o varios de los [Grupos](#grupos) previamente creados, un mismo correo puede estar en cuantos grupos se desee.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### App.jsx
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Es el componente `.jsx` principal, en este se define el [_DragDropContext_](#dragdropcontext) de la aplicación, se crea la instancia de [Toastify](https://fkhadra.github.io/react-toastify/introduction/) y se realizan las [Requests](#requests) necesarias para la obtención de los datos del `backend`, además de ejecutar los `dispatchers` con la información para los `slices` de [Redux](#redux) y escuchar cada [Arrastre](#arrastrar-y-soltar) para enviar la información a [Validar](#validaciones) y posteriormente efectuar los cambios necesarios.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Proxy
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Se crea un archivo `setupProxy.js` debido a un problema de `CORSS` a la hora de ejecutar las peticiones. Este código configura un proxy en la aplicación para que cualquier solicitud a `/api_cerveceria` sea redirigida a `https://icasa.bpmco.co`, ajustando algunos encabezados y permitiendo certificados SSL no válidos.
