@@ -242,6 +242,7 @@ const onDragEnd = (
             orden: posicionDestino,
             tipo: solicitud ? "solicitud" : "accion",
             elemento: elementoArrastrado,
+            idElemento: elementoArrastrado.idDnd || elementoArrastrado.Id,
           });
 
           // Se restan las horas en el día destino
@@ -429,6 +430,7 @@ const onDragEnd = (
               orden: posicionDestino,
               tipo: solicitud ? "solicitud" : "accion",
               elemento: elementoArrastrado,
+              idElemento: elementoArrastrado.idDnd || elementoArrastrado.Id,
             });
 
             dispatcher("statusUpdaters", {
@@ -493,6 +495,7 @@ const onDragEnd = (
         orden: posicionDestino,
         tipo: solicitud ? "solicitud" : "accion",
         elemento: elementoArrastrado,
+        idElemento: elementoArrastrado.idDnd || elementoArrastrado.Id,
       });
 
       dispatcher("statusUpdaters", {

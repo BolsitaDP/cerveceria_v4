@@ -116,6 +116,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
                 // orden: posicionDestino,
                 tipo: "solicitud",
                 elemento: objResuesta,
+                idElemento: objResuesta.idDnd,
               })
             );
 

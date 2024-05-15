@@ -110,6 +110,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
       horaDelCambio: horaActual,
       version: versionEstado,
       editor: editorEstado,
+      idElemento: solicitudAbierta.idDnd,
     };
 
     if (name === "cantidad") {
@@ -182,6 +183,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
         horaDelCambio: horaActual,
         version: versionEstado,
         editor: editorEstado,
+        idElemento: solicitudAbierta.idDnd,
       };
       // if (solicitudAbierta.fechaRequiere !== solicitudEditada.fechaRequiere) {
       dispatch(addToHistory(editedProperty));
