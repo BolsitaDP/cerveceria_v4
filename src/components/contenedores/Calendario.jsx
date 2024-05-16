@@ -174,22 +174,24 @@ const Calendario = () => {
     let contenidoTotal = [];
 
     Object.values(salones).forEach((salon) => {
-      Object.values(salon.dias).forEach((dia) => {
-        let sieteDias = fechasSeleccionadas.slice(0, 7);
-        if (sieteDias.includes(dia.fecha)) {
-          dia.contenido.forEach((sol) => {
-            const partes = sol.fecha.split("&");
-            const fechaFormateada = partes[1];
-            const [dia, mes, anio] = fechaFormateada.split("/");
-            const fechaJS = new Date(`${anio}-${mes}-${dia}`);
-            const fechaSolicitud = new Date(fechaJS);
-            const fechaHoy = new Date();
-            if (fechaSolicitud >= fechaHoy) {
-              contenidoTotal.push(sol);
-            }
-          });
-        }
-      });
+      if (salon.id === salonSeleccionadoEstado) {
+        Object.values(salon.dias).forEach((dia) => {
+          let sieteDias = fechasSeleccionadas.slice(0, 7);
+          if (sieteDias.includes(dia.fecha)) {
+            dia.contenido.forEach((sol) => {
+              const partes = sol.fecha.split("&");
+              const fechaFormateada = partes[1];
+              const [dia, mes, anio] = fechaFormateada.split("/");
+              const fechaJS = new Date(`${anio}-${mes}-${dia}`);
+              const fechaSolicitud = new Date(fechaJS);
+              const fechaHoy = new Date();
+              if (fechaSolicitud >= fechaHoy) {
+                contenidoTotal.push(sol);
+              }
+            });
+          }
+        });
+      }
     });
 
     let solicitudesPorIdPadre = {};
@@ -227,11 +229,11 @@ const Calendario = () => {
     try {
       postData.postActualizarEstadoProducto(arraySolicitudesAgrupadasSinFecha);
       solicitudesAEliminar.forEach((sol) => {
-        arraySolicitudesAgrupadasSinFecha.forEach((solSinFecha) => {
-          if (sol.id !== solSinFecha.id) {
-            postData.postDeleteSolicitud(sol);
-          }
-        });
+        // arraySolicitudesAgrupadasSinFecha.forEach((solSinFecha) => {
+        //   if (sol.id !== solSinFecha.id) {
+        //     postData.postDeleteSolicitud(sol);
+        //   }
+        // });
         dispatch(borrarSolicitudesDelState(sol));
       });
       arraySolicitudesAgrupadasSinFecha.forEach((sol) => {
