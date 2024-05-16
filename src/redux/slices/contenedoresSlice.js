@@ -262,8 +262,22 @@ const contenedoresSlice = createSlice({
         }
       }
       try {
-        solicitudesUpdatear.length >= 1 &&
-          postData.postActualizarEstadoProducto(solicitudesUpdatear);
+        if (action.payload.devolucion) {
+          let arr = [];
+          let objDev = {
+            id: action.payload.elementoArrastrado.id,
+            estado: "",
+            salonProgramado: "",
+            fecha: action.payload.elementoArrastrado.fecha,
+            orden: action.payload.index,
+            cantidad: action.payload.elementoArrastrado.cantidad,
+          };
+          arr.push(objDev);
+          postData.postActualizarEstadoProducto(arr);
+        } else {
+          solicitudesUpdatear.length >= 1 &&
+            postData.postActualizarEstadoProducto(solicitudesUpdatear);
+        }
 
         accionesUpdatear.length >= 1 &&
           postData.postActualizarEstadoAcciones(accionesUpdatear);

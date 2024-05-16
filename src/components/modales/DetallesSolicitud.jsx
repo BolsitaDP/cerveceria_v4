@@ -34,7 +34,7 @@ import "dayjs/locale/en-gb";
 import { NumericFormat } from "react-number-format";
 import HistorialSolicitud from "./HistorialSolicitud";
 
-const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
+const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const dispatch = useDispatch();
 
   const theme = useTheme();
@@ -303,6 +303,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario }) => {
         })
         .then(() => {
           toast.success("Solicitud borrada exitosamente");
+          onClose();
         });
     } catch (error) {
       toast.error("Ha ocurrido un error: " + error);

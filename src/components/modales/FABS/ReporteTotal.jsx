@@ -228,8 +228,11 @@ const ReporteTotal = () => {
                   {sol.codigoNombre || sol.tipo})
                   <br />
                   <strong>
-                    {sol.cantidad.toLocaleString()}{" "}
-                    {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
+                    {sol.codigoNombre
+                      ? `${sol.cantidad.toLocaleString()} ${
+                          sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida
+                        }`
+                      : ""}
                   </strong>
                 </div>
               );
@@ -289,8 +292,13 @@ const ReporteTotal = () => {
                       {sol.codigoNombre || sol.tipo})
                       <br />
                       <strong>
-                        {sol.cantidad.toLocaleString()}{" "}
-                        {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
+                        {sol.codigoNombre
+                          ? `${sol.cantidad.toLocaleString()} ${
+                              sol.unidadMedida === "UN"
+                                ? "CJ"
+                                : sol.unidadMedida
+                            }`
+                          : ""}
                         <br />
                         {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>

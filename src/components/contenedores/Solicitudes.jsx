@@ -224,7 +224,10 @@ const Solicitudes = () => {
       <Modal
         open={modalAbierto === "detallesSolicitud"}
         onClose={() => setModalAbierto(null)}>
-        <DetallesSolicitud solicitudAbierta={solicitudAbierta} />
+        <DetallesSolicitud
+          onClose={() => setModalAbierto(null)}
+          solicitudAbierta={solicitudAbierta}
+        />
       </Modal>
     </Box>
   );

@@ -368,6 +368,7 @@ const onDragEnd = (
             }
 
             if (elementoCopia.cantidad > 0) {
+              elementoCopia.cantidad = Math.round(elementoCopia.cantidad);
               reparticion.push({
                 ...elementoCopia,
                 fecha: diaSiguiente,
@@ -507,6 +508,7 @@ const onDragEnd = (
         tipo: solicitud ? "solicitud" : "accion",
         fuente,
         index: posicionDestino,
+        devolucion: true,
       });
 
       // Se le agregan las horas del elemento quitado

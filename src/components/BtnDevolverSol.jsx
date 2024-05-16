@@ -81,6 +81,7 @@ const BtnDevolverSol = ({ id }) => {
     let arraySolicitudesAgrupadasSinFecha = arraySolicitudesAgrupadas.map(
       (sol) => ({
         ...sol,
+        estado: "",
         fecha: "",
         salonProgramado: "",
       })

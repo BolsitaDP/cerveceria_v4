@@ -218,7 +218,8 @@ const Calendario = () => {
       (sol) => ({
         ...sol,
         fecha: "",
-        salon: "",
+        // salon: "",
+        estado: "",
         salonProgramado: "",
       })
     );
@@ -576,6 +577,7 @@ const Calendario = () => {
         open={modalAbierto === "detallesSolicitud"}
         onClose={() => setModalAbierto(null)}>
         <DetallesSolicitud
+          onClose={() => setModalAbierto(null)}
           solicitudAbierta={solicitudAbierta}
           calendario={true}
         />
