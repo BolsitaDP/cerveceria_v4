@@ -1,5 +1,5 @@
 const obtenerFechasDeLaSemana = (fecha) => {
-  let fechajs = new Date(fecha);
+  let fechajs = new Date(`${fecha} 00:00:00`);
   let diaSemana = fechajs.getDay();
 
   // Ajustar el día de la semana para que sea 0 (lunes) en lugar de 0 (domingo)
