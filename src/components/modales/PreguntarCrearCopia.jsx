@@ -149,25 +149,51 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
   };
 
   let salonId = reparticion[0].salonProgramado;
+  let velocidadDeLaLineaParaElProducto = {};
+  let horasConsumidasDelElementoOriginal;
+  let horasDisponiblesPrimerDia;
+
+  reparticion[0].velocidadesSalonProducto.forEach((vel) => {
+    if (vel.Linea === salonSeleccionadoEstado) {
+      velocidadDeLaLineaParaElProducto = vel;
+    }
+  });
+
+  horasConsumidasDelElementoOriginal =
+    elementoOriginal.cantidad / velocidadDeLaLineaParaElProducto.Velocidad;
+
+  horasDisponiblesPrimerDia =
+    contenedores.calendario[salonSeleccionadoEstado].dias[reparticion[0].fecha]
+      .horas;
+
+  console.log(contenedores);
 
   return (
     <BasicModal titulo={"Dividir solicitud"}>
       <Card>
         <CardContent>
-          El elemento que quiere arrastrar supera la cantidad restante del
-          salón, ¿desea crear una copia en el salón {salonId} los días
+          <strong>
+            {reparticion[0].producto} ({reparticion[0].codigoNombre})
+          </strong>{" "}
+          tiene una velocidad para esta línea ({salonSeleccionadoEstado}) de{" "}
+          <strong>{velocidadDeLaLineaParaElProducto.Velocidad} CJS/h</strong> lo
+          que implicaría <strong>{horasConsumidasDelElementoOriginal}</strong>{" "}
+          horas, pero el día{" "}
+          <strong>{reparticion[0].fecha.split("&")[0]}</strong> solo dispone de{" "}
+          <strong>{horasDisponiblesPrimerDia} horas</strong>, ¿desea crear una
+          copia en el salón {salonId} los días
           {/*  eslint-disable-next-line array-callback-return */}
           {reparticion.map((element, index, array) => {
             if (typeof element === "object") {
               let [dia] = element?.fecha?.split("&");
               if (index === array.length - 1) {
-                return ` y ${dia} `;
+                return ` y ${dia} con ${element.cantidad.toLocaleString()} CJS`;
               } else {
-                return ` ${dia}, `;
+                return ` ${dia} con ${element.cantidad.toLocaleString()} CJS, `;
               }
             }
-          })}{" "}
-          con las cantidades faltantes?
+          })}
+          ?
         </CardContent>
         <CardActions
           sx={{

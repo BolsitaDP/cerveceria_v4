@@ -61,6 +61,10 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     solicitudAbierta.tipoRequerimiento === "PRODUCCIÓN LOCAL" ? true : false
   );
 
+  const [cantidadProducida, setCantidadProducida] = useState(
+    solicitudAbierta.datosReales
+  );
+
   const versionEstado = useSelector((state) => state.history.version);
   const editorEstado = useSelector((state) => state.history.editor);
   const destino = useSelector((state) => state.history.destino);
@@ -286,7 +290,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     );
   });
 
-  const handleCalendarChange = (date) => {};
+  // const handleCalendarChange = (date) => {};
 
   const handleMostrarHistorial = (cod) => {
     setOpenHistory(!openHistory);
@@ -327,6 +331,18 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       toast.error(
         "Ha ocurrido un error modificando el destino de la solicitud: " + error
       );
+    }
+  };
+
+  const handleNuevoProducido = ({ e, solicitudAbierta }) => {
+    let { value } = e.target;
+    setCantidadProducida(Math.round(Number(value)));
+
+    console.log(value);
+    console.log(solicitudAbierta);
+
+    if (solicitudAbierta.cantidad > value) {
+      console.log("partir");
     }
   };
 
@@ -521,18 +537,22 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             InputProps={{
               readOnly: true,
             }}
-            label="Salón"
-            defaultValue={solicitudAbierta.salon}
+            label="Programado"
+            defaultValue={solicitudAbierta.cantidad.toLocaleString()}
             variant="standard"
           />
 
           <TextField
             InputProps={{
-              readOnly: true,
+              readOnly: !calendario,
             }}
-            label="Versión"
-            defaultValue={solicitudAbierta.version}
+            value={cantidadProducida}
+            label="Producido"
+            name="datosReales"
+            defaultValue={solicitudAbierta.datosReales}
+            onChange={(e) => handleNuevoProducido({ e, solicitudAbierta })}
             variant="standard"
+            onBlur={handleBlurred}
           />
 
           <TextField
