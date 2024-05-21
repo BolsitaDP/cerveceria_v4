@@ -35,6 +35,7 @@ import "dayjs/locale/en-gb";
 import { NumericFormat } from "react-number-format";
 import HistorialSolicitud from "./HistorialSolicitud";
 import getData from "../../requests/getData";
+import PreguntarProgramarDiferencia from "./PreguntarProgramarDiferencia";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const dispatch = useDispatch();
@@ -56,6 +57,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const [editedPropertyState, setEditedPropertyState] = useState(null);
   const [openPartir, setOpenPartir] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
+
+  const [openProgramarDiferencia, setOpenProgramarDiferencia] = useState(false);
+  const [diferenciaAProgramar, setDiferenciaAProgramar] = useState(null);
 
   const [codigoSolicitud, setCodigoSolicitud] = useState(null);
 
@@ -188,13 +192,8 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               fecha: "",
             };
 
-            postData
-              .postActualizarEstadoCopia(solicitudFaltante)
-              .then((res) => {
-                console.log(res);
-
-                dispatch(agregarSolicitudesAlState(res.data));
-              });
+            setOpenProgramarDiferencia(true);
+            setDiferenciaAProgramar({ solicitudFaltante, solicitudAbierta });
           }
         }
 
@@ -207,6 +206,36 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       // }
       dispatch(updatePropiedadesSolicitud(solicitudEditada));
     }
+  };
+
+  const handleReprogramarLoFaltante = () => {
+    console.log(diferenciaAProgramar);
+
+    let { solicitudFaltante } = diferenciaAProgramar;
+
+    postData
+      .postActualizarEstadoCopia(solicitudFaltante)
+      .then((res) => {
+        console.log(res);
+
+        dispatch(agregarSolicitudesAlState(res.data));
+
+        toast.success(
+          `Se agregó una solicitud de ${res.data.cantidad.toLocaleString()} CJS a pendientes por programar`
+        );
+      })
+      .then(() => {
+        setDiferenciaAProgramar(null);
+        onClose();
+      })
+      .catch((err) => {
+        toast.error("No se ha podido agregar la solicitud: " + err);
+      });
+  };
+
+  const handleNoReprogramarLoFaltante = () => {
+    setDiferenciaAProgramar(null);
+    onClose();
   };
 
   useEffect(() => {
@@ -616,6 +645,16 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
         <PreguntarPartirSolicitudSinProgramar
           onNoPartir={() => onNoPartir()}
           onSiPartir={() => onSiPartir()}
+        />
+      </Modal>
+
+      <Modal
+        open={openProgramarDiferencia}
+        onClose={() => setOpenProgramarDiferencia(false)}>
+        <PreguntarProgramarDiferencia
+          onNoProgramar={() => handleNoReprogramarLoFaltante()}
+          onSiProgramar={() => handleReprogramarLoFaltante()}
+          diferenciaAProgramar={diferenciaAProgramar}
         />
       </Modal>
     </BasicModal>
