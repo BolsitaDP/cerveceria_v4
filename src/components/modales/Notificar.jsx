@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { updateVersion } from "../../redux/slices/historySlice";
 import enviarPDFPorCorreo from "../../helpers/enviarPDFPorCorreo";
+import obtenerDiasDeLaSemana from "../../helpers/obtenerDiasDeLaSemana";
 
 const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   const [grupoANotificar, setGrupoANotificar] = useState([]);
@@ -25,6 +26,8 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   const [openModal, setOpenModal] = useState(null);
 
   const gruposCreadosEstado = useSelector((state) => state.grupos.groups);
+  const versionEstado = useSelector((state) => state.history.version);
+  const fechasSeleccionadas = useSelector((state) => state.dates.selectedDates);
 
   const handleOpenModal = (modal) => {
     setOpenModal(modal);
@@ -76,8 +79,25 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
     }
   };
 
+  let sieteDias = fechasSeleccionadas.slice(0, 7);
+  let fechasSemanaCompletas = obtenerDiasDeLaSemana(sieteDias);
+  let semanaString = fechasSemanaCompletas.join("¬");
+
+  console.log(semanaString);
+
   const handleDescargarProgramacion = async () => {
-    await enviarPDFPorCorreo(columns, rows, origen, titulo, "");
+    await enviarPDFPorCorreo(
+      columns,
+      rows,
+      origen,
+      titulo,
+      "",
+      "",
+      semanaString,
+      versionEstado
+    );
+
+    dispatch(updateVersion());
   };
 
   return (
@@ -135,23 +155,6 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
             </FormControl>
 
             {grupoANotificar ? <Box>{miembrosDeLosGrupos.join(", ")}</Box> : ""}
-            {/*  */}
-
-            {/* <FormControl>
-              <InputLabel>Grupos a notificar</InputLabel>
-              <Select
-                multiple
-                value={grupoANotificar}
-                sx={{ width: 250 }}
-                onChange={handleChange}
-                input={<OutlinedInput label="Grupos a notificar" />}>
-                {names.map((name) => (
-                  <MenuItem key={name} value={name}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
           </Box>
           {exportar ? (
             <Box

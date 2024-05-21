@@ -38,5 +38,9 @@ const getData = {
       `ProgramacionController/validateSchedule?idPadre=${idPadre}&cantProducir=${cantidad}`
     );
   },
+
+  getArchivosPDF() {
+    return peticion.get("EmailController/files");
+  },
 };
 export default getData;

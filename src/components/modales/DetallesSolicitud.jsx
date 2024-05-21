@@ -177,7 +177,8 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                 "No puedes superar la cantidad inicial de la solicitud"
               );
             }
-          });
+          })
+          .finally(() => onClose());
       } else {
         if (name === "datosReales") {
           if (solicitudAbierta.cantidad > value) {

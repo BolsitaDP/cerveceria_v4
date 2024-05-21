@@ -29,16 +29,18 @@ const gruposSlice = createSlice({
     },
     setGruposInicial: (state, action) => {
       let grupos = {};
-      action.payload.data.forEach((grupo) => {
-        let nombre = grupo.nombre;
-        let idLocal = grupo.id;
-        grupos[nombre] = {
-          idLocal: idLocal,
-          nombre: nombre,
-          members: [],
-        };
-      });
-      state.groups = grupos;
+      if (action.payload.length > 0) {
+        action.payload.data.forEach((grupo) => {
+          let nombre = grupo.nombre;
+          let idLocal = grupo.id;
+          grupos[nombre] = {
+            idLocal: idLocal,
+            nombre: nombre,
+            members: [],
+          };
+        });
+        state.groups = grupos;
+      }
     },
     deleteGroup: (state, action) => {
       console.log(action.payload);
@@ -79,13 +81,15 @@ const gruposSlice = createSlice({
       // postCrearCorreos({ groupId, correo, id });
     },
     setMiembrosInicial: (state, action) => {
-      action.payload.data.forEach((correo) => {
-        Object.values(state.groups).forEach((grupo) => {
-          if (grupo.idLocal === correo.idGrupo) {
-            grupo.members = [...grupo.members, correo];
-          }
+      if (action.payload.length > 0) {
+        action.payload.data.forEach((correo) => {
+          Object.values(state.groups).forEach((grupo) => {
+            if (grupo.idLocal === correo.idGrupo) {
+              grupo.members = [...grupo.members, correo];
+            }
+          });
         });
-      });
+      }
     },
     deleteMember: (state, action) => {
       console.log(state.groups);

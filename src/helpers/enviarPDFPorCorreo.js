@@ -2,6 +2,8 @@ import postData from "../requests/postData";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { toast } from "react-toastify";
+import { agregarArchivoPDF } from "../redux/slices/contenedoresSlice";
+import store from "../redux/store";
 
 const enviarPDFPorCorreo = async (
   columns,
@@ -9,7 +11,9 @@ const enviarPDFPorCorreo = async (
   origen,
   pdfTitle,
   grupoId,
-  descargar
+  descargar,
+  semana,
+  version
 ) => {
   let blob = null;
   const doc = new jsPDF({
@@ -76,10 +80,16 @@ const enviarPDFPorCorreo = async (
   formData.append("pdfFile", blob);
 
   formData.append("grupoID", grupoId);
+  if (semana && version) {
+    formData.append("semana", semana);
+    formData.append("version", version);
+  }
   formData.append("subject", "Adjunto PDF");
 
   try {
-    await postData.postEnviarPDF(formData);
+    await postData.postEnviarPDF(formData).then(() => {
+      store.dispatch(agregarArchivoPDF(formData));
+    });
   } catch (error) {
     toast.error("Ha ocurrido un error, inténtalo de nuevo más tarde");
   }

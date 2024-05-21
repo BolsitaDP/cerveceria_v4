@@ -31,6 +31,7 @@ import BtnDevolverSol from "../BtnDevolverSol";
 import Notificar from "../modales/Notificar";
 import PreguntarDevolverSolicitudes from "../modales/PreguntarDevolverSolicitudes";
 import postData from "../../requests/postData";
+import HistorialPDF from "../modales/FABS/HistorialPDF";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -266,10 +267,10 @@ const Calendario = () => {
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Notificar cambios" arrow>
+            <Tooltip title="Historial PDF" arrow>
               <IconButton
                 sx={{ color: theme.palette.primary.contrast }}
-                onClick={() => handleMostrarModal("notificarCambios")}
+                onClick={() => handleMostrarModal("historialPdf")}
                 edge="end">
                 <BackupRoundedIcon />
               </IconButton>
@@ -590,9 +591,9 @@ const Calendario = () => {
         <ModalDetallesAccion accionAbierta={accionAbierta} />
       </Modal>
       <Modal
-        open={modalAbierto === "notificarCambios"}
+        open={modalAbierto === "historialPdf"}
         onClose={() => setModalAbierto(null)}>
-        <Notificar />
+        <HistorialPDF />
       </Modal>
       <Modal
         open={modalAbierto === "devolverSolicitudes"}

@@ -15,6 +15,7 @@ import {
   setAcciones,
   setAccionesInicial,
   setAccionesProgramadas,
+  setArchivosPDFInicial,
   setSalones,
   setSalonesInicial,
   setSolicitudes,
@@ -69,6 +70,7 @@ function App() {
           historial,
           grupos,
           correos,
+          archivosPDF,
         ] = await Promise.all([
           getData.getProgramacionPendiente(),
           getData.getAcciones(),
@@ -76,17 +78,21 @@ function App() {
           getData.getHistorial(),
           getData.getGrupos(),
           getData.getCorreos(),
+          getData.getArchivosPDF(),
         ]);
 
         dispatch(setSolicitudesInicial(solicitudesSinProgramar.data));
         dispatch(setAccionesInicial(acciones.data));
         dispatch(setSalonesInicial(salones.data));
         dispatch(setHistorialInicial(historial.data));
-        dispatch(setGruposInicial(grupos));
-        dispatch(setMiembrosInicial(correos));
+        dispatch(setGruposInicial(grupos.data));
+        dispatch(setMiembrosInicial(correos.data));
+
+        dispatch(setArchivosPDFInicial(archivosPDF.data));
 
         dispatch(settearPedidoTotal(solicitudesSinProgramar.data));
       } catch (error) {
+        console.log(error);
         toast.error("Error consultando los datos." + error);
       }
     };

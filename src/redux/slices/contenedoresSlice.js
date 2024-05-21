@@ -15,6 +15,7 @@ const contenedoresSlice = createSlice({
     acciones: [],
     elementoCopia: {},
     pedidoTotal: [],
+    archivosPDF: [],
   },
   reducers: {
     setSolicitudesInicial: (state, action) => {
@@ -470,6 +471,14 @@ const contenedoresSlice = createSlice({
         state.pedidoTotal.push(sol);
       });
     },
+
+    setArchivosPDFInicial: (state, action) => {
+      state.archivosPDF = action.payload;
+    },
+
+    agregarArchivoPDF: (state, action) => {
+      state.archivosPDF.push(action.payload);
+    },
   },
 });
 
@@ -505,5 +514,7 @@ export const {
   borrarSolicitudesDelState,
   agregarSolicitudesAlState,
   settearPedidoTotal,
+  setArchivosPDFInicial,
+  agregarArchivoPDF,
 } = contenedoresSlice.actions;
 export default contenedoresSlice.reducer;

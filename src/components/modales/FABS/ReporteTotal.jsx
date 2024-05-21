@@ -319,6 +319,8 @@ const ReporteTotal = () => {
     },
   ];
 
+  const columnsSinTotal = columns.filter((item) => item.field !== "total");
+
   function encontrarItem(items, codigoNombre) {
     return items.find(
       (i) => i.codigoNombre === codigoNombre || i.tipo === codigoNombre
@@ -472,7 +474,7 @@ const ReporteTotal = () => {
         onClose={() => setModalAbierto(null)}>
         <Notificar
           exportar
-          columns={columns}
+          columns={columnsSinTotal}
           rows={rows7}
           titulo={`Programación del ${fechasSoloDiaMes[0]} al ${fechasSoloDiaMes[6]} versión ${versionEstado}`}
           origen="reporteGeneral"
