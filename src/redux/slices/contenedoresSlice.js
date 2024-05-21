@@ -302,7 +302,12 @@ const contenedoresSlice = createSlice({
       if (solicitudActualizada) {
         postData.postActualizarPropiedades(solicitudActualizada);
       } else {
-        postData.postActualizarPropiedades(action.payload);
+        let obj = JSON.parse(JSON.stringify(action.payload));
+        if (obj.fecha) {
+          obj.estado = "Programado";
+        }
+
+        postData.postActualizarPropiedades(obj);
 
         let [cod, dif] = codigoNombre.split(" ");
         let [nombre, fecha] = action.payload.fecha.split("&");
@@ -464,7 +469,10 @@ const contenedoresSlice = createSlice({
       diaSalon.horas += cantidad / capacidadSalonPorDia;
     },
     agregarSolicitudesAlState: (state, action) => {
-      state.solicitudes.push(action.payload);
+      let objCopia = JSON.parse(JSON.stringify(action.payload));
+      objCopia.idDnd = uuid();
+
+      state.solicitudes.push(objCopia);
     },
     settearPedidoTotal: (state, action) => {
       action.payload.forEach((sol) => {
