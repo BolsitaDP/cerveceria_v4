@@ -177,7 +177,8 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
           </strong>{" "}
           tiene una velocidad para esta línea ({salonSeleccionadoEstado}) de{" "}
           <strong>{velocidadDeLaLineaParaElProducto.Velocidad} CJS/h</strong> lo
-          que implicaría <strong>{horasConsumidasDelElementoOriginal}</strong>{" "}
+          que implicaría{" "}
+          <strong>{horasConsumidasDelElementoOriginal.toLocaleString()}</strong>{" "}
           horas, pero el día{" "}
           <strong>{reparticion[0].fecha.split("&")[0]}</strong> solo dispone de{" "}
           <strong>{horasDisponiblesPrimerDia} horas</strong>, ¿desea crear una

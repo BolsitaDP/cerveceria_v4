@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { agregarArchivoPDF } from "../redux/slices/contenedoresSlice";
 import store from "../redux/store";
 
+import { v4 as uuid } from "uuid";
+
 const enviarPDFPorCorreo = async (
   columns,
   rows,
@@ -88,7 +90,13 @@ const enviarPDFPorCorreo = async (
 
   try {
     await postData.postEnviarPDF(formData).then(() => {
-      store.dispatch(agregarArchivoPDF(formData));
+      let tempObj = {
+        Id: uuid(),
+        rutaPdf: pdfUrl,
+        semanaPdf: semana,
+        versionPdf: version,
+      };
+      store.dispatch(agregarArchivoPDF(tempObj));
     });
   } catch (error) {
     toast.error("Ha ocurrido un error, inténtalo de nuevo más tarde");

@@ -3,6 +3,7 @@ import { Box, Card, IconButton, Modal, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 
 import BackupRoundedIcon from "@mui/icons-material/BackupRounded";
+import ListIcon from "@mui/icons-material/List";
 import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
 import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
 import { useTheme } from "@emotion/react";
@@ -272,7 +273,7 @@ const Calendario = () => {
                 sx={{ color: theme.palette.primary.contrast }}
                 onClick={() => handleMostrarModal("historialPdf")}
                 edge="end">
-                <BackupRoundedIcon />
+                <ListIcon />
               </IconButton>
             </Tooltip>
 

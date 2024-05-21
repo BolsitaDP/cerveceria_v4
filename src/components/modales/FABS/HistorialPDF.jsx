@@ -72,9 +72,15 @@ const HistorialPDF = () => {
   console.log(rangoFecchas);
 
   const handleAbrirPDF = () => {
-    let url = `https://icasa.bpmco.co/api_cerveceria/temp/${pdfSeleccionado.rutaPdf}`;
+    if (pdfSeleccionado.Id.length > 10) {
+      const link = document.createElement("a");
+      link.href = pdfSeleccionado.rutaPdf;
+      window.open(pdfSeleccionado.rutaPdf, "_blank");
+    } else {
+      let url = `https://icasa.bpmco.co/api_cerveceria/temp/${pdfSeleccionado.rutaPdf}`;
 
-    window.open(url, "_blank");
+      window.open(url, "_blank");
+    }
   };
 
   return (
