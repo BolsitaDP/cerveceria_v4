@@ -171,7 +171,17 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
           .then((res) => {
             if (res.data.status !== "ERROR") {
               setCantidadInput(Number(numericValue));
-              solicitudEditada[name] = Number(numericValue);
+
+              const updatedSolicitudEditada = { ...solicitudEditada };
+              updatedSolicitudEditada[name] = Number(numericValue);
+              // solicitudEditada[name] = Number(numericValue);
+
+              setValorPrevio(updatedSolicitudEditada[name]);
+              // if (destino && destino[1]) {
+              //   solicitudEditada.fecha = destino[1];
+              //   solicitudEditada.salonProgramado = destino[0];
+              // }
+              dispatch(updatePropiedadesSolicitud(updatedSolicitudEditada));
             } else {
               toast.error(
                 "No puedes superar la cantidad inicial de la solicitud"
@@ -199,7 +209,15 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
         }
 
         solicitudEditada[name] = value;
+
+        setValorPrevio(solicitudEditada[name]);
+        // if (destino && destino[1]) {
+        //   solicitudEditada.fecha = destino[1];
+        //   solicitudEditada.salonProgramado = destino[0];
+        // }
+        dispatch(updatePropiedadesSolicitud(solicitudEditada));
       }
+
       setValorPrevio(solicitudEditada[name]);
       // if (destino && destino[1]) {
       //   solicitudEditada.fecha = destino[1];
