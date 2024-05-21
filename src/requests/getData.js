@@ -32,5 +32,11 @@ const getData = {
   getSalones() {
     return peticion.get("SalonController/salones");
   },
+
+  getValidarCantidadProgramada({ idPadre, cantidad }) {
+    return peticion.get(
+      `ProgramacionController/validateSchedule?idPadre=${idPadre}&cantProducir=${cantidad}`
+    );
+  },
 };
 export default getData;

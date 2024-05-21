@@ -18,6 +18,7 @@ import getFechaHoraActual from "../../helpers/getFechaHoraActual";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import {
+  agregarSolicitudesAlState,
   deleteSolicitud,
   particionSolicitudSinProgramar,
   updatePropiedadesSolicitud,
@@ -33,6 +34,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/en-gb";
 import { NumericFormat } from "react-number-format";
 import HistorialSolicitud from "./HistorialSolicitud";
+import getData from "../../requests/getData";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const dispatch = useDispatch();
@@ -157,9 +159,45 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       }
       dispatch(addToHistory(editedProperty));
       if (name === "cantidad") {
-        setCantidadInput(Number(numericValue));
-        solicitudEditada[name] = Number(numericValue);
+        getData
+          .getValidarCantidadProgramada({
+            idPadre: solicitudAbierta.idPadre,
+            cantidad: numericValue,
+          })
+          .then((res) => {
+            if (res.data.status !== "ERROR") {
+              setCantidadInput(Number(numericValue));
+              solicitudEditada[name] = Number(numericValue);
+            } else {
+              toast.error(
+                "No puedes superar la cantidad inicial de la solicitud"
+              );
+            }
+          });
       } else {
+        if (name === "datosReales") {
+          if (solicitudAbierta.cantidad > value) {
+            let solicitudFaltante = JSON.parse(
+              JSON.stringify(solicitudAbierta)
+            );
+            solicitudFaltante = {
+              ...solicitudFaltante,
+              cantidad: solicitudAbierta.cantidad - value,
+              estado: "",
+              salonProgramado: "",
+              fecha: "",
+            };
+
+            postData
+              .postActualizarEstadoCopia(solicitudFaltante)
+              .then((res) => {
+                console.log(res);
+
+                dispatch(agregarSolicitudesAlState(res.data));
+              });
+          }
+        }
+
         solicitudEditada[name] = value;
       }
       setValorPrevio(solicitudEditada[name]);
@@ -340,10 +378,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
 
     console.log(value);
     console.log(solicitudAbierta);
-
-    if (solicitudAbierta.cantidad > value) {
-      console.log("partir");
-    }
   };
 
   return (
