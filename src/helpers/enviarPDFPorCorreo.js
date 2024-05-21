@@ -3,7 +3,14 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { toast } from "react-toastify";
 
-const enviarPDFPorCorreo = async (columns, rows, origen, pdfTitle, grupoId) => {
+const enviarPDFPorCorreo = async (
+  columns,
+  rows,
+  origen,
+  pdfTitle,
+  grupoId,
+  descargar
+) => {
   let blob = null;
   const doc = new jsPDF({
     orientation: "landscape",
@@ -25,7 +32,7 @@ const enviarPDFPorCorreo = async (columns, rows, origen, pdfTitle, grupoId) => {
         if (column.field === "valorNuevo") {
           //  cellValue = formatDateAndDay(cellValue);
         }
-      } else if (origen === "reporteGeneral") {
+      } else if (origen === "reporteGeneral" || origen === "Version") {
         if (column.field === "dia" && cellValue !== undefined) {
           let [nombre, fecha] = cellValue.split("&");
           cellValue = `${nombre} ${fecha}`;
@@ -55,6 +62,14 @@ const enviarPDFPorCorreo = async (columns, rows, origen, pdfTitle, grupoId) => {
 
   const pdfUrl = URL.createObjectURL(doc.output("blob"));
   window.open(pdfUrl, "_blank");
+  if (descargar) {
+    const link = document.createElement("a");
+    link.href = pdfUrl;
+    link.download = `${pdfTitle}.pdf`; // Puedes cambiar el nombre del archivo como desees
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
   blob = doc.output("blob");
   const formData = new FormData();

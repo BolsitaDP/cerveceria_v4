@@ -16,6 +16,7 @@ const ReporteTotal = () => {
   const [sinAcciones, setSinAcciones] = useState(false);
 
   const contenedoresEstado = useSelector((state) => state.contenedores);
+  const versionEstado = useSelector((state) => state.history.version);
 
   const todosLosColores = generarColores();
 
@@ -28,6 +29,12 @@ const ReporteTotal = () => {
   let fechasSemanaCompletas = obtenerDiasDeLaSemana(sieteDias);
 
   let diasFechas = [];
+
+  let fechasSoloDiaMes = [];
+  fechasSeleccionadas.forEach((fecha) => {
+    let arrFecha = fecha.split("/");
+    fechasSoloDiaMes.push(`${arrFecha[0]}/${arrFecha[1]}`);
+  });
 
   Object.keys(Object.values(salones)[0].dias)
     .slice(0, 7)
@@ -467,7 +474,7 @@ const ReporteTotal = () => {
           exportar
           columns={columns}
           rows={rows7}
-          titulo="Reporte general"
+          titulo={`Programación del ${fechasSoloDiaMes[0]} al ${fechasSoloDiaMes[6]} versión ${versionEstado}`}
           origen="reporteGeneral"
         />
       </Modal>

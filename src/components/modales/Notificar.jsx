@@ -76,6 +76,10 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
     }
   };
 
+  const handleDescargarProgramacion = async () => {
+    await enviarPDFPorCorreo(columns, rows, origen, titulo, "");
+  };
+
   return (
     <>
       <BasicModal titulo="Notificar">
@@ -160,6 +164,10 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
               }}>
               <Button variant="contained" onClick={handleEnviarPDF}>
                 Enviar pdf
+              </Button>
+
+              <Button variant="contained" onClick={handleDescargarProgramacion}>
+                Descargar pdf
               </Button>
             </Box>
           ) : (
