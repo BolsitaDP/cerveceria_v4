@@ -54,7 +54,7 @@ const Solicitud = ({
       )}
 
       <Typography
-        sx={{ width: "100%", fontSize: calendario ? "1.5vh" : "1.8vh" }}>
+        sx={{ width: "100%", fontSize: calendario ? "1.5vh" : "1.5vh" }}>
         <NumericFormatCustom
           value={solicitud.cantidad}
           displayType={"text"} // Esto indica que el valor formateado es para mostrar como texto
@@ -75,7 +75,7 @@ const Solicitud = ({
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
-              fontSize: calendario ? "1.8vh" : "2vh",
+              fontSize: calendario ? "1.5vh" : "1.5vh",
             }}>
             {solicitud.producto.slice(0, 30)}
             {solicitud.producto.length > 30 && "..."}

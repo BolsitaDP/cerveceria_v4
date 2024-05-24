@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import getFechaHoraActual from "../../helpers/getFechaHoraActual";
@@ -36,30 +36,44 @@ import {
 } from "../../redux/slices/contenedoresSlice";
 import { toast } from "react-toastify";
 import postData from "../../requests/postData";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { addToHistory } from "../../redux/slices/historySlice";
 
 import { v4 as uuid } from "uuid";
-import { NumericFormat } from "react-number-format";
 import FormattedInputTypeNumber from "../FormattedInputTypeNumber";
+import { format, parse } from "date-fns";
+import { es } from "date-fns/locale";
+import getData from "../../requests/getData";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   console.log(solicitudAbierta);
+
+  // Se crea una copia de la solicitud abierta
+  let solicitudAbiertaEditable = JSON.parse(JSON.stringify(solicitudAbierta));
 
   // Creación de instancias
   const dispatch = useDispatch();
   const theme = useTheme();
 
+  // Parseo de la fecha en string a ser legible para el componente de datepicker
+  let fechaRequiereParseada = parse(
+    solicitudAbiertaEditable.fechaRequiere,
+    "dd/MM/yyyy",
+    new Date()
+  );
+
   // UseStates utilizados para los inputs y modales
   const [fechaRequeridoPara, setFechaRequeridoPara] = useState(
-    solicitudAbierta.fechaRequiere
+    fechaRequiereParseada
   );
+
   const [observacionesInput, setObservacionesInput] = useState(
-    solicitudAbierta.observaciones
+    solicitudAbiertaEditable.observaciones
   );
-  const [cantidadInput, setCantidadInput] = useState(solicitudAbierta.cantidad);
+  const [cantidadInput, setCantidadInput] = useState(
+    solicitudAbiertaEditable.cantidad
+  );
   const [valorPrevio, setValorPrevio] = useState(null);
   const [valueAPartir, setValueAPartir] = useState(null);
   const [editedPropertyState, setEditedPropertyState] = useState(null);
@@ -69,10 +83,12 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const [diferenciaAProgramar, setDiferenciaAProgramar] = useState(null);
   const [codigoSolicitud, setCodigoSolicitud] = useState(null);
   const [solNacional, setSolNacional] = useState(
-    solicitudAbierta.tipoRequerimiento === "PRODUCCIÓN LOCAL" ? true : false
+    solicitudAbiertaEditable.tipoRequerimiento === "PRODUCCIÓN LOCAL"
+      ? true
+      : false
   );
   const [cantidadProducida, setCantidadProducida] = useState(
-    solicitudAbierta.datosReales
+    solicitudAbiertaEditable.datosReales
   );
 
   // Son los datos obtenidos desde el state global
@@ -86,9 +102,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
 
   // Obtiene la fecha y hora actual
   let fechaHoraActual = getFechaHoraActual();
-
-  // Se crea una copia de la solicitud abierta
-  const solicitudEditada = JSON.parse(JSON.stringify(solicitudAbierta));
 
   // Setteadores de los useState utilizados para los inputs
   const handleCantidadChange = (e) => {
@@ -177,15 +190,19 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const onNoPartir = () => {
     // setCantidadInput(Number(valorPrevio) || solicitudAbierta.cantidad);
     // dispatch(addToHistory(editedPropertyState));
-    // solicitudEditada.cantidad = valueAPartir;
-    // setValorPrevio(solicitudEditada.cantidad);
-    // dispatch(updatePropiedadesSolicitud(solicitudEditada));
+    // solicitudAbiertaEditable.cantidad = valueAPartir;
+    // setValorPrevio(solicitudAbiertaEditable.cantidad);
+    // dispatch(updatePropiedadesSolicitud(solicitudAbiertaEditable));
     setOpenPartir(false);
   };
 
   const onSiPartir = () => {
-    let solicitudPartidaCopia = JSON.parse(JSON.stringify(solicitudEditada));
-    let solicitudPartidaOrig = JSON.parse(JSON.stringify(solicitudEditada));
+    let solicitudPartidaCopia = JSON.parse(
+      JSON.stringify(solicitudAbiertaEditable)
+    );
+    let solicitudPartidaOrig = JSON.parse(
+      JSON.stringify(solicitudAbiertaEditable)
+    );
     solicitudPartidaCopia.cantidad = valueAPartir;
     try {
       postData.postActualizarEstadoCopia(solicitudPartidaCopia).then((res) => {
@@ -199,14 +216,177 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       );
     }
 
-    // dispatch(particionSolicitudSinProgramar(solicitudEditada));
-    solicitudPartidaOrig.cantidad = solicitudAbierta.cantidad - valueAPartir;
-    // setValorPrevio(solicitudEditada.cantidad);
+    // dispatch(particionSolicitudSinProgramar(solicitudAbiertaEditable));
+    solicitudPartidaOrig.cantidad =
+      solicitudAbiertaEditable.cantidad - valueAPartir;
     dispatch(updatePropiedadesSolicitud(solicitudPartidaOrig));
     setOpenPartir(false);
   };
 
-  const handleBlurred = () => {};
+  // Función que obtiene de parámetro el objeto Date de JavaScript y lo convierte a un string con formato dd/mm/aaaa
+  const formatearFecha = (date) => {
+    return format(date, "dd/MM/yyyy");
+  };
+
+  // Función para guardar las propiedades editadas
+  const handleGuardarProp = ({ name, value }) => {
+    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+
+    let valueFechaFormateada;
+    if (name === "fechaRequiere") {
+      valueFechaFormateada = formatearFecha(value);
+    }
+
+    let editedProperty = {
+      codigo: solicitudAbiertaEditable.codigoNombre,
+      tipoDeCambio: "Propiedad",
+      propiedad: name,
+      valorPrevio: solicitudAbiertaEditable[name],
+      valorNuevo: name === "fechaRequiere" ? valueFechaFormateada : value,
+      notificado: 0,
+      fechaDelCambio: fechaActual,
+      horaDelCambio: horaActual,
+      version: versionEstado,
+      editor: editorEstado,
+      idElemento: solicitudAbiertaEditable.idDnd,
+    };
+
+    if (name === "cantidad") {
+      var cantidadSinComas = value.replace(/,/g, "");
+    }
+
+    if (
+      name === "cantidad" &&
+      Number(cantidadSinComas) - Number(solicitudAbiertaEditable.cantidad) >
+        cantidadExtraPosible
+    ) {
+      toast(
+        "No puedes superar la cantidad máxima restante para este día: " +
+          parseInt(
+            Number(solicitudAbiertaEditable.cantidad) +
+              Number(cantidadExtraPosible)
+          )
+      );
+    } else {
+      if (!calendario && name === "cantidad") {
+        if (Number(cantidadSinComas) < solicitudAbiertaEditable[name]) {
+          setOpenPartir(true);
+        } else {
+          dispatch(addToHistory(editedProperty));
+          solicitudAbiertaEditable[name] = Number(cantidadSinComas);
+          dispatch(updatePropiedadesSolicitud(solicitudAbiertaEditable));
+        }
+
+        setValueAPartir(Number(cantidadSinComas));
+        setEditedPropertyState(editedProperty);
+
+        toast.success(
+          `Cantidad modificada exitosamente de ${solicitudAbierta.cantidad} a ${cantidadInput}`
+        );
+
+        //TODO: Modificar la solicitudAbierta por la solicitudAbiertaEditable en el state
+
+        return;
+      }
+
+      if (name === "cantidad") {
+        getData
+          .getValidarCantidadProgramada({
+            idPadre: solicitudAbiertaEditable.idPadre,
+            cantidad: cantidadSinComas,
+          })
+          .then((res) => {
+            if (res.data.status !== "ERROR") {
+              setCantidadInput(Number(cantidadSinComas));
+
+              const updatedSolicitudEditada = { ...solicitudAbiertaEditable };
+              updatedSolicitudEditada[name] = Number(cantidadSinComas);
+
+              setValorPrevio(updatedSolicitudEditada[name]);
+              dispatch(updatePropiedadesSolicitud(updatedSolicitudEditada));
+              dispatch(addToHistory(editedProperty));
+            } else {
+              toast.error(
+                "No puedes superar la cantidad inicial de la solicitud"
+              );
+            }
+          })
+          .finally(() => onClose());
+      } else {
+        if (name === "datosReales") {
+          if (solicitudAbiertaEditable.cantidad > value) {
+            let solicitudFaltante = JSON.parse(
+              JSON.stringify(solicitudAbiertaEditable)
+            );
+            solicitudFaltante = {
+              ...solicitudFaltante,
+              cantidad: solicitudAbiertaEditable.cantidad - value,
+              estado: "",
+              salonProgramado: "",
+              fecha: "",
+            };
+
+            setOpenProgramarDiferencia(true);
+            setDiferenciaAProgramar({
+              solicitudFaltante,
+              solicitudAbiertaEditable,
+            });
+          }
+        }
+
+        dispatch(addToHistory(editedProperty));
+
+        if (name === "fechaRequiere") {
+          solicitudAbiertaEditable[name] = valueFechaFormateada;
+        } else if (name === "datosReales") {
+          solicitudAbiertaEditable[name] = value;
+          solicitudAbiertaEditable.cantidad = value;
+        } else {
+          solicitudAbiertaEditable[name] = value;
+        }
+
+        // setValorPrevio(solicitudAbiertaEditable[name]);
+        dispatch(updatePropiedadesSolicitud(solicitudAbiertaEditable));
+      }
+
+      // setValorPrevio(solicitudAbiertaEditable[name]);
+    }
+  };
+
+  if (calendario) {
+    if (destino && destino.length >= 1) {
+      var [salonDest, diaDest] = destino;
+    }
+
+    var salon = null;
+    if (solicitudAbiertaEditable.salonProgramado !== "") {
+      salon = solicitudAbiertaEditable.salonProgramado;
+    } else {
+      salon = salonDest;
+    }
+
+    var dia = null;
+    if (solicitudAbiertaEditable.fecha !== "") {
+      dia = solicitudAbiertaEditable.fecha;
+    } else {
+      dia = diaDest;
+    }
+
+    let horasRestantesDia =
+      contenedoresEstado.calendario[salon].dias[dia].horas;
+
+    // let capacidadSalon = contenedoresEstado.calendario[ salon ].capacidadHora; -----
+    let capacidadSalon;
+
+    solicitudAbiertaEditable.velocidadesSalonProducto.forEach((linea) => {
+      if (linea.Linea === salonSeleccionadoEstado) {
+        // let minutosRestar = elementoArrastrado.cantidad / linea.Velocidad;
+        capacidadSalon = linea.Velocidad;
+      }
+    });
+
+    var cantidadExtraPosible = parseInt(capacidadSalon * horasRestantesDia);
+  }
 
   return (
     <BasicModal
@@ -219,7 +399,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                 <Switch
                   checked={solNacional}
                   onChange={() =>
-                    handleChangeNacionalInternacional(solicitudAbierta)
+                    handleChangeNacionalInternacional(solicitudAbiertaEditable)
                   }
                 />
               }
@@ -232,7 +412,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               alignItems: "center",
               width: "100%",
             }}>
-            {solicitudAbierta.codigoNombre}
+            {solicitudAbiertaEditable.codigoNombre}
           </Box>
           <Box
             sx={{
@@ -247,7 +427,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               <IconButton
                 sx={{ color: theme.palette.primary.contrast }}
                 onClick={() =>
-                  handleMostrarHistorial(solicitudAbierta.codigoNombre)
+                  handleMostrarHistorial(solicitudAbiertaEditable.codigoNombre)
                 }
                 edge="end">
                 <HistoryIcon />
@@ -258,9 +438,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                 sx={{
                   color: theme.palette.primary.contrast,
                 }}
-                onClick={() => handleBorrarSolicitud(solicitudAbierta)}
+                onClick={() => handleBorrarSolicitud(solicitudAbiertaEditable)}
                 edge="end">
-                <DeleteIcon />
+                <DeleteIcon sx={{ color: "yellow" }} />
               </IconButton>
             </Tooltip>
           </Box>
@@ -286,7 +466,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               readOnly: true,
             }}
             label="Nombre"
-            defaultValue={solicitudAbierta.producto}
+            defaultValue={solicitudAbiertaEditable.producto}
             variant="standard"
           />
 
@@ -306,13 +486,17 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             />
             <Tooltip title="Guardar" arrow>
               <IconButton
+                disabled={solicitudAbiertaEditable.cantidad == cantidadInput}
                 sx={{
                   color: theme.palette.primary.main,
                 }}
-                // onClick={() => handleBorrarSolicitud(solicitudAbierta)}
+                onClick={() =>
+                  handleGuardarProp({ name: "cantidad", value: cantidadInput })
+                }
                 edge="end">
                 <SaveIcon />
               </IconButton>
+              <span></span>
             </Tooltip>
           </FormControl>
 
@@ -321,29 +505,58 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               readOnly: true,
             }}
             label="País destino"
-            defaultValue={solicitudAbierta.paisDestino}
+            defaultValue={solicitudAbiertaEditable.paisDestino}
             variant="standard"
           />
 
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Requerido para"
-              value={dayjs(fechaRequeridoPara)}
-              onBlur={handleBlurred}
-              // variant="standard"
-              onChange={(newValue) => {
-                setValorPrevio(fechaRequeridoPara);
-                setFechaRequeridoPara(newValue);
-              }}
-            />
-          </LocalizationProvider>
+          <FormControl
+            sx={{
+              width: "40%",
+              display: "flex",
+              flexDirection: "row",
+              gap: "0 5%",
+              alignItems: "center",
+            }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
+              <DatePicker
+                sx={{ width: "80%" }}
+                label="Requerido para"
+                value={fechaRequeridoPara}
+                onChange={(newValue) => {
+                  setFechaRequeridoPara(newValue);
+                }}
+                name="fechaRequiere"
+                format="dd/MM/yyyy"
+              />
+            </LocalizationProvider>
+            <Tooltip title="Guardar" arrow>
+              <IconButton
+                disabled={
+                  solicitudAbiertaEditable.fechaRequiere ==
+                  formatearFecha(fechaRequeridoPara)
+                }
+                sx={{
+                  color: theme.palette.primary.main,
+                }}
+                onClick={() =>
+                  handleGuardarProp({
+                    name: "fechaRequiere",
+                    value: fechaRequeridoPara,
+                  })
+                }
+                edge="end">
+                <SaveIcon />
+              </IconButton>
+              <span></span>
+            </Tooltip>
+          </FormControl>
 
           <TextField
             InputProps={{
               readOnly: true,
             }}
             label="Programado"
-            defaultValue={solicitudAbierta.cantidad.toLocaleString()}
+            defaultValue={solicitudAbiertaEditable.cantidad.toLocaleString()}
             variant="standard"
           />
 
@@ -366,13 +579,22 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             />
             <Tooltip title="Guardar" arrow>
               <IconButton
+                disabled={
+                  solicitudAbiertaEditable.datosReales == cantidadProducida
+                }
                 sx={{
                   color: theme.palette.primary.main,
                 }}
-                // onClick={() => handleBorrarSolicitud(solicitudAbierta)}
+                onClick={() =>
+                  handleGuardarProp({
+                    name: "datosReales",
+                    value: cantidadProducida,
+                  })
+                }
                 edge="end">
                 <SaveIcon />
               </IconButton>
+              <span></span>
             </Tooltip>
           </FormControl>
 
@@ -383,19 +605,47 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               readOnly: true,
             }}
             rows={3}
-            defaultValue={solicitudAbierta.observacionesGenerales}
+            defaultValue={solicitudAbiertaEditable.observacionesGenerales}
             variant="standard"
           />
 
-          <TextField
-            label="Observaciones"
-            multiline
-            rows={3}
-            name="observaciones"
-            onChange={handleObservacionesChange}
-            value={observacionesInput}
-            onBlur={handleBlurred}
-          />
+          <FormControl
+            sx={{
+              width: "40%",
+              display: "flex",
+              flexDirection: "row",
+              gap: "0 5%",
+              alignItems: "center",
+            }}>
+            <TextField
+              label="Observaciones"
+              multiline
+              rows={3}
+              sx={{ width: "80%" }}
+              name="observaciones"
+              onChange={handleObservacionesChange}
+              value={observacionesInput}
+            />
+            <Tooltip title="Guardar" arrow>
+              <IconButton
+                disabled={
+                  solicitudAbiertaEditable.observaciones == observacionesInput
+                }
+                sx={{
+                  color: theme.palette.primary.main,
+                }}
+                onClick={() =>
+                  handleGuardarProp({
+                    name: "observaciones",
+                    value: observacionesInput,
+                  })
+                }
+                edge="end">
+                <SaveIcon />
+              </IconButton>
+              <span></span>
+            </Tooltip>
+          </FormControl>
 
           <Accordion
             sx={{
@@ -419,7 +669,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Marca"
-                defaultValue={solicitudAbierta.marca}
+                defaultValue={solicitudAbiertaEditable.marca}
                 variant="standard"
               />
 
@@ -428,7 +678,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Fórmula"
-                defaultValue={solicitudAbierta.formula}
+                defaultValue={solicitudAbiertaEditable.formula}
                 variant="standard"
               />
 
@@ -437,7 +687,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Volumen"
-                defaultValue={solicitudAbierta.volumen}
+                defaultValue={solicitudAbiertaEditable.volumen}
                 variant="standard"
               />
 
@@ -446,7 +696,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Envase"
-                defaultValue={solicitudAbierta.envase}
+                defaultValue={solicitudAbiertaEditable.envase}
                 variant="standard"
               />
 
@@ -455,7 +705,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Empaque"
-                defaultValue={solicitudAbierta.empaque}
+                defaultValue={solicitudAbiertaEditable.empaque}
                 variant="standard"
               />
 
@@ -464,7 +714,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Tapa"
-                defaultValue={solicitudAbierta.tapa}
+                defaultValue={solicitudAbiertaEditable.tapa}
                 variant="standard"
               />
 
@@ -473,7 +723,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Fecha de producción"
-                defaultValue={solicitudAbierta.fechaProduccion}
+                defaultValue={solicitudAbiertaEditable.fechaProduccion}
                 variant="standard"
               />
 
@@ -482,7 +732,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Fecha de expiración"
-                defaultValue={solicitudAbierta.fechaExpiración}
+                defaultValue={solicitudAbiertaEditable.fechaExpiración}
                 variant="standard"
               />
             </AccordionDetails>

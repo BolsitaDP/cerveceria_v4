@@ -7,8 +7,8 @@ const PreguntarProgramarDiferencia = ({
   onNoProgramar,
   diferenciaAProgramar,
 }) => {
-  let { solicitudFaltante, solicitudAbierta } = diferenciaAProgramar;
-  console.log(solicitudFaltante, solicitudAbierta);
+  let { solicitudFaltante, solicitudAbiertaEditable } = diferenciaAProgramar;
+  console.log(solicitudFaltante, solicitudAbiertaEditable);
   return (
     <BasicModal titulo="Reprogramar faltante">
       <Box sx={{ width: "30vw", padding: "30px" }}>
@@ -16,14 +16,16 @@ const PreguntarProgramarDiferencia = ({
           La cantidad producida{" "}
           <strong>
             {(
-              Math.round(solicitudAbierta.cantidad) -
+              Math.round(solicitudAbiertaEditable.cantidad) -
               Math.round(solicitudFaltante.cantidad)
             ).toLocaleString()}{" "}
             CJS
           </strong>{" "}
           es menor a la planeada{" "}
-          <strong>{solicitudAbierta.cantidad.toLocaleString()} CJS</strong>,
-          ¿desea reprogramar la diferencia de{" "}
+          <strong>
+            {solicitudAbiertaEditable.cantidad.toLocaleString()} CJS
+          </strong>
+          , ¿desea reprogramar la diferencia de{" "}
           <strong>
             {Math.round(solicitudFaltante.cantidad).toLocaleString()} CJS
           </strong>
