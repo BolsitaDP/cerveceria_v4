@@ -1,49 +1,58 @@
-import React, { useEffect } from "react";
-import BasicModal from "../MUIComponents/BasicModal";
-import {
-  Box,
-  IconButton,
-  Modal,
-  TextField,
-  Tooltip,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { useTheme } from "@emotion/react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import getFechaHoraActual from "../../helpers/getFechaHoraActual";
-import { useSelector } from "react-redux";
-import { v4 as uuid } from "uuid";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  InputLabel,
+  Modal,
+  Switch,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+import PreguntarProgramarDiferencia from "./PreguntarProgramarDiferencia";
+import PreguntarPartirSolicitudSinProgramar from "./PreguntarPartirSolicitudSinProgramar";
+import HistorialSolicitud from "./HistorialSolicitud";
+import BasicModal from "../MUIComponents/BasicModal";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+import DeleteIcon from "@mui/icons-material/Delete";
+import SaveIcon from "@mui/icons-material/Save";
+import HistoryIcon from "@mui/icons-material/History";
 import {
   agregarSolicitudesAlState,
   deleteSolicitud,
   particionSolicitudSinProgramar,
   updatePropiedadesSolicitud,
 } from "../../redux/slices/contenedoresSlice";
+import { toast } from "react-toastify";
 import postData from "../../requests/postData";
-import { addToHistory } from "../../redux/slices/historySlice";
-import PreguntarPartirSolicitudSinProgramar from "./PreguntarPartirSolicitudSinProgramar";
-import ClearIcon from "@mui/icons-material/Clear";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useTheme } from "@emotion/react";
-import HistoryIcon from "@mui/icons-material/History";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import "dayjs/locale/en-gb";
+import { addToHistory } from "../../redux/slices/historySlice";
+
+import { v4 as uuid } from "uuid";
 import { NumericFormat } from "react-number-format";
-import HistorialSolicitud from "./HistorialSolicitud";
-import getData from "../../requests/getData";
-import PreguntarProgramarDiferencia from "./PreguntarProgramarDiferencia";
+import FormattedInputTypeNumber from "../FormattedInputTypeNumber";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
-  const dispatch = useDispatch();
+  console.log(solicitudAbierta);
 
+  // Creación de instancias
+  const dispatch = useDispatch();
   const theme = useTheme();
 
-  // Crea un objeto de fecha con la fecha parseada
-
+  // UseStates utilizados para los inputs y modales
   const [fechaRequeridoPara, setFechaRequeridoPara] = useState(
     solicitudAbierta.fechaRequiere
   );
@@ -51,26 +60,22 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     solicitudAbierta.observaciones
   );
   const [cantidadInput, setCantidadInput] = useState(solicitudAbierta.cantidad);
-
   const [valorPrevio, setValorPrevio] = useState(null);
   const [valueAPartir, setValueAPartir] = useState(null);
   const [editedPropertyState, setEditedPropertyState] = useState(null);
   const [openPartir, setOpenPartir] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
-
   const [openProgramarDiferencia, setOpenProgramarDiferencia] = useState(false);
   const [diferenciaAProgramar, setDiferenciaAProgramar] = useState(null);
-
   const [codigoSolicitud, setCodigoSolicitud] = useState(null);
-
   const [solNacional, setSolNacional] = useState(
     solicitudAbierta.tipoRequerimiento === "PRODUCCIÓN LOCAL" ? true : false
   );
-
   const [cantidadProducida, setCantidadProducida] = useState(
     solicitudAbierta.datosReales
   );
 
+  // Son los datos obtenidos desde el state global
   const versionEstado = useSelector((state) => state.history.version);
   const editorEstado = useSelector((state) => state.history.editor);
   const destino = useSelector((state) => state.history.destino);
@@ -79,154 +84,73 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   );
   const contenedoresEstado = useSelector((state) => state.contenedores);
 
+  // Obtiene la fecha y hora actual
   let fechaHoraActual = getFechaHoraActual();
 
+  // Se crea una copia de la solicitud abierta
   const solicitudEditada = JSON.parse(JSON.stringify(solicitudAbierta));
 
-  // const formatoFecha = "DD/MM/YYYY";
-
-  // console.log(dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha }));
-
-  // useEffect(() => {
-  //   setFechaRequeridoPara(
-  //     dayjs(solicitudAbierta.fechaRequiere, { format: formatoFecha })
-  //   );
-  // }, []);
-
-  // console.log(fechaRequeridoPara);
-  // console.log(fechaRequeridoPara);
-  // console.log(dayjs(solicitudAbierta.fechaRequiere));
-
+  // Setteadores de los useState utilizados para los inputs
   const handleCantidadChange = (e) => {
     let { value } = e.target;
-    setCantidadInput(Math.round(Number(value)));
+    setCantidadInput(value);
   };
   const handleObservacionesChange = (e) => {
     let { value } = e.target;
     setObservacionesInput(value);
   };
+  const handleNuevoProducido = (e) => {
+    let { value } = e.target;
+    setCantidadProducida(value);
+  };
 
-  const handleBlurred = (e) => {
-    let { name, value } = e.target;
-    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
-    let editedProperty = {
-      codigo: solicitudAbierta.codigoNombre,
-      tipoDeCambio: "Propiedad",
-      propiedad: name,
-      valorPrevio: valorPrevio || solicitudAbierta[name],
-      valorNuevo: value,
-      notificado: 0,
-      fechaDelCambio: fechaActual,
-      horaDelCambio: horaActual,
-      version: versionEstado,
-      editor: editorEstado,
-      idElemento: solicitudAbierta.idDnd,
+  // Controladores de modales
+  const handleNoReprogramarLoFaltante = () => {
+    setDiferenciaAProgramar(null);
+    onClose();
+  };
+
+  // Función que muestra u oculta el historial de cambios de la solicitud
+  const handleMostrarHistorial = (cod) => {
+    setOpenHistory(!openHistory);
+    setCodigoSolicitud(cod);
+  };
+
+  // Switch que controla el cambio de solicitud nacional o de exportación
+  const handleChangeNacionalInternacional = (sol) => {
+    setSolNacional(!solNacional);
+    let solTIpoRequerimientoCambiado = {
+      ...sol,
+      tipoRequerimiento: solNacional ? "EXPORTACIÓN" : "PRODUCCIÓN LOCAL",
     };
 
-    if (name === "cantidad") {
-      var numericValue = value.replace(/,/g, "");
-    }
-
-    if (
-      name === "cantidad" &&
-      Number(numericValue) - Number(solicitudAbierta.cantidad) >
-        cantidadExtraPosible
-    ) {
-      toast(
-        "No puedes superar la cantidad máxima restante para este día: " +
-          parseInt(
-            Number(solicitudAbierta.cantidad) + Number(cantidadExtraPosible)
-          )
+    try {
+      dispatch(updatePropiedadesSolicitud(solTIpoRequerimientoCambiado));
+    } catch (error) {
+      toast.error(
+        "Ha ocurrido un error modificando el destino de la solicitud: " + error
       );
-      // throw new Error();
-    } else {
-      if (!calendario && name === "cantidad") {
-        if (valorPrevio) {
-          if (Number(numericValue) < Number(valorPrevio)) {
-            setOpenPartir(true);
-          }
-        } else {
-          if (Number(numericValue) < solicitudAbierta[name]) {
-            setOpenPartir(true);
-          } else {
-            dispatch(addToHistory(editedProperty));
-            solicitudEditada[name] = Number(numericValue);
-            setValorPrevio(solicitudEditada[name]);
-            dispatch(updatePropiedadesSolicitud(solicitudEditada));
-          }
-        }
-
-        setValueAPartir(Number(numericValue));
-        setEditedPropertyState(editedProperty);
-
-        return;
-      }
-      dispatch(addToHistory(editedProperty));
-      if (name === "cantidad") {
-        getData
-          .getValidarCantidadProgramada({
-            idPadre: solicitudAbierta.idPadre,
-            cantidad: numericValue,
-          })
-          .then((res) => {
-            if (res.data.status !== "ERROR") {
-              setCantidadInput(Number(numericValue));
-
-              const updatedSolicitudEditada = { ...solicitudEditada };
-              updatedSolicitudEditada[name] = Number(numericValue);
-              // solicitudEditada[name] = Number(numericValue);
-
-              setValorPrevio(updatedSolicitudEditada[name]);
-              // if (destino && destino[1]) {
-              //   solicitudEditada.fecha = destino[1];
-              //   solicitudEditada.salonProgramado = destino[0];
-              // }
-              dispatch(updatePropiedadesSolicitud(updatedSolicitudEditada));
-            } else {
-              toast.error(
-                "No puedes superar la cantidad inicial de la solicitud"
-              );
-            }
-          })
-          .finally(() => onClose());
-      } else {
-        if (name === "datosReales") {
-          if (solicitudAbierta.cantidad > value) {
-            let solicitudFaltante = JSON.parse(
-              JSON.stringify(solicitudAbierta)
-            );
-            solicitudFaltante = {
-              ...solicitudFaltante,
-              cantidad: solicitudAbierta.cantidad - value,
-              estado: "",
-              salonProgramado: "",
-              fecha: "",
-            };
-
-            setOpenProgramarDiferencia(true);
-            setDiferenciaAProgramar({ solicitudFaltante, solicitudAbierta });
-          }
-        }
-
-        solicitudEditada[name] = value;
-
-        setValorPrevio(solicitudEditada[name]);
-        // if (destino && destino[1]) {
-        //   solicitudEditada.fecha = destino[1];
-        //   solicitudEditada.salonProgramado = destino[0];
-        // }
-        dispatch(updatePropiedadesSolicitud(solicitudEditada));
-      }
-
-      setValorPrevio(solicitudEditada[name]);
-      // if (destino && destino[1]) {
-      //   solicitudEditada.fecha = destino[1];
-      //   solicitudEditada.salonProgramado = destino[0];
-      // }
-      dispatch(updatePropiedadesSolicitud(solicitudEditada));
     }
   };
 
+  // Función que elimina las solicitudes
+  const handleBorrarSolicitud = (obj) => {
+    try {
+      postData
+        .postDeleteSolicitud(obj)
+        .then((res) => {
+          dispatch(deleteSolicitud(obj));
+        })
+        .then(() => {
+          toast.success("Solicitud borrada exitosamente");
+          onClose();
+        });
+    } catch (error) {
+      toast.error("Ha ocurrido un error: " + error);
+    }
+  };
+
+  // Función que devuelve lo que no se alcanzó a producir a la izquierda; esto dependiendo del input de «Producido»
   const handleReprogramarLoFaltante = () => {
     console.log(diferenciaAProgramar);
 
@@ -235,8 +159,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     postData
       .postActualizarEstadoCopia(solicitudFaltante)
       .then((res) => {
-        console.log(res);
-
         dispatch(agregarSolicitudesAlState(res.data));
 
         toast.success(
@@ -252,85 +174,12 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       });
   };
 
-  const handleNoReprogramarLoFaltante = () => {
-    setDiferenciaAProgramar(null);
-    onClose();
-  };
-
-  useEffect(() => {
-    if (
-      (valorPrevio || solicitudAbierta.fechaRequiere) !== fechaRequeridoPara
-    ) {
-      let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
-      let editedProperty = {
-        codigo: solicitudAbierta.codigoNombre,
-        tipoDeCambio: "Propiedad",
-        propiedad: "reqPara",
-        valorPrevio: solicitudAbierta.fechaRequiere,
-        valorNuevo: fechaRequeridoPara,
-        notificado: 0,
-        fechaDelCambio: fechaActual,
-        horaDelCambio: horaActual,
-        version: versionEstado,
-        editor: editorEstado,
-        idElemento: solicitudAbierta.idDnd,
-      };
-      // if (solicitudAbierta.fechaRequiere !== solicitudEditada.fechaRequiere) {
-      dispatch(addToHistory(editedProperty));
-      // }
-
-      solicitudEditada.fechaRequiere = fechaRequeridoPara;
-      // if (destino && destino[1]) {
-      //   solicitudEditada.fecha = destino[1];
-      //   solicitudEditada.salonProgramado = destino[0];
-      // }
-
-      dispatch(updatePropiedadesSolicitud(solicitudEditada));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fechaRequeridoPara]);
-
-  if (calendario) {
-    if (destino && destino.length >= 1) {
-      var [salonDest, diaDest] = destino;
-    }
-
-    var salon = null;
-    if (solicitudAbierta.salonProgramado !== "") {
-      salon = solicitudAbierta.salonProgramado;
-    } else {
-      salon = salonDest;
-    }
-
-    var dia = null;
-    if (solicitudAbierta.fecha !== "") {
-      dia = solicitudAbierta.fecha;
-    } else {
-      dia = diaDest;
-    }
-
-    let horasRestantesDia =
-      contenedoresEstado.calendario[salon].dias[dia].horas;
-
-    // let capacidadSalon = contenedoresEstado.calendario[ salon ].capacidadHora; -----
-    let capacidadSalon;
-
-    solicitudAbierta.velocidadesSalonProducto.forEach((linea) => {
-      if (linea.Linea === salonSeleccionadoEstado) {
-        // let minutosRestar = elementoArrastrado.cantidad / linea.Velocidad;
-        capacidadSalon = linea.Velocidad;
-      }
-    });
-
-    var cantidadExtraPosible = parseInt(capacidadSalon * horasRestantesDia);
-  }
-
   const onNoPartir = () => {
     // setCantidadInput(Number(valorPrevio) || solicitudAbierta.cantidad);
-    dispatch(addToHistory(editedPropertyState));
-    solicitudEditada.cantidad = valueAPartir;
-    setValorPrevio(solicitudEditada.cantidad);
-    dispatch(updatePropiedadesSolicitud(solicitudEditada));
+    // dispatch(addToHistory(editedPropertyState));
+    // solicitudEditada.cantidad = valueAPartir;
+    // setValorPrevio(solicitudEditada.cantidad);
+    // dispatch(updatePropiedadesSolicitud(solicitudEditada));
     setOpenPartir(false);
   };
 
@@ -357,76 +206,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     setOpenPartir(false);
   };
 
-  const NumericFormatCustom = React.forwardRef(function NumericFormatCustom(
-    props,
-    ref
-  ) {
-    const { onChange, ...other } = props;
-
-    return (
-      <NumericFormat
-        {...other}
-        getInputRef={ref}
-        onValueChange={(values) => {
-          // Aquí puedes aplicar lógica adicional si es necesario
-        }}
-        thousandSeparator
-        onBlur={handleBlurred} // Agregar el manejador onBlur personalizado
-      />
-    );
-  });
-
-  // const handleCalendarChange = (date) => {};
-
-  const handleMostrarHistorial = (cod) => {
-    setOpenHistory(!openHistory);
-    setCodigoSolicitud(cod);
-    // TODO: Recibo el id, necesito abrir el historial relacionado con ese id
-  };
-
-  const handleBorrarSolicitud = (obj) => {
-    try {
-      postData
-        .postDeleteSolicitud(obj)
-        .then((res) => {
-          dispatch(deleteSolicitud(obj));
-        })
-        .then(() => {
-          toast.success("Solicitud borrada exitosamente");
-          onClose();
-        });
-    } catch (error) {
-      toast.error("Ha ocurrido un error: " + error);
-    }
-  };
-
-  const handleChangeNacionalInternacional = (sol) => {
-    setSolNacional(!solNacional);
-    let solTIpoRequerimientoCambiado = {
-      ...sol,
-      tipoRequerimiento: solNacional ? "EXPORTACIÓN" : "PRODUCCIÓN LOCAL",
-    };
-
-    try {
-      dispatch(updatePropiedadesSolicitud(solTIpoRequerimientoCambiado));
-      // postData
-      //   .postActualizarPropiedades(solTIpoRequerimientoCambiado)
-      //   .then((res) => {
-      //   });
-    } catch (error) {
-      toast.error(
-        "Ha ocurrido un error modificando el destino de la solicitud: " + error
-      );
-    }
-  };
-
-  const handleNuevoProducido = ({ e, solicitudAbierta }) => {
-    let { value } = e.target;
-    setCantidadProducida(Math.round(Number(value)));
-
-    console.log(value);
-    console.log(solicitudAbierta);
-  };
+  const handleBlurred = () => {};
 
   return (
     <BasicModal
@@ -475,7 +255,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             </Tooltip>
             <Tooltip title="Eliminar solicitud" arrow>
               <IconButton
-                sx={{ color: theme.palette.primary.contrast }}
+                sx={{
+                  color: theme.palette.primary.contrast,
+                }}
                 onClick={() => handleBorrarSolicitud(solicitudAbierta)}
                 edge="end">
                 <DeleteIcon />
@@ -496,7 +278,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             display: "flex",
             justifyContent: "center",
             flexWrap: "wrap",
-            gap: "0 50px",
+            gap: "20px 50px",
             overflow: "auto",
           }}>
           <TextField
@@ -508,70 +290,38 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             variant="standard"
           />
 
-          <TextField
-            label="Cantidad"
-            name="cantidad"
-            // defaultValue={solicitudAbierta.cantidad}
-            // variant="standard"value={Math.round(cantidadInput)}
-            value={cantidadInput}
-            onBlur={handleBlurred}
-            onChange={handleCantidadChange}
-            InputProps={{
-              inputComponent: NumericFormatCustom,
-            }}
-          />
+          <FormControl
+            sx={{
+              width: "40%",
+              display: "flex",
+              flexDirection: "row",
+              gap: "0 5%",
+              alignItems: "center",
+            }}>
+            <FormattedInputTypeNumber
+              input={cantidadInput}
+              handleInputChange={handleCantidadChange}
+              label="Cantidad"
+              name="cantidad"
+            />
+            <Tooltip title="Guardar" arrow>
+              <IconButton
+                sx={{
+                  color: theme.palette.primary.main,
+                }}
+                // onClick={() => handleBorrarSolicitud(solicitudAbierta)}
+                edge="end">
+                <SaveIcon />
+              </IconButton>
+            </Tooltip>
+          </FormControl>
 
           <TextField
             InputProps={{
               readOnly: true,
             }}
-            label="Marca"
-            defaultValue={solicitudAbierta.marca}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Fórmula"
-            defaultValue={solicitudAbierta.formula}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Volumen"
-            defaultValue={solicitudAbierta.volumen}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Envase"
-            defaultValue={solicitudAbierta.envase}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Empaque"
-            defaultValue={solicitudAbierta.empaque}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Tapa"
-            defaultValue={solicitudAbierta.tapa}
+            label="País destino"
+            defaultValue={solicitudAbierta.paisDestino}
             variant="standard"
           />
 
@@ -580,7 +330,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               label="Requerido para"
               value={dayjs(fechaRequeridoPara)}
               onBlur={handleBlurred}
-              variant="standard"
+              // variant="standard"
               onChange={(newValue) => {
                 setValorPrevio(fechaRequeridoPara);
                 setFechaRequeridoPara(newValue);
@@ -592,49 +342,49 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             InputProps={{
               readOnly: true,
             }}
-            label="País destino"
-            defaultValue={solicitudAbierta.paisDestino}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Fecha de producción"
-            defaultValue={solicitudAbierta.fechaProduccion}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            label="Fecha de expiración"
-            defaultValue={solicitudAbierta.fechaExpiración}
-            variant="standard"
-          />
-
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
             label="Programado"
             defaultValue={solicitudAbierta.cantidad.toLocaleString()}
             variant="standard"
           />
 
+          <FormControl
+            sx={{
+              width: "40%",
+              display: "flex",
+              flexDirection: "row",
+              gap: "0 5%",
+              alignItems: "center",
+            }}>
+            <FormattedInputTypeNumber
+              input={cantidadProducida}
+              handleInputChange={handleNuevoProducido}
+              label="Producido"
+              name="datosReales"
+              InputProps={{
+                readOnly: !calendario,
+              }}
+            />
+            <Tooltip title="Guardar" arrow>
+              <IconButton
+                sx={{
+                  color: theme.palette.primary.main,
+                }}
+                // onClick={() => handleBorrarSolicitud(solicitudAbierta)}
+                edge="end">
+                <SaveIcon />
+              </IconButton>
+            </Tooltip>
+          </FormControl>
+
           <TextField
+            label="Observaciones generales"
+            multiline
             InputProps={{
-              readOnly: !calendario,
+              readOnly: true,
             }}
-            value={cantidadProducida}
-            label="Producido"
-            name="datosReales"
-            defaultValue={solicitudAbierta.datosReales}
-            onChange={(e) => handleNuevoProducido({ e, solicitudAbierta })}
+            rows={3}
+            defaultValue={solicitudAbierta.observacionesGenerales}
             variant="standard"
-            onBlur={handleBlurred}
           />
 
           <TextField
@@ -647,16 +397,96 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             onBlur={handleBlurred}
           />
 
-          <TextField
-            label="Observaciones generales"
-            multiline
-            InputProps={{
-              readOnly: true,
-            }}
-            rows={3}
-            defaultValue={solicitudAbierta.observacionesGenerales}
-            variant="standard"
-          />
+          <Accordion
+            sx={{
+              width: "90%",
+            }}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header">
+              Más información
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{
+                justifyContent: "center",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "20px 50px",
+              }}>
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Marca"
+                defaultValue={solicitudAbierta.marca}
+                variant="standard"
+              />
+
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Fórmula"
+                defaultValue={solicitudAbierta.formula}
+                variant="standard"
+              />
+
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Volumen"
+                defaultValue={solicitudAbierta.volumen}
+                variant="standard"
+              />
+
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Envase"
+                defaultValue={solicitudAbierta.envase}
+                variant="standard"
+              />
+
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Empaque"
+                defaultValue={solicitudAbierta.empaque}
+                variant="standard"
+              />
+
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Tapa"
+                defaultValue={solicitudAbierta.tapa}
+                variant="standard"
+              />
+
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Fecha de producción"
+                defaultValue={solicitudAbierta.fechaProduccion}
+                variant="standard"
+              />
+
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Fecha de expiración"
+                defaultValue={solicitudAbierta.fechaExpiración}
+                variant="standard"
+              />
+            </AccordionDetails>
+          </Accordion>
         </Box>
       )}
 

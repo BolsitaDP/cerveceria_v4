@@ -190,7 +190,8 @@ const onDragEnd = (
   if (solicitud) {
     elementoArrastrado.velocidadesSalonProducto.forEach((linea) => {
       if (linea.Linea === idLinea) {
-        capacidadSalonPorDia = linea.Velocidad;
+        let num = parseFloat(linea.Velocidad.replace(/,/g, ""));
+        capacidadSalonPorDia = num;
       }
     });
     tiempoARestarEnElDia = parseFloat(
