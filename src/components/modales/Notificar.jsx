@@ -3,14 +3,17 @@ import BasicModal from "../MUIComponents/BasicModal";
 import {
   Box,
   Button,
+  ButtonGroup,
   Divider,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Modal,
   OutlinedInput,
   Select,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import CrearGrupo from "../MUIComponents/CrearGrupo";
 import CrearMiembros from "../MUIComponents/CrearMiembros";
@@ -19,6 +22,10 @@ import { useDispatch } from "react-redux";
 import { updateVersion } from "../../redux/slices/historySlice";
 import enviarPDFPorCorreo from "../../helpers/enviarPDFPorCorreo";
 import obtenerDiasDeLaSemana from "../../helpers/obtenerDiasDeLaSemana";
+
+import AddIcon from "@mui/icons-material/Add";
+import ModificarGrupo from "../MUIComponents/ModificarGrupo";
+import EliminarGrupo from "../MUIComponents/EliminarGrupo";
 
 const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   const [grupoANotificar, setGrupoANotificar] = useState([]);
@@ -83,8 +90,6 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   let fechasSemanaCompletas = obtenerDiasDeLaSemana(sieteDias);
   let semanaString = fechasSemanaCompletas.join("¬");
 
-  console.log(semanaString);
-
   const handleDescargarProgramacion = async () => {
     await enviarPDFPorCorreo(
       columns,
@@ -120,12 +125,27 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
               justifyContent: "center",
               gap: "40px",
             }}>
+            <ButtonGroup variant="contained">
+              <Button
+                onClick={() => handleOpenModal("crearGrupo")}
+                sx={{ fontSize: "1.5vh" }}>
+                Crear grupo
+              </Button>
+
+              <Button
+                sx={{ fontSize: "1.5vh" }}
+                onClick={() => handleOpenModal("modificarGrupo")}>
+                Modificar grupo
+              </Button>
+              <Button
+                sx={{ fontSize: "1.5vh" }}
+                onClick={() => handleOpenModal("eliminarGrupo")}>
+                Eliminar grupo
+              </Button>
+            </ButtonGroup>
+
             <Button
-              variant="contained"
-              onClick={() => handleOpenModal("grupos")}>
-              Crear grupo
-            </Button>
-            <Button
+              sx={{ fontSize: "1.5vh" }}
               variant="contained"
               onClick={() => handleOpenModal("miembros")}>
               Crear miembro
@@ -165,11 +185,17 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-              <Button variant="contained" onClick={handleEnviarPDF}>
+              <Button
+                variant="contained"
+                onClick={handleEnviarPDF}
+                sx={{ fontSize: "1.5vh" }}>
                 Enviar pdf
               </Button>
 
-              <Button variant="contained" onClick={handleDescargarProgramacion}>
+              <Button
+                variant="contained"
+                onClick={handleDescargarProgramacion}
+                sx={{ fontSize: "1.5vh" }}>
                 Descargar pdf
               </Button>
             </Box>
@@ -195,8 +221,20 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
           )}
         </Box>
 
-        <Modal open={openModal === "grupos"} onClose={() => setOpenModal(null)}>
+        <Modal
+          open={openModal === "crearGrupo"}
+          onClose={() => setOpenModal(null)}>
           <CrearGrupo onClose={() => setOpenModal(null)} />
+        </Modal>
+        <Modal
+          open={openModal === "modificarGrupo"}
+          onClose={() => setOpenModal(null)}>
+          <ModificarGrupo onClose={() => setOpenModal(null)} />
+        </Modal>
+        <Modal
+          open={openModal === "eliminarGrupo"}
+          onClose={() => setOpenModal(null)}>
+          <EliminarGrupo onClose={() => setOpenModal(null)} />
         </Modal>
         <Modal
           open={openModal === "miembros"}

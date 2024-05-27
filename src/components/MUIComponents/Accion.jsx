@@ -3,6 +3,7 @@ import { Box, Card, IconButton, Tooltip } from "@mui/material";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import ClearIcon from "@mui/icons-material/Clear";
+import isLightColor from "../../helpers/getBackgroundBrightness";
 
 const Accion = ({
   accion,
@@ -12,6 +13,8 @@ const Accion = ({
   calendario,
 }) => {
   const theme = useTheme();
+
+  let esClaro = isLightColor(accion.hexa);
 
   return (
     <Card
@@ -25,9 +28,11 @@ const Accion = ({
           : "accion notas"
       }
       sx={{
-        width: calendario ? "200px" : "200px",
-        // height: calendario ? "70px" : "200px",
+        width: "200px",
+        height: "max-content",
         display: "flex",
+        backgroundColor: `#${accion.hexa}`,
+        color: esClaro ? "#000000" : "#ffffff",
       }}
       // onClick={() => !calendario && handleOpenDetalles(accion)}
     >
@@ -44,7 +49,7 @@ const Accion = ({
           sx={{
             display: "flex",
             textAlign: "center",
-            fontSize: calendario ? "1.8vh" : "2vh",
+            fontSize: "1.4vh",
           }}>
           {accion.tipo !== "notas" &&
             accion.tipo !== "horario" &&
@@ -53,12 +58,13 @@ const Accion = ({
         <Tooltip title="Eliminar actividad" arrow>
           <IconButton
             sx={{
-              color: theme.palette.primary.contrast,
+              fontSize: "1.2vh",
+              color: esClaro ? "#000000" : "#ffffff",
               display: "flex",
             }}
             onClick={() => handleDeleteAccion(accion)}
             edge="end">
-            <ClearIcon />
+            <ClearIcon sx={{ fontSize: "2.5vh" }} />
           </IconButton>
         </Tooltip>
       </Box>
@@ -69,12 +75,12 @@ const Accion = ({
           width: "200px",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: calendario ? "1.8vh" : "2vh",
+          fontSize: "1.4vh",
         }}>
         <Box sx={{ textAlign: "center" }}>
           <Tooltip title={accion.nombreDeLaAccion} arrow>
-            {accion.nombreDeLaAccion.slice(0, 22)}
-            {accion.nombreDeLaAccion.length >= 22 && "..."}
+            {accion.nombreDeLaAccion.slice(0, 30)}
+            {accion.nombreDeLaAccion.length >= 30 && "..."}
           </Tooltip>
         </Box>
         <Box sx={{ width: "80%", textAlign: "right" }}>

@@ -75,17 +75,17 @@ const Solicitud = ({
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
-              fontSize: calendario ? "1.5vh" : "1.5vh",
+              fontSize: "1.5vh",
             }}>
-            {solicitud.producto.slice(0, 30)}
-            {solicitud.producto.length > 30 && "..."}
+            {solicitud.producto.slice(0, 40)}
+            {solicitud.producto.length > 40 && "..."}
           </Typography>
         </Tooltip>
         <Typography
           sx={{
             display: "flex",
             justifyContent: "right",
-            fontSize: calendario ? "1.5vh" : "1.8vh",
+            fontSize: "1.5vh",
           }}>
           {solicitud.codigoNombre}
         </Typography>

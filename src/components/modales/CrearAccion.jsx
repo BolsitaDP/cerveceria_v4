@@ -11,9 +11,10 @@ import {
   InputLabel,
   Radio,
   RadioGroup,
+  TextField,
   Tooltip,
 } from "@mui/material";
-import React from "react";
+import React, { useCallback } from "react";
 import BasicModal from "../MUIComponents/BasicModal";
 import { useTheme } from "@emotion/react";
 import BackspaceRoundedIcon from "@mui/icons-material/BackspaceRounded";
@@ -32,6 +33,7 @@ const CrearAccion = () => {
   const [textoNombre, setTextoNombre] = useState("");
   const [minutosAccion, setMinutosAccion] = useState("");
   const [tipoAccion, setTipoAccion] = useState("");
+  const [color, setColor] = useState("#000000");
 
   const acciones = useSelector((state) => state.contenedores.acciones);
 
@@ -60,6 +62,10 @@ const CrearAccion = () => {
     setTipoAccion(event.target.value);
   };
 
+  const handleColorChange = useCallback((event) => {
+    setColor(event.target.value);
+  }, []);
+
   const handleNuevaAccion = () => {
     if (tipoAccion !== "notas") {
       if (
@@ -81,6 +87,7 @@ const CrearAccion = () => {
                 estado: 1,
                 nombreDeLaAccion: textoNombre,
                 tipo: tipoAccion,
+                hexa: color.split("#")[1],
               })
               .then((res) => dispatch(createAccion(res)))
               .then(() => {
@@ -110,6 +117,7 @@ const CrearAccion = () => {
                 estado: 1,
                 nombreDeLaAccion: textoNombre,
                 tipo: tipoAccion,
+                hexa: color,
               })
               .then((res) => dispatch(createAccion(res)))
               .then(() => {
@@ -140,56 +148,57 @@ const CrearAccion = () => {
           padding: "10%",
           gap: "2vh",
         }}>
-        <FormControl variant="outlined">
-          <InputLabel>Nombre</InputLabel>
-          <Input
-            id="standard-search"
-            type="text"
-            value={textoNombre}
-            onChange={handleChangeTextoNombre}
-            sx={{ maxWidth: "200px" }}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  sx={{ color: theme.palette.primary.main }}
-                  onClick={deleteTextoNombre}
-                  edge="end">
-                  {textoNombre && (
-                    <BackspaceRoundedIcon onClick={deleteTextoNombre} />
-                  )}
-                </IconButton>
-              </InputAdornment>
-            }
-            size="small"
-            label="Solicitud a filtrar"
-            variant="standard"
-          />
-        </FormControl>
+        <Box sx={{ display: "flex", gap: "20px" }}>
+          <FormControl variant="outlined">
+            <InputLabel>Nombre</InputLabel>
+            <Input
+              type="text"
+              value={textoNombre}
+              onChange={handleChangeTextoNombre}
+              sx={{ maxWidth: "200px" }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{ color: theme.palette.primary.main }}
+                    onClick={deleteTextoNombre}
+                    edge="end">
+                    {textoNombre && (
+                      <BackspaceRoundedIcon onClick={deleteTextoNombre} />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              size="small"
+              label="Solicitud a filtrar"
+              variant="standard"
+            />
+          </FormControl>
 
-        <FormControl variant="outlined">
-          <InputLabel>Duración</InputLabel>
-          <Input
-            id="standard-search"
-            type="number"
-            disabled={tipoAccion === "notas"}
-            min="0"
-            sx={{ maxWidth: "200px" }}
-            value={minutosAccion}
-            onChange={handleChangeMinutos}
-            onKeyDown={handleKeyDown}
-            inputProps={{ min: 0 }}
-            endAdornment={<InputAdornment position="end">Horas</InputAdornment>}
-            size="small"
-            label="Solicitud a filtrar"
-            variant="standard"
-          />
-        </FormControl>
+          <FormControl variant="outlined">
+            <InputLabel>Duración</InputLabel>
+            <Input
+              type="number"
+              disabled={tipoAccion === "notas"}
+              min="0"
+              sx={{ maxWidth: "200px" }}
+              value={minutosAccion}
+              onChange={handleChangeMinutos}
+              onKeyDown={handleKeyDown}
+              inputProps={{ min: 0 }}
+              endAdornment={
+                <InputAdornment position="end">Horas</InputAdornment>
+              }
+              size="small"
+              label="Solicitud a filtrar"
+              variant="standard"
+            />
+          </FormControl>
+        </Box>
 
         <FormControl>
-          <FormLabel id="demo-row-radio-buttons-group-label">Tipo</FormLabel>
+          <FormLabel>Tipo</FormLabel>
           <RadioGroup
             row
-            aria-labelledby="demo-row-radio-buttons-group-label"
             onChange={handleChange}
             value={tipoAccion}
             name="row-radio-buttons-group">
@@ -210,6 +219,19 @@ const CrearAccion = () => {
               label="Horario"
             />
           </RadioGroup>
+        </FormControl>
+
+        <FormControl sx={{ width: "100%" }}>
+          <TextField
+            label="Selecciona un color para la acción"
+            type="color"
+            value={color}
+            onChange={handleColorChange}
+            sx={{ width: 300 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
         </FormControl>
 
         <Button variant="contained" onClick={handleNuevaAccion}>

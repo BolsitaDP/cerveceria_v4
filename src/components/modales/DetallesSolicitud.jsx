@@ -575,6 +575,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               name="datosReales"
               InputProps={{
                 readOnly: !calendario,
+                disabled: !calendario,
               }}
             />
             <Tooltip title="Guardar" arrow>

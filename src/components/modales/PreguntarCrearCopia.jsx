@@ -54,8 +54,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
               elementoCopia,
             ]);
 
-            console.log(respuesta);
-            return respuesta; // Retorna la respuesta para Promise.all
+            return respuesta;
           } catch (error) {
             toast.error(
               `Hubo un error en la creación de solicitudes. ${error}`
@@ -67,7 +66,7 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
         setLoaderVisible(false);
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast(`Hubo un error en la creación de solicitudes. ${error}`);
     }
   }
@@ -138,6 +137,9 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
         procesarElementos(elementosParaProcesar);
         dispatch(creacionMasDeUnaCopia(copias));
 
+        console.log(copias);
+        console.log(elementosParaProcesar);
+
         toast("Se dividió exitosamente la producción");
       })
       .catch((error) => {
@@ -166,8 +168,6 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
     contenedores.calendario[salonSeleccionadoEstado].dias[reparticion[0].fecha]
       .horas;
 
-  console.log(contenedores);
-
   return (
     <BasicModal titulo={"Dividir solicitud"}>
       <Card>
@@ -176,8 +176,13 @@ const PreguntaCrearCopia = ({ data, onClose }) => {
             {reparticion[0].producto} ({reparticion[0].codigoNombre})
           </strong>{" "}
           tiene una velocidad para esta línea ({salonSeleccionadoEstado}) de{" "}
-          <strong>{velocidadDeLaLineaParaElProducto.Velocidad} CJS/h</strong> lo
-          que implicaría{" "}
+          <strong>
+            {Number(
+              velocidadDeLaLineaParaElProducto.Velocidad
+            ).toLocaleString()}{" "}
+            CJS/h
+          </strong>{" "}
+          lo que implicaría{" "}
           <strong>{parseInt(horasConsumidasDelElementoOriginal)}</strong> horas,
           pero el día <strong>{reparticion[0].fecha.split("&")[0]}</strong> solo
           dispone de{" "}

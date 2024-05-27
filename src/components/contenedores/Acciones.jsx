@@ -76,7 +76,6 @@ const Acciones = () => {
                     key={accion.idDnd}>
                     {(provided, snapshot) => (
                       <Box
-                        // sx={{ height: "45px" }}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}>

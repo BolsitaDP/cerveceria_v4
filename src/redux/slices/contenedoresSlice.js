@@ -31,14 +31,12 @@ const contenedoresSlice = createSlice({
       });
     },
     setSolicitudes: (state, action) => {
-      console.log(action.payload);
       state.solicitudes = [];
       action.payload.forEach((solicitud) => {
         state.solicitudes.push(solicitud);
       });
     },
     setSolicitudesProgramadas: (state, action) => {
-      console.log(action.payload);
       action.payload.forEach((solicitud) => {
         let fecha = solicitud.fecha;
         let salon = solicitud.salonProgramado;
@@ -78,8 +76,6 @@ const contenedoresSlice = createSlice({
       });
     },
     setAccionesProgramadas: (state, action) => {
-      console.log(action.payload);
-
       action.payload.forEach((accion) => {
         let fecha = accion.fecha;
         let salon = accion.salonProgramado;
@@ -101,7 +97,6 @@ const contenedoresSlice = createSlice({
       state.acciones.push({ ...action.payload.data, idDnd: uuid() });
     },
     deteleAccionCalendario: (state, action) => {
-      console.log(action.payload);
       let dia = action.payload.fecha;
       let salon = action.payload.salonProgramado;
 
@@ -199,7 +194,6 @@ const contenedoresSlice = createSlice({
       });
     },
     updateEstadoSolicitud: (state, action) => {
-      console.log(action.payload);
       let accionesUpdatear = [];
       let solicitudesUpdatear = [];
 
@@ -409,7 +403,6 @@ const contenedoresSlice = createSlice({
       );
     },
     creacionMasDeUnaCopia: (state, action) => {
-      console.log(action.payload);
       action.payload.forEach((el) => {
         let elEdit = JSON.parse(JSON.stringify(el));
         elEdit.idDnd = uuid();

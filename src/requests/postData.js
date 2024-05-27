@@ -77,6 +77,7 @@ const postData = {
       estado: body.estado,
       nombreDeLaAccion: body.nombreDeLaAccion,
       tipo: body.tipo,
+      hexa: body.hexa,
     });
   },
 
@@ -117,7 +118,7 @@ const postData = {
   postEliminarCorreo(body) {
     return peticion.post("CorreosController/delete", {
       id: body.id,
-      idGrupo: body.idLocal,
+      idGrupo: body.idGrupo,
       correo: body.correo,
     });
   },

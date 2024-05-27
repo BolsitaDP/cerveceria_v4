@@ -53,6 +53,7 @@ const CrearMiembros = ({ onClose }) => {
               createMember({
                 correo: correoMiembro,
                 grupos: grupoSeleccionado,
+                id,
               })
             );
 
