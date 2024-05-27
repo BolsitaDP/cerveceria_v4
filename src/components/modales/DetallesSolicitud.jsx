@@ -390,9 +390,13 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   }
 
   let fechaHoy = new Date();
-  let fechaProgramada = formatearFechaAFormatoDate(
-    solicitudAbiertaEditable.fecha
-  );
+  let fechaProgramada;
+
+  if (solicitudAbiertaEditable.fecha !== "") {
+    fechaProgramada = formatearFechaAFormatoDate(
+      solicitudAbiertaEditable.fecha
+    );
+  }
 
   return (
     <BasicModal

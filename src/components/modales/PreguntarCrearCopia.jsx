@@ -20,7 +20,7 @@ import BasicModal from "../MUIComponents/BasicModal";
 import { CardActions, Card, Button, CardContent } from "@mui/material";
 // import { Card, CardActions, Button, CardContent } from "@mui/material";
 
-const PreguntaCrearCopia = ({ data, onClose }) => {
+const PreguntaCrearCopia = ({ data = {}, onClose = null }) => {
   const contenedores = useSelector((state) => state.contenedores);
 
   const [loaderVisible, setLoaderVisible] = useState(false);

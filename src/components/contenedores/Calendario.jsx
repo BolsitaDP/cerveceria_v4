@@ -449,7 +449,7 @@ const Calendario = () => {
                     height: "100%",
                     padding: "1%",
                     gap: "1%",
-                    overflow: "auto",
+                    overflow: "hidden",
                   }}
                   key={salon}>
                   {Object.entries(dias).map(([diaNombre, diaInfo]) => {

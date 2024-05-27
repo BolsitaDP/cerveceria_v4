@@ -4,11 +4,11 @@ import React from "react";
 import ShareIcon from "@mui/icons-material/Share";
 
 const BasicModal = ({
-  titulo,
+  titulo = "",
   children,
   tipo = null,
-  exportar,
-  funcionAlDarClickExportar,
+  exportar = false,
+  funcionAlDarClickExportar = null,
 }) => {
   const theme = useTheme();
   return (
