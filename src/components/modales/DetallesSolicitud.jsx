@@ -45,6 +45,7 @@ import FormattedInputTypeNumber from "../FormattedInputTypeNumber";
 import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import getData from "../../requests/getData";
+import formatearFechaAFormatoDate from "../../helpers/fromatearFechaAFormatoDate";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   console.log(solicitudAbierta);
@@ -388,6 +389,11 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     var cantidadExtraPosible = parseInt(capacidadSalon * horasRestantesDia);
   }
 
+  let fechaHoy = new Date();
+  let fechaProgramada = formatearFechaAFormatoDate(
+    solicitudAbiertaEditable.fecha
+  );
+
   return (
     <BasicModal
       titulo={
@@ -398,6 +404,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               control={
                 <Switch
                   checked={solNacional}
+                  color="secondary"
                   onChange={() =>
                     handleChangeNacionalInternacional(solicitudAbiertaEditable)
                   }
@@ -440,7 +447,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                 }}
                 onClick={() => handleBorrarSolicitud(solicitudAbiertaEditable)}
                 edge="end">
-                <DeleteIcon sx={{ color: "yellow" }} />
+                <DeleteIcon
+                  sx={{ color: solNacional ? "#FF5E5E" : "#5B7FDB" }}
+                />
               </IconButton>
             </Tooltip>
           </Box>
@@ -486,6 +495,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             />
             <Tooltip title="Guardar" arrow>
               <IconButton
+                // eslint-disable-next-line
                 disabled={solicitudAbiertaEditable.cantidad == cantidadInput}
                 sx={{
                   color: theme.palette.primary.main,
@@ -532,6 +542,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             <Tooltip title="Guardar" arrow>
               <IconButton
                 disabled={
+                  // eslint-disable-next-line
                   solicitudAbiertaEditable.fechaRequiere ==
                   formatearFecha(fechaRequeridoPara)
                 }
@@ -575,12 +586,13 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               name="datosReales"
               InputProps={{
                 readOnly: !calendario,
-                disabled: !calendario,
+                disabled: !calendario || fechaProgramada > fechaHoy,
               }}
             />
             <Tooltip title="Guardar" arrow>
               <IconButton
                 disabled={
+                  // eslint-disable-next-line
                   solicitudAbiertaEditable.datosReales == cantidadProducida
                 }
                 sx={{
@@ -630,6 +642,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             <Tooltip title="Guardar" arrow>
               <IconButton
                 disabled={
+                  // eslint-disable-next-line
                   solicitudAbiertaEditable.observaciones == observacionesInput
                 }
                 sx={{
