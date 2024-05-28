@@ -101,7 +101,7 @@ const Solicitudes = () => {
   return (
     <Box sx={{ height: "65%" }}>
       <Card variant="contenedor">
-        <Card variant="tiulo">
+        <Card variant="tiulo" sx={{ fontSize: "17px" }}>
           <p>Pendiente por programar</p>
 
           <Tooltip title="Abrir filtros" arrow>

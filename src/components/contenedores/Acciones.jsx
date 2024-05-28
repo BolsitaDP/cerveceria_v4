@@ -40,7 +40,7 @@ const Acciones = () => {
   return (
     <Box sx={{ height: "34%" }}>
       <Card variant="contenedor">
-        <Card variant="tiulo">
+        <Card variant="tiulo" sx={{ fontSize: "17px" }}>
           <p>Actividades</p>
           <Tooltip title="Agregar actividad" arrow>
             <IconButton

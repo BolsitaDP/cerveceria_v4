@@ -465,16 +465,18 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               alignItems: "center",
               gap: "30px",
             }}>
-            <Tooltip title="Archivar solicitud" arrow>
-              <IconButton
-                sx={{ color: theme.palette.primary.contrast }}
-                onClick={() =>
-                  handleArchivarSolicitud(solicitudAbiertaEditable)
-                }
-                edge="end">
-                <ArchiveIcon />
-              </IconButton>
-            </Tooltip>
+            {!calendario && (
+              <Tooltip title="Archivar solicitud" arrow>
+                <IconButton
+                  sx={{ color: theme.palette.primary.contrast }}
+                  onClick={() =>
+                    handleArchivarSolicitud(solicitudAbiertaEditable)
+                  }
+                  edge="end">
+                  <ArchiveIcon />
+                </IconButton>
+              </Tooltip>
+            )}
 
             <Tooltip title="Mostrar historial de cambios" arrow>
               <IconButton

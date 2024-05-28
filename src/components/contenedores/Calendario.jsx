@@ -260,7 +260,7 @@ const Calendario = () => {
   return (
     <Box sx={{ height: "100%" }}>
       <Card variant="contenedor">
-        <Card variant="tiulo">
+        <Card variant="tiulo" sx={{ fontSize: "18px" }}>
           {fechasSeleccionadas[1]
             ? `Programación del ${fechasSoloDiaMes[0]} al ${fechasSoloDiaMes[6]}`
             : "Selecciona una fecha para continuar"}
