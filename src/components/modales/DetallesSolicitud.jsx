@@ -19,6 +19,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import PreguntarProgramarDiferencia from "./PreguntarProgramarDiferencia";
+import ArchiveIcon from "@mui/icons-material/Archive";
+
 import PreguntarPartirSolicitudSinProgramar from "./PreguntarPartirSolicitudSinProgramar";
 import HistorialSolicitud from "./HistorialSolicitud";
 import BasicModal from "../MUIComponents/BasicModal";
@@ -30,6 +32,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import HistoryIcon from "@mui/icons-material/History";
 import {
   agregarSolicitudesAlState,
+  archivarSolicitud,
   deleteSolicitud,
   particionSolicitudSinProgramar,
   updatePropiedadesSolicitud,
@@ -398,6 +401,34 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     );
   }
 
+  const handleArchivarSolicitud = (sol) => {
+    let solicitudUpdatear = [];
+
+    let objeto = {
+      id: sol.id,
+      estado: "Archivado",
+      salonProgramado: "",
+      fecha: "",
+      orden: sol.orden,
+      cantidad: sol.cantidad,
+    };
+    solicitudUpdatear.push(objeto);
+
+    postData
+      .postActualizarEstadoProducto(solicitudUpdatear)
+      .then((res) => {
+        dispatch(archivarSolicitud(sol));
+
+        toast.success(`Solicitud ${sol.codigoNombre} archivada exitosamente`);
+      })
+      .catch((err) => {
+        toast.error(
+          `Ha ocurrido un error archivando la solicitud ${sol.codigoNombre}: ${err}`
+        );
+      })
+      .finally(() => onClose());
+  };
+
   return (
     <BasicModal
       titulo={
@@ -434,6 +465,17 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               alignItems: "center",
               gap: "30px",
             }}>
+            <Tooltip title="Archivar solicitud" arrow>
+              <IconButton
+                sx={{ color: theme.palette.primary.contrast }}
+                onClick={() =>
+                  handleArchivarSolicitud(solicitudAbiertaEditable)
+                }
+                edge="end">
+                <ArchiveIcon />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip title="Mostrar historial de cambios" arrow>
               <IconButton
                 sx={{ color: theme.palette.primary.contrast }}
@@ -444,6 +486,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                 <HistoryIcon />
               </IconButton>
             </Tooltip>
+
             <Tooltip title="Eliminar solicitud" arrow>
               <IconButton
                 sx={{

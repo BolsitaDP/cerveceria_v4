@@ -20,6 +20,8 @@ import { setSalonSeleccionado } from "../../redux/slices/historySlice";
 import DetallesSolicitud from "../modales/DetallesSolicitud";
 import ModalDetallesAccion from "../modales/ModalDetallesAccion";
 import EstadisticasDia from "../modales/EstadisticasDia";
+
+import ArchiveIcon from "@mui/icons-material/Archive";
 import {
   agregarSolicitudesAlState,
   borrarSolicitudesDelState,
@@ -33,6 +35,7 @@ import Notificar from "../modales/Notificar";
 import PreguntarDevolverSolicitudes from "../modales/PreguntarDevolverSolicitudes";
 import postData from "../../requests/postData";
 import HistorialPDF from "../modales/FABS/HistorialPDF";
+import SolicitudesArchivadas from "../modales/SolicitudesArchivadas";
 
 const Calendario = () => {
   const theme = useTheme();
@@ -166,6 +169,10 @@ const Calendario = () => {
     setModalAbierto("devolverSolicitudes");
   };
 
+  const handleSolicitudesArchivadas = () => {
+    setModalAbierto("solicitudesArchivadas");
+  };
+
   const handleNoDevolver = () => {
     setModalAbierto(null);
   };
@@ -283,6 +290,16 @@ const Calendario = () => {
                 onClick={() => handleMostrarModal("estadisticasGenerales")}
                 edge="end">
                 <QueryStatsRoundedIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Solicitudes archivadas" arrow>
+              <IconButton
+                onClick={() => handleSolicitudesArchivadas()}
+                sx={{
+                  color: theme.palette.primary.contrast,
+                }}>
+                <ArchiveIcon />
               </IconButton>
             </Tooltip>
 
@@ -595,6 +612,11 @@ const Calendario = () => {
         open={modalAbierto === "historialPdf"}
         onClose={() => setModalAbierto(null)}>
         <HistorialPDF />
+      </Modal>
+      <Modal
+        open={modalAbierto === "solicitudesArchivadas"}
+        onClose={() => setModalAbierto(null)}>
+        <SolicitudesArchivadas onClose={() => setModalAbierto(null)} />
       </Modal>
       <Modal
         open={modalAbierto === "devolverSolicitudes"}

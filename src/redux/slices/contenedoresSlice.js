@@ -16,6 +16,7 @@ const contenedoresSlice = createSlice({
     elementoCopia: {},
     pedidoTotal: [],
     archivosPDF: [],
+    solicitudesArchivadas: [],
   },
   reducers: {
     setSolicitudesInicial: (state, action) => {
@@ -480,6 +481,37 @@ const contenedoresSlice = createSlice({
     agregarArchivoPDF: (state, action) => {
       state.archivosPDF.push(action.payload);
     },
+
+    setSolicitudesArchivadasInicial: (state, action) => {
+      console.log(action.payload);
+      action.payload.forEach((solicitudArc) => {
+        solicitudArc.idDnd = uuid();
+        state.solicitudesArchivadas.push(solicitudArc);
+      });
+    },
+
+    archivarSolicitud: (state, action) => {
+      const solicitudIndex = state.solicitudes.findIndex(
+        (s) => s.idDnd === action.payload.idDnd
+      );
+      if (solicitudIndex !== -1) {
+        const [solicitud] = state.solicitudes.splice(solicitudIndex, 1);
+        state.solicitudesArchivadas.push(solicitud);
+      }
+    },
+
+    desarchivarSolicitud: (state, action) => {
+      const solicitudIndex = state.solicitudesArchivadas.findIndex(
+        (s) => s.idDnd === action.payload.idDnd
+      );
+      if (solicitudIndex !== -1) {
+        const [solicitud] = state.solicitudesArchivadas.splice(
+          solicitudIndex,
+          1
+        );
+        state.solicitudes.push(solicitud);
+      }
+    },
   },
 });
 
@@ -517,5 +549,8 @@ export const {
   settearPedidoTotal,
   setArchivosPDFInicial,
   agregarArchivoPDF,
+  setSolicitudesArchivadasInicial,
+  archivarSolicitud,
+  desarchivarSolicitud,
 } = contenedoresSlice.actions;
 export default contenedoresSlice.reducer;

@@ -5,10 +5,11 @@ import ShareIcon from "@mui/icons-material/Share";
 
 const BasicModal = ({
   titulo = "",
-  children,
+  children = {},
   tipo = null,
   exportar = false,
   funcionAlDarClickExportar = null,
+  sx = {},
 }) => {
   const theme = useTheme();
   return (
@@ -20,6 +21,7 @@ const BasicModal = ({
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
+        ...sx,
       }}>
       <Card
         variant="contenedor"

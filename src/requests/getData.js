@@ -29,6 +29,10 @@ const getData = {
     return peticion.get("ProgramacionController/programado");
   },
 
+  getProgramacionArchivado() {
+    return peticion.get("ProgramacionController/archivado");
+  },
+
   getSalones() {
     return peticion.get("SalonController/salones");
   },

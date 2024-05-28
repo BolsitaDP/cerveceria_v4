@@ -19,6 +19,7 @@ import {
   setSalones,
   setSalonesInicial,
   setSolicitudes,
+  setSolicitudesArchivadasInicial,
   setSolicitudesInicial,
   setSolicitudesProgramadas,
   settearPedidoTotal,
@@ -39,7 +40,6 @@ import PreguntarCrearCopia from "./components/modales/PreguntarCrearCopia.jsx";
 import dayjs from "dayjs";
 import { es } from "dayjs/locale/es";
 import Loader from "./components/modales/Loader.jsx";
-import ErrorBoundary from "./components/modales/ErrorBoundary.jsx";
 import {
   setGruposInicial,
   setMiembrosInicial,
@@ -71,6 +71,7 @@ function App() {
           grupos,
           correos,
           archivosPDF,
+          solicitudesArchivadas,
         ] = await Promise.all([
           getData.getProgramacionPendiente(),
           getData.getAcciones(),
@@ -79,6 +80,7 @@ function App() {
           getData.getGrupos(),
           getData.getCorreos(),
           getData.getArchivosPDF(),
+          getData.getProgramacionArchivado(),
         ]);
 
         dispatch(setSolicitudesInicial(solicitudesSinProgramar.data));
@@ -89,6 +91,8 @@ function App() {
         dispatch(setMiembrosInicial(correos.data));
 
         dispatch(setArchivosPDFInicial(archivosPDF.data));
+
+        dispatch(setSolicitudesArchivadasInicial(solicitudesArchivadas.data));
 
         dispatch(settearPedidoTotal(solicitudesSinProgramar.data));
       } catch (error) {
