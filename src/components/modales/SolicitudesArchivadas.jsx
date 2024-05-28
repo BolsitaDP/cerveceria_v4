@@ -57,8 +57,10 @@ const SolicitudesArchivadas = ({ onClose }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          padding: "10px",
+          flexWrap: "wrap",
+          padding: "30px 10px",
           gap: "10px",
+          overflow: "auto",
         }}>
         {solicitudesArchivadas.map((sol, index) => {
           let solNacional = sol.tipoRequerimiento === "PRODUCCIÓN LOCAL";
@@ -71,7 +73,7 @@ const SolicitudesArchivadas = ({ onClose }) => {
               sx={{
                 border: `2px solid ${solNacional ? "#5c65c0" : "#f05d67"}`,
                 borderRadius: "10px",
-                padding: "10px",
+                padding: "0 10px 10px 10px",
                 display: "flex",
                 flexDirection: "column",
                 width: "30%",
