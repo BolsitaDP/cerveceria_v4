@@ -133,11 +133,6 @@ const onDragEnd = (
     return `${diaSiguienteNombre}&${diaSiguienteFecha}`;
   };
 
-  // Función para rendondear al múliplo de 500 más cercano
-  function redondearAlMultiploDe500MasCercano(numero) {
-    return Math.round(numero / 500) * 500;
-  }
-
   // Obtención de fechay hora actual
   let fechaHoraActual = getFechaHoraActual();
   let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
@@ -204,7 +199,7 @@ const onDragEnd = (
     );
   }
 
-  // Si es acción, el tiempo a restar es la duración de la acción.
+  // Si es acción, el tiempo a restar es la duración de la acción dividido 60 minutos.
   else if (accion) {
     tiempoARestarEnElDia = elementoArrastrado.duracion;
   }
@@ -231,25 +226,7 @@ const onDragEnd = (
       // Si viene de solicitudes o acciones
       if (!fuente[1]) {
         // Se compara las horas disponibles del día con las horas a restar
-        if (horasDisponiblesEnElDia + 0.5 >= tiempoARestarEnElDia) {
-          // Si es acción se debe crear una copia en su lugar
-          if (accion) {
-            let elementoArrastradoCopia = JSON.parse(
-              JSON.stringify(elementoArrastrado)
-            );
-            if (elementoArrastradoCopia.idDnd) {
-              elementoArrastradoCopia.idDnd = uuid();
-            } else {
-              elementoArrastradoCopia.idDnd = uuid();
-            }
-
-            contenedoresActualizados.acciones.splice(
-              sourceIndex,
-              0,
-              elementoArrastradoCopia
-            );
-          }
-
+        if (horasDisponiblesEnElDia >= tiempoARestarEnElDia) {
           // Disparadores
           dispatcher("addToHistory", {
             codigo: solicitud ? solicitud : accion,
@@ -305,6 +282,24 @@ const onDragEnd = (
             tipo: solicitud ? "solicitud" : "accion",
             index: posicionDestino,
           });
+
+          // Si es acción se debe crear una copia en su lugar
+          if (accion) {
+            let elementoArrastradoCopia = JSON.parse(
+              JSON.stringify(elementoArrastrado)
+            );
+            if (elementoArrastradoCopia.idDnd) {
+              elementoArrastradoCopia.idDnd = uuid();
+            } else {
+              elementoArrastradoCopia.idDnd = uuid();
+            }
+
+            contenedoresActualizados.acciones.splice(
+              sourceIndex,
+              0,
+              elementoArrastradoCopia
+            );
+          }
         }
         // Si el tiempo a restar es mayor al tiempo disponible
         else {
@@ -326,9 +321,6 @@ const onDragEnd = (
             let reparticion = [];
 
             let elementoCopia = JSON.parse(JSON.stringify(elementoArrastrado));
-
-            // AQUÍ VOY
-            let cantidadRedondeada500 = redondearAlMultiploDe500MasCercano();
 
             reparticion.push({
               ...elementoCopia,
