@@ -327,8 +327,20 @@ const onDragEnd = (
 
             let elementoCopia = JSON.parse(JSON.stringify(elementoArrastrado));
 
+            let cantidadSeSupone = Math.round(
+              capacidadSalonPorDia * horasDisponiblesEnElDia
+            );
+
+            let cantidadQueVaFaltando;
+
+            let cantidadRedondeada500 =
+              redondearAlMultiploDe500MasCercano(cantidadSeSupone);
+
+            if (cantidadSeSupone > cantidadRedondeada500) {
+              cantidadQueVaFaltando += cantidadSeSupone - cantidadRedondeada500;
+            }
+
             // AQUÍ VOY
-            let cantidadRedondeada500 = redondearAlMultiploDe500MasCercano();
 
             reparticion.push({
               ...elementoCopia,
