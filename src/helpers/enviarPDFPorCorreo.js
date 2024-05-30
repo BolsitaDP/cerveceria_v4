@@ -27,6 +27,29 @@ const enviarPDFPorCorreo = async (
   console.log(rows);
   console.log(columns);
 
+  let columnaKE = columns.filter((x) => x.field === "KE");
+  let contenidoKE = [];
+  rows.forEach((row) => {
+    let cont = row.KE;
+    if (cont !== undefined) {
+      cont.forEach((x) => {
+        contenidoKE.push(x);
+      });
+    }
+
+    console.log(contenidoKE);
+  });
+
+  let parrafoKE = [];
+
+  contenidoKE.forEach((x) => {
+    if (x.nombreDeLaAccion) {
+      parrafoKE.push(`${x.nombreDeLaAccion} (${x.tipo})`);
+    }
+  });
+
+  columns = columns.filter((x) => x.field !== "KE");
+
   if (origen === "reporteGeneral") {
     console.log("Origen reporte general");
   }
@@ -66,7 +89,8 @@ const enviarPDFPorCorreo = async (
         } else if (
           column.field !== "dia" &&
           column.field !== "total" &&
-          cellValue !== undefined
+          cellValue !== undefined &&
+          column.field !== "KE"
         ) {
           let arrayProdsCompletos = [];
           cellValue.forEach((sol) => {
@@ -94,6 +118,12 @@ const enviarPDFPorCorreo = async (
     head: [columns.map((column) => column.headerName)],
     body: data,
   });
+
+  // Obtener la posición Y después de la tabla
+  const finalY = doc.autoTable.previous.finalY || 10;
+
+  // Agregar un párrafo después de la tabla
+  doc.text(`Salón KE: \n${parrafoKE.join(", ")}`, 10, finalY + 10);
 
   const pdfUrl = URL.createObjectURL(doc.output("blob"));
   window.open(pdfUrl, "_blank");
