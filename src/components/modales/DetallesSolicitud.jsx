@@ -328,6 +328,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       .getValidarCantidadProgramada({
         idPadre: solicitudAbiertaEditable.idPadre,
         cantidad: cantidadSinComas,
+        idProducto: solicitudAbiertaEditable.id,
       })
       .then((res) => {
         if (res.data.status !== "ERROR") {

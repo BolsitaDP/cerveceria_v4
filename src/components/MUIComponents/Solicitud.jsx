@@ -60,7 +60,7 @@ const Solicitud = ({
           displayType={"text"} // Esto indica que el valor formateado es para mostrar como texto
           thousandSeparator={true} // Otras opciones de formato si es necesario
         />{" "}
-        {solicitud.unidadMedida}
+        CJ
       </Typography>
       <Box
         sx={{

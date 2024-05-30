@@ -210,10 +210,10 @@ const Calendario = () => {
     contenidoTotal.forEach((sol) => {
       if (sol.codigoNombre) {
         solicitudesAEliminar.push(sol);
-        if (solicitudesPorIdPadre[sol.idPadre]) {
-          solicitudesPorIdPadre[sol.idPadre].cantidad += sol.cantidad;
+        if (solicitudesPorIdPadre[sol.keyProducto]) {
+          solicitudesPorIdPadre[sol.keyProducto].cantidad += sol.cantidad;
         } else {
-          solicitudesPorIdPadre[sol.idPadre] = {
+          solicitudesPorIdPadre[sol.keyProducto] = {
             ...sol,
           };
         }
@@ -303,7 +303,7 @@ const Calendario = () => {
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Devolver solicitudes" arrow>
+            {/* <Tooltip title="Devolver solicitudes" arrow>
               <IconButton
                 onClick={() => handleDevolverSolicitudes()}
                 sx={{
@@ -311,7 +311,7 @@ const Calendario = () => {
                 }}>
                 <ReplayIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </Box>
         </Card>
 

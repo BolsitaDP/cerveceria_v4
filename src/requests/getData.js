@@ -37,9 +37,9 @@ const getData = {
     return peticion.get("SalonController/salones");
   },
 
-  getValidarCantidadProgramada({ idPadre, cantidad }) {
+  getValidarCantidadProgramada({ idPadre, cantidad, idProducto }) {
     return peticion.get(
-      `ProgramacionController/validateSchedule?idPadre=${idPadre}&cantProducir=${cantidad}`
+      `ProgramacionController/validateSchedule?idProducto=${idProducto}&idPadre=${idPadre}&cantProducir=${cantidad}`
     );
   },
 

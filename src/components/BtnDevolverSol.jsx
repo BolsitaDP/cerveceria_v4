@@ -61,12 +61,12 @@ const BtnDevolverSol = ({ id }) => {
       if (sol.codigoNombre) {
         solicitudesAEliminar.push(sol);
         // Verifica si ya existe una solicitud con el mismo "idPadre"
-        if (solicitudesPorIdPadre[sol.idPadre]) {
+        if (solicitudesPorIdPadre[sol.keyProducto]) {
           // Si ya existe, suma la cantidad
-          solicitudesPorIdPadre[sol.idPadre].cantidad += sol.cantidad;
+          solicitudesPorIdPadre[sol.keyProducto].cantidad += sol.cantidad;
         } else {
           // Si no existe, agrega la solicitud al objeto
-          solicitudesPorIdPadre[sol.idPadre] = {
+          solicitudesPorIdPadre[sol.keyProducto] = {
             ...sol,
           };
         }
