@@ -97,7 +97,8 @@ const ProgramadoProducido = () => {
   newRows.forEach((row) => {
     contenidoTotal.forEach((sol) => {
       if (sol.codigoNombre === row.codigo) {
-        row.cantidadPendiente += sol.cantidad;
+        row.cantidadPendiente =
+          Number(row.cantidadPendiente) + Number(sol.cantidad);
       }
     });
   });

@@ -37,7 +37,7 @@ const FABS = [
   },
   {
     icon: <DonutLargeRoundedIcon />,
-    tooltip: "Programado y producido",
+    tooltip: "Requerido, programado y producido",
   },
 ];
 
@@ -131,7 +131,7 @@ const MUIFloatingButton = () => {
       </Modal>
 
       <Modal
-        open={modalAbierto === "Programado y producido"}
+        open={modalAbierto === "Requerido, programado y producido"}
         onClose={() => setModalAbierto(null)}>
         <ProgramadoProducido />
       </Modal>

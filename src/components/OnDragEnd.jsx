@@ -336,7 +336,7 @@ const onDragEnd = (
               capacidadSalonPorDia * horasDisponiblesEnElDia
             );
 
-            let cantidadQueVaFaltando = 0; // Inicializar correctamente
+            let cantidadQueVaFaltando = 0;
 
             // Redondear cantidadSeSupone al múltiplo de 500 más cercano
             let cantidadRedondeada500 =
@@ -344,13 +344,15 @@ const onDragEnd = (
 
             cantidadQueVaFaltando += cantidadSeSupone - cantidadRedondeada500;
 
-            reparticion.push({
-              ...elementoCopia,
-              cantidad: cantidadRedondeada500,
-              fecha: destino[1],
-              salonProgramado: salon,
-              idDnd: uuid(),
-            });
+            if (cantidadRedondeada500 > 0) {
+              reparticion.push({
+                ...elementoCopia,
+                cantidad: cantidadRedondeada500,
+                fecha: destino[1],
+                salonProgramado: salon,
+                idDnd: uuid(),
+              });
+            }
 
             elementoCopia.cantidad -= cantidadRedondeada500;
 
@@ -369,13 +371,15 @@ const onDragEnd = (
                   (capacidadSalonPorDia * horasDisponiblesEnElDia) / 500
                 ) * 500;
 
-              reparticion.push({
-                ...elementoCopia,
-                cantidad: cantidadParticion,
-                fecha: diaSiguiente,
-                salonProgramado: salon,
-                idDnd: uuid(),
-              });
+              if (cantidadRedondeada500 > 0) {
+                reparticion.push({
+                  ...elementoCopia,
+                  cantidad: cantidadParticion,
+                  fecha: diaSiguiente,
+                  salonProgramado: salon,
+                  idDnd: uuid(),
+                });
+              }
 
               elementoCopia.cantidad -= cantidadParticion;
 
@@ -389,12 +393,14 @@ const onDragEnd = (
 
             if (elementoCopia.cantidad > 0) {
               elementoCopia.cantidad = Math.round(elementoCopia.cantidad);
-              reparticion.push({
-                ...elementoCopia,
-                fecha: diaSiguiente,
-                salonProgramado: salon,
-                idDnd: uuid(),
-              });
+              if (cantidadRedondeada500 > 0) {
+                reparticion.push({
+                  ...elementoCopia,
+                  fecha: diaSiguiente,
+                  salonProgramado: salon,
+                  idDnd: uuid(),
+                });
+              }
             }
 
             dispatcher("Creación elemento copia", {
@@ -553,7 +559,7 @@ const onDragEnd = (
           // Dispatchers
           dispatcher("addToHistory", {
             codigo: solicitud ? solicitud : accion,
-            tipoDeCambio: "Devolución a planeación",
+            tipoDeCambio: "Devolución a planeación (sumar)",
             valorPrevio: `${fuente[0]} ${fuente[1]}`,
             valorNuevo: `${destino[0]}`,
             notificado: 0,

@@ -126,6 +126,28 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
 
   // Controladores de modales
   const handleNoReprogramarLoFaltante = () => {
+    console.log(diferenciaAProgramar);
+
+    let { solicitudFaltante } = diferenciaAProgramar;
+
+    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+
+    let editedProperty = {
+      codigo: solicitudAbiertaEditable.codigoNombre,
+      tipoDeCambio: "No reprogramado",
+      propiedad: "",
+      valorPrevio: 0,
+      valorNuevo: solicitudFaltante.cantidad,
+      notificado: 0,
+      fechaDelCambio: fechaActual,
+      horaDelCambio: horaActual,
+      version: versionEstado,
+      editor: editorEstado,
+      idElemento: solicitudAbiertaEditable.idDnd,
+    };
+
+    dispatch(addToHistory(editedProperty));
+
     setDiferenciaAProgramar(null);
     onClose();
   };
@@ -825,6 +847,17 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                 flexWrap: "wrap",
                 gap: "20px 50px",
               }}>
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                label="Cantidad original"
+                defaultValue={Number(
+                  solicitudAbiertaEditable.cantidadOriginal
+                ).toLocaleString()}
+                variant="standard"
+              />
+
               <TextField
                 InputProps={{
                   readOnly: true,

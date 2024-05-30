@@ -82,54 +82,56 @@ const PreguntaCrearCopia = ({ data = {}, onClose = null }) => {
 
     // Utilizar Promise.all para manejar operaciones asincrónicas
     Promise.all(
-      reparticion.map((el) =>
-        postData
-          .postActualizarEstadoCopia(el)
-          .then((res) => {
-            let objResuesta = JSON.parse(JSON.stringify(res.data));
-            objResuesta.idDnd = uuid();
-            elementosParaProcesar.push({
-              id: objResuesta.id,
-              estado: "Programado",
-              salonProgramado: objResuesta.salonProgramado,
-              fecha: objResuesta.fecha,
-              orden: objResuesta.orden,
-              cantidad: parseInt(objResuesta.cantidad),
-              velocidadesSalonProducto: objResuesta.velocidadesSalonProducto,
-              idPadre: objResuesta.idPadre,
-            });
+      reparticion
+        .filter((el) => el.cantidad > 0)
+        .map((el) =>
+          postData
+            .postActualizarEstadoCopia(el)
+            .then((res) => {
+              let objResuesta = JSON.parse(JSON.stringify(res.data));
+              objResuesta.idDnd = uuid();
+              elementosParaProcesar.push({
+                id: objResuesta.id,
+                estado: "Programado",
+                salonProgramado: objResuesta.salonProgramado,
+                fecha: objResuesta.fecha,
+                orden: objResuesta.orden,
+                cantidad: parseInt(objResuesta.cantidad),
+                velocidadesSalonProducto: objResuesta.velocidadesSalonProducto,
+                idPadre: objResuesta.idPadre,
+              });
 
-            dispatch(
-              addToHistory({
-                codigo: objResuesta.codigoNombre,
-                tipoDeCambio: `Clonado (${Number(
-                  objResuesta.cantidad
-                ).toLocaleString()} CJ)`,
-                valorPrevio: "Solicitudes",
-                valorNuevo: `${objResuesta.salonProgramado} ${objResuesta.fecha}`,
-                notificado: 0,
-                fechaDelCambio: fechaActual,
-                horaDelCambio: horaActual,
-                propiedad: null,
-                editor: editorEstado,
-                id: uuid(),
-                version: versionEstado,
-                // orden: posicionDestino,
-                tipo: "solicitud",
-                elemento: objResuesta,
-                idElemento: objResuesta.idDnd,
-              })
-            );
+              dispatch(
+                addToHistory({
+                  codigo: objResuesta.codigoNombre,
+                  tipoDeCambio: `Clonado (${Number(
+                    objResuesta.cantidad
+                  ).toLocaleString()} CJ)`,
+                  valorPrevio: "solicitudes",
+                  valorNuevo: `${objResuesta.salonProgramado} ${objResuesta.fecha}`,
+                  notificado: 0,
+                  fechaDelCambio: fechaActual,
+                  horaDelCambio: horaActual,
+                  propiedad: null,
+                  editor: editorEstado,
+                  id: uuid(),
+                  version: versionEstado,
+                  // orden: posicionDestino,
+                  tipo: "solicitud",
+                  elemento: objResuesta,
+                  idElemento: objResuesta.idDnd,
+                })
+              );
 
-            copias.push(objResuesta);
-          })
-          .catch((error) => {
-            toast.error(
-              "Ha ocurrido un error creando las copias de la solicitud: " +
-                error
-            );
-          })
-      )
+              copias.push(objResuesta);
+            })
+            .catch((error) => {
+              toast.error(
+                "Ha ocurrido un error creando las copias de la solicitud: " +
+                  error
+              );
+            })
+        )
     )
       .then(() => {
         postData.postDeleteSolicitud(elementoOriginal).then(() => {
@@ -195,9 +197,13 @@ const PreguntaCrearCopia = ({ data = {}, onClose = null }) => {
             if (typeof element === "object") {
               let [dia] = element?.fecha?.split("&");
               if (index === array.length - 1) {
-                return ` y ${dia} con ${element.cantidad.toLocaleString()} CJS`;
+                if (element.cantidad > 0) {
+                  return ` y ${dia} con ${element.cantidad.toLocaleString()} CJS`;
+                }
               } else {
-                return ` ${dia} con ${element.cantidad.toLocaleString()} CJS, `;
+                if (element.cantidad > 0) {
+                  return ` ${dia} con ${element.cantidad.toLocaleString()} CJS, `;
+                }
               }
             }
           })}

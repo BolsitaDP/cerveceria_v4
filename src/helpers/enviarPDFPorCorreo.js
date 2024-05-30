@@ -36,8 +36,28 @@ const enviarPDFPorCorreo = async (
     columns.forEach((column) => {
       let cellValue = row[column.field];
       if (origen === "historialGeneral") {
-        if (column.field === "valorNuevo") {
-          //  cellValue = formatDateAndDay(cellValue);
+        if (column.field === "valorNuevo" && cellValue !== undefined) {
+          if (cellValue.toString().includes("&")) {
+            let [salon, fecha] = cellValue.split(" ");
+            let [nombreDia, fechaDia] = fecha.split("&");
+            let [dia, mes] = fechaDia.split("/");
+            cellValue = `${salon} - ${nombreDia} ${dia}/${mes}`;
+          } else if (cellValue.toString() === "solicitudes") {
+            cellValue = "Pendiente por programar";
+          } else if (cellValue.toString() === "acciones") {
+            cellValue = "Actividades";
+          }
+        } else if (column.field === "valorPrevio" && cellValue !== undefined) {
+          if (cellValue.toString().includes("&")) {
+            let [salon, fecha] = cellValue.split(" ");
+            let [nombreDia, fechaDia] = fecha.split("&");
+            let [dia, mes] = fechaDia.split("/");
+            cellValue = `${salon} - ${nombreDia} ${dia}/${mes}`;
+          } else if (cellValue.toString() === "solicitudes") {
+            cellValue = "Pendiente por programar";
+          } else if (cellValue.toString() === "acciones") {
+            cellValue = "Actividades";
+          }
         }
       } else if (origen === "reporteGeneral" || origen === "Version") {
         if (column.field === "dia" && cellValue !== undefined) {
