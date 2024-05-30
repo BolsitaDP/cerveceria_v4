@@ -49,6 +49,7 @@ import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import getData from "../../requests/getData";
 import formatearFechaAFormatoDate from "../../helpers/fromatearFechaAFormatoDate";
+import PreguntarBorrarSolicitud from "./PreguntarBorrarSolicitud";
 
 const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   console.log(solicitudAbierta);
@@ -82,6 +83,8 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const [valueAPartir, setValueAPartir] = useState(null);
   const [editedPropertyState, setEditedPropertyState] = useState(null);
   const [openPartir, setOpenPartir] = useState(false);
+  const [openBorrar, setOpenBorrar] = useState(false);
+  const [solicitudAEliminar, setSolicitudAEliminar] = useState({});
   const [openHistory, setOpenHistory] = useState(false);
   const [openProgramarDiferencia, setOpenProgramarDiferencia] = useState(false);
   const [diferenciaAProgramar, setDiferenciaAProgramar] = useState(null);
@@ -152,11 +155,16 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
 
   // Función que elimina las solicitudes
   const handleBorrarSolicitud = (obj) => {
+    setSolicitudAEliminar(obj);
+    setOpenBorrar(true);
+  };
+
+  const onSiBorrar = () => {
     try {
       postData
-        .postDeleteSolicitud(obj)
+        .postDeleteSolicitud(solicitudAEliminar)
         .then((res) => {
-          dispatch(deleteSolicitud(obj));
+          dispatch(deleteSolicitud(solicitudAEliminar));
         })
         .then(() => {
           toast.success("Solicitud borrada exitosamente");
@@ -165,6 +173,10 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     } catch (error) {
       toast.error("Ha ocurrido un error: " + error);
     }
+  };
+  const onNoBorrar = () => {
+    setSolicitudAEliminar({});
+    onClose();
   };
 
   // Función que devuelve lo que no se alcanzó a producir a la izquierda; esto dependiendo del input de «Producido»
@@ -181,6 +193,24 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
         toast.success(
           `Se agregó una solicitud de ${res.data.cantidad.toLocaleString()} CJS a pendientes por programar`
         );
+
+        let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+
+        let editedProperty = {
+          codigo: solicitudAbiertaEditable.codigoNombre,
+          tipoDeCambio: "Reprogramar faltante",
+          propiedad: "",
+          valorPrevio: 0,
+          valorNuevo: res.data.cantidad,
+          notificado: 0,
+          fechaDelCambio: fechaActual,
+          horaDelCambio: horaActual,
+          version: versionEstado,
+          editor: editorEstado,
+          idElemento: solicitudAbiertaEditable.idDnd,
+        };
+
+        dispatch(addToHistory(editedProperty));
       })
       .then(() => {
         setDiferenciaAProgramar(null);
@@ -225,11 +255,60 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       solicitudAbiertaEditable.cantidad - valueAPartir;
     dispatch(updatePropiedadesSolicitud(solicitudPartidaOrig));
     setOpenPartir(false);
+
+    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+
+    let editedProperty = {
+      codigo: solicitudAbiertaEditable.codigoNombre,
+      tipoDeCambio: "División",
+      propiedad: "cantidad",
+      valorPrevio: solicitudAbiertaEditable.cantidad,
+      valorNuevo: valueAPartir,
+      notificado: 0,
+      fechaDelCambio: fechaActual,
+      horaDelCambio: horaActual,
+      version: versionEstado,
+      editor: editorEstado,
+      idElemento: solicitudAbiertaEditable.idDnd,
+    };
+
+    dispatch(addToHistory(editedProperty));
   };
 
   // Función que obtiene de parámetro el objeto Date de JavaScript y lo convierte a un string con formato dd/mm/aaaa
   const formatearFecha = (date) => {
     return format(date, "dd/MM/yyyy");
+  };
+
+  const compararCantidadInicial = (cantidadSinComas) => {
+    getData
+      .getValidarCantidadProgramada({
+        idPadre: solicitudAbiertaEditable.idPadre,
+        cantidad: cantidadSinComas,
+      })
+      .then((res) => {
+        if (res.data.status !== "ERROR") {
+          return true;
+        } else {
+          // Expresión regular para encontrar todos los números en el mensaje
+          const numeros = res.data.msg.match(/\d+/g);
+
+          // Asignar los números a variables
+          const cantidadOriginal = parseInt(numeros[0]);
+          const cantidadActual = parseInt(numeros[1]);
+          // const cantidadProducir = parseInt(numeros[2]);
+
+          toast.error(
+            `No puedes superar la cantidad inicial de la solicitud: ${Number(
+              cantidadOriginal
+            ).toLocaleString()} porque ya hay ${Number(
+              cantidadActual
+            ).toLocaleString()} programada`
+          );
+          return false;
+        }
+      });
+    // .finally(() => onClose());
   };
 
   // Función para guardar las propiedades editadas
@@ -272,13 +351,23 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
           )
       );
     } else {
-      if (!calendario && name === "cantidad") {
+      if (
+        !calendario &&
+        name === "cantidad" &&
+        compararCantidadInicial(cantidadSinComas)
+      ) {
         if (Number(cantidadSinComas) < solicitudAbiertaEditable[name]) {
           setOpenPartir(true);
         } else {
+          setCantidadInput(Number(cantidadSinComas));
+
+          const updatedSolicitudEditada = { ...solicitudAbiertaEditable };
+          updatedSolicitudEditada[name] = Number(cantidadSinComas);
+
+          setValorPrevio(updatedSolicitudEditada[name]);
+          dispatch(updatePropiedadesSolicitud(updatedSolicitudEditada));
+
           dispatch(addToHistory(editedProperty));
-          solicitudAbiertaEditable[name] = Number(cantidadSinComas);
-          dispatch(updatePropiedadesSolicitud(solicitudAbiertaEditable));
         }
 
         setValueAPartir(Number(cantidadSinComas));
@@ -289,36 +378,25 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
         );
 
         //TODO: Modificar la solicitudAbierta por la solicitudAbiertaEditable en el state
+      } else if (
+        calendario &&
+        name === "cantidad" &&
+        compararCantidadInicial(cantidadSinComas)
+      ) {
+        setCantidadInput(Number(cantidadSinComas));
 
-        return;
+        const updatedSolicitudEditada = { ...solicitudAbiertaEditable };
+        updatedSolicitudEditada[name] = Number(cantidadSinComas);
+
+        setValorPrevio(updatedSolicitudEditada[name]);
+        dispatch(updatePropiedadesSolicitud(updatedSolicitudEditada));
+
+        dispatch(addToHistory(editedProperty));
       }
-
       if (name === "cantidad") {
-        getData
-          .getValidarCantidadProgramada({
-            idPadre: solicitudAbiertaEditable.idPadre,
-            cantidad: cantidadSinComas,
-          })
-          .then((res) => {
-            if (res.data.status !== "ERROR") {
-              setCantidadInput(Number(cantidadSinComas));
-
-              const updatedSolicitudEditada = { ...solicitudAbiertaEditable };
-              updatedSolicitudEditada[name] = Number(cantidadSinComas);
-
-              setValorPrevio(updatedSolicitudEditada[name]);
-              dispatch(updatePropiedadesSolicitud(updatedSolicitudEditada));
-              dispatch(addToHistory(editedProperty));
-            } else {
-              toast.error(
-                "No puedes superar la cantidad inicial de la solicitud"
-              );
-            }
-          })
-          .finally(() => onClose());
       } else {
         if (name === "datosReales") {
-          if (solicitudAbiertaEditable.cantidad > value) {
+          if (Number(solicitudAbiertaEditable.cantidad) > Number(value)) {
             let solicitudFaltante = JSON.parse(
               JSON.stringify(solicitudAbiertaEditable)
             );
@@ -389,7 +467,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       }
     });
 
-    var cantidadExtraPosible = parseInt(capacidadSalon * horasRestantesDia);
+    var cantidadExtraPosible = parseInt(
+      capacidadSalon * (horasRestantesDia + 0.5)
+    );
   }
 
   let fechaHoy = new Date();
@@ -403,6 +483,8 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
 
   const handleArchivarSolicitud = (sol) => {
     let solicitudUpdatear = [];
+
+    let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
 
     let objeto = {
       id: sol.id,
@@ -420,6 +502,22 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
         dispatch(archivarSolicitud(sol));
 
         toast.success(`Solicitud ${sol.codigoNombre} archivada exitosamente`);
+
+        let editedProperty = {
+          codigo: sol.codigoNombre,
+          tipoDeCambio: "Archivar",
+          propiedad: "",
+          valorPrevio: "solicitudes",
+          valorNuevo: "Archivo",
+          notificado: 0,
+          fechaDelCambio: fechaActual,
+          horaDelCambio: horaActual,
+          version: versionEstado,
+          editor: editorEstado,
+          idElemento: sol.idDnd,
+        };
+
+        dispatch(addToHistory(editedProperty));
       })
       .catch((err) => {
         toast.error(
@@ -807,6 +905,13 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
         <PreguntarPartirSolicitudSinProgramar
           onNoPartir={() => onNoPartir()}
           onSiPartir={() => onSiPartir()}
+        />
+      </Modal>
+
+      <Modal open={openBorrar} onClose={() => setOpenBorrar(false)}>
+        <PreguntarBorrarSolicitud
+          onNoBorrar={() => onNoBorrar()}
+          onSiBorrar={() => onSiBorrar()}
         />
       </Modal>
 

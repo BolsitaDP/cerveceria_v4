@@ -102,7 +102,9 @@ const PreguntaCrearCopia = ({ data = {}, onClose = null }) => {
             dispatch(
               addToHistory({
                 codigo: objResuesta.codigoNombre,
-                tipoDeCambio: "Asignación a programación",
+                tipoDeCambio: `Clonado (${Number(
+                  objResuesta.cantidad
+                ).toLocaleString()} CJ)`,
                 valorPrevio: "Solicitudes",
                 valorNuevo: `${objResuesta.salonProgramado} ${objResuesta.fecha}`,
                 notificado: 0,

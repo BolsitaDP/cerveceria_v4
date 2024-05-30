@@ -23,7 +23,7 @@ const PreguntarProgramarDiferencia = ({
           </strong>{" "}
           es menor a la planeada{" "}
           <strong>
-            {solicitudAbiertaEditable.cantidad.toLocaleString()} CJS
+            {Number(solicitudAbiertaEditable.cantidad).toLocaleString()} CJS
           </strong>
           , ¿desea reprogramar la diferencia de{" "}
           <strong>

@@ -148,7 +148,32 @@ const CrearAccion = () => {
           padding: "10%",
           gap: "2vh",
         }}>
-        <Box sx={{ display: "flex", gap: "20px" }}>
+        <FormControl>
+          <FormLabel>Tipo</FormLabel>
+          <RadioGroup
+            row
+            onChange={handleChange}
+            value={tipoAccion}
+            name="row-radio-buttons-group">
+            <FormControlLabel
+              value="operativa"
+              control={<Radio />}
+              label="Operativa"
+            />
+            <FormControlLabel
+              value="correctiva"
+              control={<Radio />}
+              label="Correctiva"
+            />
+            <FormControlLabel value="notas" control={<Radio />} label="Notas" />
+            <FormControlLabel
+              value="horario"
+              control={<Radio />}
+              label="Horario"
+            />
+          </RadioGroup>
+        </FormControl>
+        <Box sx={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
           <FormControl variant="outlined">
             <InputLabel>Nombre</InputLabel>
             <Input
@@ -196,40 +221,20 @@ const CrearAccion = () => {
           )}
         </Box>
 
-        <FormControl>
-          <FormLabel>Tipo</FormLabel>
-          <RadioGroup
-            row
-            onChange={handleChange}
-            value={tipoAccion}
-            name="row-radio-buttons-group">
-            <FormControlLabel
-              value="operativa"
-              control={<Radio />}
-              label="Operativa"
-            />
-            <FormControlLabel
-              value="correctiva"
-              control={<Radio />}
-              label="Correctiva"
-            />
-            <FormControlLabel value="notas" control={<Radio />} label="Notas" />
-            <FormControlLabel
-              value="horario"
-              control={<Radio />}
-              label="Horario"
-            />
-          </RadioGroup>
-        </FormControl>
-
         {tipoAccion !== "notas" && (
-          <FormControl sx={{ width: "100%" }}>
+          <FormControl
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
             <TextField
               label="Selecciona un color para la acción"
               type="color"
               value={color}
               onChange={handleColorChange}
-              sx={{ width: 300 }}
+              sx={{ width: "80%" }}
               InputLabelProps={{
                 shrink: true,
               }}

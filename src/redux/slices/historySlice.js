@@ -32,10 +32,10 @@ const historySlice = createSlice({
           cambio.codigo === action.payload.codigo
       );
       if (!exists) {
-        state.cambios.push(action.payload);
-        state.cambiosSinNotificar.push(action.payload);
-        postData.postHistorial(action.payload);
       }
+      state.cambios.push(action.payload);
+      state.cambiosSinNotificar.push(action.payload);
+      postData.postHistorial(action.payload);
     },
     setSalonSeleccionado: (state, action) => {
       state.salonSeleccionado = action.payload;

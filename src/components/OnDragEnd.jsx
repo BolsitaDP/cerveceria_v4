@@ -542,7 +542,10 @@ const onDragEnd = (
           // Si se encuentra la solicitud existente, suma las cantidades
           contenedoresActualizados.solicitudes[
             solicitudExistenteIndex
-          ].cantidad += elementoArrastrado.cantidad;
+          ].cantidad = Number(
+            contenedoresActualizados.solicitudes[solicitudExistenteIndex]
+              .cantidad + Number(elementoArrastrado.cantidad)
+          );
 
           // Elimina el elemento arrastrado
           eliminarElementoArrastradoFuente();

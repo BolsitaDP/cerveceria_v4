@@ -9,12 +9,19 @@ import { useTheme } from "@emotion/react";
 import postData from "../../requests/postData";
 import { toast } from "react-toastify";
 import { desarchivarSolicitud } from "../../redux/slices/contenedoresSlice";
+import getFechaHoraActual from "../../helpers/getFechaHoraActual";
+import { addToHistory } from "../../redux/slices/historySlice";
 
 const SolicitudesArchivadas = ({ onClose }) => {
   const solicitudesArchivadas = useSelector(
     (state) => state.contenedores.solicitudesArchivadas
   );
+  const versionEstado = useSelector((state) => state.history.version);
+  const editorEstado = useSelector((state) => state.history.editor);
+
   console.log(solicitudesArchivadas);
+
+  let fechaHoraActual = getFechaHoraActual();
 
   const dispatch = useDispatch();
 
@@ -39,6 +46,24 @@ const SolicitudesArchivadas = ({ onClose }) => {
         toast.success(
           `Solicitud ${sol.codigoNombre} desarchivada exitosamente`
         );
+
+        let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+
+        let editedProperty = {
+          codigo: sol.codigoNombre,
+          tipoDeCambio: "Desarchivar",
+          propiedad: "",
+          valorPrevio: "Archivo",
+          valorNuevo: "solicitudes",
+          notificado: 0,
+          fechaDelCambio: fechaActual,
+          horaDelCambio: horaActual,
+          version: versionEstado,
+          editor: editorEstado,
+          idElemento: sol.idDnd,
+        };
+
+        dispatch(addToHistory(editedProperty));
       })
       .catch((err) => {
         toast.error(

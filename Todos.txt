@@ -22,8 +22,9 @@ X Al exportar el programa (enviarlo por correo) las notas no salen bien. Aún no
 X Borrar grupos
 X Modificar grupos
 - Botón de devolver todas las soliciudes solo devuelve 1 (en caso de haber 2, no he probado con más particiones)
-- Al modificar las cantidades de las solicitudes no checkea si es mayor al pedido inicial
-
+X Al modificar las cantidades de las solicitudes no checkea si es mayor al pedido inicial
+- Crear historial con todas las acciones
 
 BACK:
 - Acciones programadas vienen sin hexa
+- El consultar por idPadre no funciona
