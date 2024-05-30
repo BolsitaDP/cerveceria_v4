@@ -191,6 +191,27 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
         .then(() => {
           toast.success("Solicitud borrada exitosamente");
           onClose();
+
+          let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
+
+          let editedProperty = {
+            codigo: solicitudAEliminar.codigoNombre,
+            tipoDeCambio: "Eliminar solicitud",
+            propiedad: "",
+            valorPrevio:
+              solicitudAEliminar.fecha === ""
+                ? "solicitudes"
+                : `${solicitudAEliminar.salonProgramado} ${solicitudAEliminar.fecha}`,
+            valorNuevo: "Eliminada",
+            notificado: 0,
+            fechaDelCambio: fechaActual,
+            horaDelCambio: horaActual,
+            version: versionEstado,
+            editor: editorEstado,
+            idElemento: solicitudAEliminar.idDnd,
+          };
+
+          dispatch(addToHistory(editedProperty));
         });
     } catch (error) {
       toast.error("Ha ocurrido un error: " + error);

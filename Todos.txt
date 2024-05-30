@@ -1,5 +1,5 @@
 - Líneas de división en los salonees en reporte general
-- Salón KE ya no en reporte sino en una nota general al final del programa, ellos no ponen cantidades ni nada, solo es una nota para que el jefe de línea lo distribuya como bien le parezca
+X Salón KE ya no en reporte sino en una nota general al final del programa, ellos no ponen cantidades ni nada, solo es una nota para que el jefe de línea lo distribuya como bien le parezca
 - Ampliar el reporte por producto para que se pueda filtrar por fechas, por lineas y versiones. También que se pueda consultar las primeras versiones de según qué planes para ese producto en esa línea en esas fechas.
 X Agregar una regla para que solo deje programar cantidades de 500 en 500
 X Si hay 59.999 y se va a partir en 3 dias distintos (40.000, 12,543 y 10,489) que solo el último día tenga los números que no sean multiplos de 500, es decir (40.000, 12.000, 11.999) [digitos de ejemplo]
@@ -23,8 +23,8 @@ X Borrar grupos
 X Modificar grupos
 - Botón de devolver todas las soliciudes solo devuelve 1 (en caso de haber 2, no he probado con más particiones)
 X Al modificar las cantidades de las solicitudes no checkea si es mayor al pedido inicial
-- Crear historial con todas las acciones
+X Crear historial con todas las acciones
 
 BACK:
-- Acciones programadas vienen sin hexa
+X Acciones programadas vienen sin hexa
 - El consultar por idPadre no funciona
