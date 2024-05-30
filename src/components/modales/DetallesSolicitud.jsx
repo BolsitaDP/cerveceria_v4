@@ -397,8 +397,8 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     } else {
       if (
         !calendario &&
-        name === "cantidad" &&
-        compararCantidadInicial(cantidadSinComas)
+        name === "cantidad"
+        // && compararCantidadInicial(cantidadSinComas)
       ) {
         if (Number(cantidadSinComas) < solicitudAbiertaEditable[name]) {
           setOpenPartir(true);

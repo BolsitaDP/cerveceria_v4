@@ -15,15 +15,15 @@ const PreguntarProgramarDiferencia = ({
         <Box>
           La cantidad producida{" "}
           <strong>
-            {(
-              Math.round(solicitudAbiertaEditable.cantidad) -
-              Math.round(solicitudFaltante.cantidad)
-            ).toLocaleString()}{" "}
-            CJS
+            {Math.round(solicitudAbiertaEditable.cantidad).toLocaleString()} CJS
           </strong>{" "}
           es menor a la planeada{" "}
           <strong>
-            {Number(solicitudAbiertaEditable.cantidad).toLocaleString()} CJS
+            {(
+              Number(solicitudAbiertaEditable.cantidad) +
+              Number(solicitudFaltante.cantidad)
+            ).toLocaleString()}{" "}
+            CJS
           </strong>
           , ¿desea reprogramar la diferencia de{" "}
           <strong>
