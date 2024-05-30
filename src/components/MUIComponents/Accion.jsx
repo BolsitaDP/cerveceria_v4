@@ -14,7 +14,12 @@ const Accion = ({
 }) => {
   const theme = useTheme();
 
-  let esClaro = isLightColor(accion.hexa);
+  let esClaro;
+  if (accion.hexa) {
+    esClaro = isLightColor(accion.hexa);
+  } else {
+    esClaro = false;
+  }
 
   return (
     <Card
@@ -33,9 +38,7 @@ const Accion = ({
         display: "flex",
         backgroundColor: `#${accion.hexa}`,
         color: esClaro ? "#000000" : "#ffffff",
-      }}
-      // onClick={() => !calendario && handleOpenDetalles(accion)}
-    >
+      }}>
       <Box
         sx={{
           width: "200px",

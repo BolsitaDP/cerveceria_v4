@@ -20,6 +20,7 @@ const enviarPDFPorCorreo = async (
   let blob = null;
   const doc = new jsPDF({
     orientation: "landscape",
+    format: "legal",
   });
   doc.text(pdfTitle, 10, 10);
 
@@ -49,9 +50,17 @@ const enviarPDFPorCorreo = async (
         ) {
           let arrayProdsCompletos = [];
           cellValue.forEach((sol) => {
-            arrayProdsCompletos.push(
-              `${sol.producto} - (${sol.codigoNombre}) - ${sol.cantidad}CJ `
-            );
+            if (sol.codigoNombre) {
+              arrayProdsCompletos.push(
+                `${sol.producto} - (${sol.codigoNombre}) - ${sol.cantidad}CJ `
+              );
+            } else {
+              arrayProdsCompletos.push(
+                `${sol.nombreDeLaAccion} - (${sol.tipo})${
+                  sol.tipo === "notas" ? "" : ` - ${sol.duracion} horas`
+                }`
+              );
+            }
           });
           cellValue = arrayProdsCompletos.join(",\n \n");
         }

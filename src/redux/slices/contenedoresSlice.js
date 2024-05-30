@@ -95,7 +95,11 @@ const contenedoresSlice = createSlice({
       // });
     },
     createAccion: (state, action) => {
-      state.acciones.push({ ...action.payload.data, idDnd: uuid() });
+      let nuevaAccion = {
+        ...action.payload.data,
+        idDnd: uuid(),
+      };
+      state.acciones.push(nuevaAccion);
     },
     deteleAccionCalendario: (state, action) => {
       let dia = action.payload.fecha;
@@ -222,6 +226,7 @@ const contenedoresSlice = createSlice({
             orden: index,
             tipo: elemento.tipo,
             tiempo: Number(elemento.duracion),
+            hexa: elemento.hexa,
           };
           accionesUpdatear.push(objeto);
         }

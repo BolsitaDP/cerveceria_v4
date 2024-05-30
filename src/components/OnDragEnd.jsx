@@ -4,6 +4,7 @@ import obtenerDiaSiguienteFecha from "../helpers/obtenerDiaSiguienteFecha";
 import obtenerDiaSiguienteNombre from "../helpers/obtenerDiaSiguienteNombre";
 
 import { v4 as uuid } from "uuid";
+import postData from "../requests/postData";
 
 const onDragEnd = (
   result,
@@ -231,7 +232,10 @@ const onDragEnd = (
       // Si viene de solicitudes o acciones
       if (!fuente[1]) {
         // Se compara las horas disponibles del día con las horas a restar
-        if (horasDisponiblesEnElDia + 0.5 >= tiempoARestarEnElDia) {
+        if (
+          horasDisponiblesEnElDia + 0.5 >= tiempoARestarEnElDia ||
+          elementoArrastrado.tipo === "notas"
+        ) {
           // Si es acción se debe crear una copia en su lugar
           if (accion) {
             let elementoArrastradoCopia = JSON.parse(
@@ -281,6 +285,7 @@ const onDragEnd = (
 
           elementoArrastradoEditable.fecha = destino[1];
           elementoArrastradoEditable.salonProgramado = destino[0];
+          elementoArrastradoEditable.idDnd = uuid();
 
           if (elementoArrastrado.codigoNombre) {
             let [cod, dif] = elementoArrastradoCopia.codigoNombre.split(" ");
@@ -331,54 +336,48 @@ const onDragEnd = (
               capacidadSalonPorDia * horasDisponiblesEnElDia
             );
 
-            let cantidadQueVaFaltando;
+            let cantidadQueVaFaltando = 0; // Inicializar correctamente
 
+            // Redondear cantidadSeSupone al múltiplo de 500 más cercano
             let cantidadRedondeada500 =
-              redondearAlMultiploDe500MasCercano(cantidadSeSupone);
+              Math.floor(cantidadSeSupone / 500) * 500;
 
-            if (cantidadSeSupone > cantidadRedondeada500) {
-              cantidadQueVaFaltando += cantidadSeSupone - cantidadRedondeada500;
-            }
-
-            // AQUÍ VOY
+            cantidadQueVaFaltando += cantidadSeSupone - cantidadRedondeada500;
 
             reparticion.push({
               ...elementoCopia,
-              cantidad: Math.round(
-                capacidadSalonPorDia * horasDisponiblesEnElDia
-              ),
+              cantidad: cantidadRedondeada500,
               fecha: destino[1],
               salonProgramado: salon,
               idDnd: uuid(),
             });
 
-            elementoCopia.cantidad -=
-              capacidadSalonPorDia * horasDisponiblesEnElDia;
+            elementoCopia.cantidad -= cantidadRedondeada500;
 
             horasDisponiblesEnElDia = getHorasDisponiblesEnElDia([
               salon,
               diaSiguiente,
             ]);
 
-            // diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
-
             while (
-              elementoCopia.cantidad / capacidadSalonPorDia >
+              (elementoCopia.cantidad + cantidadQueVaFaltando) /
+                capacidadSalonPorDia >
               horasDisponiblesEnElDia
             ) {
+              let cantidadParticion =
+                Math.floor(
+                  (capacidadSalonPorDia * horasDisponiblesEnElDia) / 500
+                ) * 500;
+
               reparticion.push({
                 ...elementoCopia,
-                cantidad: Math.round(
-                  capacidadSalonPorDia * horasDisponiblesEnElDia
-                ),
+                cantidad: cantidadParticion,
                 fecha: diaSiguiente,
                 salonProgramado: salon,
                 idDnd: uuid(),
               });
 
-              elementoCopia.cantidad -= Math.round(
-                capacidadSalonPorDia * horasDisponiblesEnElDia
-              );
+              elementoCopia.cantidad -= cantidadParticion;
 
               diaSiguiente = getDiaSiguienteDe([salon, diaSiguiente]);
 
@@ -490,47 +489,151 @@ const onDragEnd = (
       }
     } // Si el destino es solicitudes o acciones
     else {
-      if (
-        elementoArrastrado.codigoNombre.split(" ")[1] ||
-        elementoArrastrado.codigoNombre.split("_")[1]
-      ) {
-        toast("No puedes arrastrar un elemento copia fuera del calendario");
-        return;
+      console.log(contenedoresActualizados);
+
+      // Si es acción
+      if (accion) {
+        // Se elimina y se crea el elemento respectivamente
+        eliminarElementoArrastradoFuente();
+        crearElementoArrastradoDestino();
+
+        // Dispatchers
+        dispatcher("addToHistory", {
+          codigo: solicitud ? solicitud : accion,
+          tipoDeCambio: "Devolución a planeación",
+          valorPrevio: `${fuente[0]} ${fuente[1]}`,
+          valorNuevo: `${destino[0]}`,
+          notificado: 0,
+          fechaDelCambio: fechaActual,
+          horaDelCambio: horaActual,
+          propiedad: null,
+          editor: editorEstado,
+          id: uuid(),
+          version: versionEstado,
+          orden: posicionDestino,
+          tipo: solicitud ? "solicitud" : "accion",
+          elemento: elementoArrastrado,
+          idElemento: elementoArrastrado.idDnd || elementoArrastrado.Id,
+        });
+
+        dispatcher("statusUpdaters", {
+          elementoArrastrado,
+          destino,
+          contenidoDia:
+            contenedoresActualizados.calendario[fuente[0]].dias[fuente[1]]
+              .contenido,
+          tipo: solicitud ? "solicitud" : "accion",
+          fuente,
+          index: posicionDestino,
+          devolucion: true,
+        });
       }
-      // Se elimina y se crea el elemento respectivamente
-      eliminarElementoArrastradoFuente();
-      crearElementoArrastradoDestino();
+      // Si es solicitud
+      else if (solicitud) {
+        let keyId = elementoArrastrado.keyProducto;
 
-      // Dispatchers
-      dispatcher("addToHistory", {
-        codigo: solicitud ? solicitud : accion,
-        tipoDeCambio: "Devolución a planeación",
-        valorPrevio: `${fuente[0]} ${fuente[1]}`,
-        valorNuevo: `${destino[0]}`,
-        notificado: 0,
-        fechaDelCambio: fechaActual,
-        horaDelCambio: horaActual,
-        propiedad: null,
-        editor: editorEstado,
-        id: uuid(),
-        version: versionEstado,
-        orden: posicionDestino,
-        tipo: solicitud ? "solicitud" : "accion",
-        elemento: elementoArrastrado,
-        idElemento: elementoArrastrado.idDnd || elementoArrastrado.Id,
-      });
+        // Encuentra el índice de la solicitud existente con el mismo keyProducto
+        let solicitudExistenteIndex =
+          contenedoresActualizados.solicitudes.findIndex(
+            (x) => x.keyProducto === keyId
+          );
 
-      dispatcher("statusUpdaters", {
-        elementoArrastrado,
-        destino,
-        contenidoDia:
-          contenedoresActualizados.calendario[fuente[0]].dias[fuente[1]]
-            .contenido,
-        tipo: solicitud ? "solicitud" : "accion",
-        fuente,
-        index: posicionDestino,
-        devolucion: true,
-      });
+        if (solicitudExistenteIndex !== -1) {
+          // Si se encuentra la solicitud existente, suma las cantidades
+          contenedoresActualizados.solicitudes[
+            solicitudExistenteIndex
+          ].cantidad += elementoArrastrado.cantidad;
+
+          // Elimina el elemento arrastrado
+          eliminarElementoArrastradoFuente();
+
+          // Dispatchers
+          dispatcher("addToHistory", {
+            codigo: solicitud ? solicitud : accion,
+            tipoDeCambio: "Devolución a planeación",
+            valorPrevio: `${fuente[0]} ${fuente[1]}`,
+            valorNuevo: `${destino[0]}`,
+            notificado: 0,
+            fechaDelCambio: fechaActual,
+            horaDelCambio: horaActual,
+            propiedad: null,
+            editor: editorEstado,
+            id: uuid(),
+            version: versionEstado,
+            orden: posicionDestino,
+            tipo: solicitud ? "solicitud" : "accion",
+            elemento: elementoArrastrado,
+            idElemento: elementoArrastrado.idDnd || elementoArrastrado.Id,
+          });
+
+          // Obtén el objeto completo actualizado
+          let solicitudActualizada =
+            contenedoresActualizados.solicitudes[solicitudExistenteIndex];
+
+          let solicitudUpdatear = [];
+
+          let objeto = {
+            id: solicitudActualizada.id,
+            estado: solicitudActualizada.estado,
+            salonProgramado: solicitudActualizada.salonProgramado,
+            fecha: solicitudActualizada.fecha,
+            orden: solicitudActualizada.orden,
+            cantidad: solicitudActualizada.cantidad,
+          };
+          solicitudUpdatear.push(objeto);
+
+          try {
+            postData
+              .postActualizarEstadoProducto(solicitudUpdatear)
+              .then((res) => {
+                toast.success(`Solicitud regresada exitosamente`);
+              });
+
+            postData.postDeleteSolicitud(elementoArrastrado);
+          } catch (error) {
+            console.error(error);
+            toast.error(
+              `Ha ocurrido un error juntando las solicitudes: ${error}`
+            );
+          }
+        }
+        // Si no se encuentra la solicitud existente, añade elementoArrastrado a las solicitudes
+        else {
+          crearElementoArrastradoDestino();
+          eliminarElementoArrastradoFuente();
+
+          // Dispatchers
+          dispatcher("addToHistory", {
+            codigo: solicitud ? solicitud : accion,
+            tipoDeCambio: "Devolución a planeación",
+            valorPrevio: `${fuente[0]} ${fuente[1]}`,
+            valorNuevo: `${destino[0]}`,
+            notificado: 0,
+            fechaDelCambio: fechaActual,
+            horaDelCambio: horaActual,
+            propiedad: null,
+            editor: editorEstado,
+            id: uuid(),
+            version: versionEstado,
+            orden: posicionDestino,
+            tipo: solicitud ? "solicitud" : "accion",
+            elemento: elementoArrastrado,
+            idElemento: elementoArrastrado.idDnd || elementoArrastrado.Id,
+          });
+
+          dispatcher("statusUpdaters", {
+            elementoArrastrado,
+            destino,
+            contenidoDia:
+              contenedoresActualizados.calendario[fuente[0]].dias[fuente[1]]
+                .contenido,
+            tipo: solicitud ? "solicitud" : "accion",
+            fuente,
+            index: posicionDestino,
+            devolucion: true,
+          });
+        }
+      }
 
       // Se le agregan las horas del elemento quitado
       diaFuente.horas += parseFloat(tiempoARestarEnElDia);

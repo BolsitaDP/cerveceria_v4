@@ -117,7 +117,7 @@ const CrearAccion = () => {
                 estado: 1,
                 nombreDeLaAccion: textoNombre,
                 tipo: tipoAccion,
-                hexa: color,
+                hexa: color.split("#")[1],
               })
               .then((res) => dispatch(createAccion(res)))
               .then(() => {
@@ -173,26 +173,27 @@ const CrearAccion = () => {
               variant="standard"
             />
           </FormControl>
-
-          <FormControl variant="outlined">
-            <InputLabel>Duración</InputLabel>
-            <Input
-              type="number"
-              disabled={tipoAccion === "notas"}
-              min="0"
-              sx={{ maxWidth: "200px" }}
-              value={minutosAccion}
-              onChange={handleChangeMinutos}
-              onKeyDown={handleKeyDown}
-              inputProps={{ min: 0 }}
-              endAdornment={
-                <InputAdornment position="end">Horas</InputAdornment>
-              }
-              size="small"
-              label="Solicitud a filtrar"
-              variant="standard"
-            />
-          </FormControl>
+          {tipoAccion !== "notas" && (
+            <FormControl variant="outlined">
+              <InputLabel>Duración</InputLabel>
+              <Input
+                type="number"
+                disabled={tipoAccion === "notas"}
+                min="0"
+                sx={{ maxWidth: "200px" }}
+                value={minutosAccion}
+                onChange={handleChangeMinutos}
+                onKeyDown={handleKeyDown}
+                inputProps={{ min: 0 }}
+                endAdornment={
+                  <InputAdornment position="end">Horas</InputAdornment>
+                }
+                size="small"
+                label="Solicitud a filtrar"
+                variant="standard"
+              />
+            </FormControl>
+          )}
         </Box>
 
         <FormControl>
@@ -221,18 +222,20 @@ const CrearAccion = () => {
           </RadioGroup>
         </FormControl>
 
-        <FormControl sx={{ width: "100%" }}>
-          <TextField
-            label="Selecciona un color para la acción"
-            type="color"
-            value={color}
-            onChange={handleColorChange}
-            sx={{ width: 300 }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </FormControl>
+        {tipoAccion !== "notas" && (
+          <FormControl sx={{ width: "100%" }}>
+            <TextField
+              label="Selecciona un color para la acción"
+              type="color"
+              value={color}
+              onChange={handleColorChange}
+              sx={{ width: 300 }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </FormControl>
+        )}
 
         <Button variant="contained" onClick={handleNuevaAccion}>
           Crear

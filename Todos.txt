@@ -1,11 +1,11 @@
 - Líneas de división en los salonees en reporte general
 - Salón KE ya no en reporte sino en una nota general al final del programa, ellos no ponen cantidades ni nada, solo es una nota para que el jefe de línea lo distribuya como bien le parezca
 - Ampliar el reporte por producto para que se pueda filtrar por fechas, por lineas y versiones. También que se pueda consultar las primeras versiones de según qué planes para ese producto en esa línea en esas fechas.
-- Agregar una regla para que solo deje programar cantidades de 500 en 500
-- Si hay 59.999 y se va a partir en 3 dias distintos (40.000, 12,543 y 10,489) que solo el último día tenga los números que no sean multiplos de 500, es decir (40.000, 12.000, 11.999) [digitos de ejemplo]
-- Cuando una solicitud ya ocupe el 100% del día pero la cantidad que se partiría está dentro del margen de 10%, se pueda sobrepasar el límite del 100% para que la solicitud no quede partida en por ejemplo 10.000 y 111
+X Agregar una regla para que solo deje programar cantidades de 500 en 500
+X Si hay 59.999 y se va a partir en 3 dias distintos (40.000, 12,543 y 10,489) que solo el último día tenga los números que no sean multiplos de 500, es decir (40.000, 12.000, 11.999) [digitos de ejemplo]
+X Cuando una solicitud ya ocupe el 100% del día pero la cantidad que se partiría está dentro del margen de 10%, se pueda sobrepasar el límite del 100% para que la solicitud no quede partida en por ejemplo 10.000 y 111
 X Cuando se pregunta si partir la solicitud si se le da no, muere todo
-- Una manera de que al partir la solicitud pero quiero que una de esas particiones quede pendiente para dentro de 3 semanas, es decir, que ya no aparezcan en la izquierda sino que se guarden en otro lado mientras que ellos las habilitan ya sea por fecha o disponibilidad
+X Una manera de que al partir la solicitud pero quiero que una de esas particiones quede pendiente para dentro de 3 semanas, es decir, que ya no aparezcan en la izquierda sino que se guarden en otro lado mientras que ellos las habilitan ya sea por fecha o disponibilidad
 X Cuando dice cuántas horas disopnibles al partir la solicitud solo dejar un decimal para las explicaciones
 X Las cantidades deben ser lo producido, así los números que se muestran en la aplicación son los reales y las personas de otras áreas puedan entender fácil para sus registros
 
@@ -15,10 +15,15 @@ X Las cantidades deben ser lo producido, así los números que se muestran en la
 
 ---------------------------------------
 X Hacer que las acciones al crearse se les pueda asignar un color
-- Refactorizar detallesSolicitud.jsx por completo
-- Hacer que al devolver solicitudes partidas individualmente se vuelvan a juntar en una sola
-- En algunos salones si la capacidad del día ya se cumplió ya no se pueden agregar notas, pero en otros sí
-- Al exportar el programa (enviarlo por correo) las notas no salen bien. Aún no llegan lo correos electrónicos con el programa
+X Refactorizar detallesSolicitud.jsx por completo
+X Hacer que al devolver solicitudes partidas individualmente se vuelvan a juntar en una sola
+X En algunos salones si la capacidad del día ya se cumplió ya no se pueden agregar notas, pero en otros sí
+X Al exportar el programa (enviarlo por correo) las notas no salen bien. Aún no llegan lo correos electrónicos con el programa
 X Borrar grupos
 X Modificar grupos
 - Botón de devolver todas las soliciudes solo devuelve 1 (en caso de haber 2, no he probado con más particiones)
+- Al modificar las cantidades de las solicitudes no checkea si es mayor al pedido inicial
+
+
+BACK:
+- Acciones programadas vienen sin hexa
