@@ -58,13 +58,16 @@ const CrearAccion = () => {
   const handleChange = (event) => {
     if (event.target.value === "notas") {
       setMinutosAccion(null);
+      setColor("#000000");
     }
     setTipoAccion(event.target.value);
   };
 
-  const handleColorChange = useCallback((event) => {
-    setColor(event.target.value);
-  }, []);
+  const handleColorChange = (color) => {
+    setColor(color);
+
+    console.log(color);
+  };
 
   const handleNuevaAccion = () => {
     if (tipoAccion !== "notas") {
@@ -134,6 +137,25 @@ const CrearAccion = () => {
       }
     }
   };
+
+  const coloresPredefinidos = [
+    "#FFB6C1",
+    "#AEC6CF",
+    "#98FF98",
+    "#E6E6FA",
+    "#FDFD96",
+    "#FFDAB9",
+    "#D8BFD8",
+    "#AFEEEE",
+    "#F08080",
+    "#FFFDD0",
+    "#E0BBE4",
+    "#FFDFD3",
+    "#C1E1C1",
+    "#F4C2C2",
+    "#B39EB5",
+    "#FFCCCB",
+  ];
 
   return (
     <BasicModal titulo={"Crear actividad"}>
@@ -222,27 +244,55 @@ const CrearAccion = () => {
         </Box>
 
         {tipoAccion !== "notas" && (
-          <FormControl
-            sx={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-            <TextField
-              label="Selecciona un color para la acción"
-              type="color"
-              value={color}
-              onChange={handleColorChange}
-              sx={{ width: "80%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </FormControl>
+          <>
+            Selecciona un color para la acción
+            <FormControl
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: "10px",
+              }}>
+              {coloresPredefinidos.map((color) => {
+                return (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "5px",
+                      width: "max-content",
+                    }}>
+                    <Button
+                      sx={{
+                        backgroundColor: `${color}`,
+                        minWidth: "30px",
+                        width: "30px",
+                        height: "30px",
+                      }}
+                      onClick={() => handleColorChange(color)}></Button>
+                  </Box>
+                );
+              })}
+            </FormControl>
+          </>
         )}
 
-        <Button variant="contained" onClick={handleNuevaAccion}>
+        {/* 
+        <TextField
+          label="Selecciona un color para la acción"
+          type="color"
+          value={color}
+          onChange={handleColorChange}
+          sx={{ width: "80%" }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        /> */}
+
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: `${color === "#000000" ? "#007aff" : color}` }}
+          onClick={handleNuevaAccion}>
           Crear
         </Button>
       </Box>

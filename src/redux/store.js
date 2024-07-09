@@ -6,6 +6,7 @@ import utilsReducer from "./slices/utilsSlice";
 import datesReducer from "./slices/datesSlice";
 import groupsReducer from "./slices/gruposSlice";
 import pdfDataReducer from "./slices/dataPDFSlice";
+import userReducer from "./slices/userSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     dates: datesReducer,
     grupos: groupsReducer,
     pdfData: pdfDataReducer,
+    user: userReducer,
   },
 });
 

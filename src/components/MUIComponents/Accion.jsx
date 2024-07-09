@@ -82,8 +82,10 @@ const Accion = ({
         }}>
         <Box sx={{ textAlign: "center" }}>
           <Tooltip title={accion.nombreDeLaAccion} arrow>
-            {accion.nombreDeLaAccion.slice(0, 30)}
-            {accion.nombreDeLaAccion.length >= 30 && "..."}
+            <>
+              {accion.nombreDeLaAccion.slice(0, 30)}
+              {accion.nombreDeLaAccion.length >= 30 && "..."}
+            </>
           </Tooltip>
         </Box>
         <Box sx={{ width: "80%", textAlign: "right" }}>

@@ -136,14 +136,14 @@ const ReporteTotal = () => {
                         padding: "5px",
                         borderRadius: "5px",
                       }}>
-                      {sol.producto} ({sol.codigoNombre})
-                      <br />
                       <strong>
                         {sol.cantidad.toLocaleString()}{" "}
                         {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}{" "}
                         <br />
                         {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>
+                      <br />
+                      {sol.producto} ({sol.codigoNombre})
                     </div>
                   ) : (
                     ""
@@ -156,9 +156,6 @@ const ReporteTotal = () => {
                       padding: "5px",
                       borderRadius: "5px",
                     }}>
-                    {sol.producto || sol.nombreDeLaAccion} (
-                    {sol.codigoNombre || sol.tipo})
-                    <br />
                     <strong>
                       {!sol.tipo && sol.cantidad.toLocaleString()}
                       {!sol.tipo &&
@@ -167,6 +164,9 @@ const ReporteTotal = () => {
                       <br />
                       {sol.horasOcupadas.toFixed(2) + " horas"}
                     </strong>
+                    <br />
+                    {sol.producto || sol.nombreDeLaAccion} (
+                    {sol.codigoNombre || sol.tipo})
                   </div>
                 )
               )}
@@ -200,13 +200,13 @@ const ReporteTotal = () => {
                       padding: "5px",
                       borderRadius: "5px",
                     }}>
-                    {sol.producto || sol.nombreDeLaAccion} (
-                    {sol.codigoNombre || sol.tipo})
-                    <br />
                     <strong>
                       {sol.cantidad.toLocaleString()}{" "}
                       {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                     </strong>
+                    <br />
+                    {sol.producto || sol.nombreDeLaAccion} (
+                    {sol.codigoNombre || sol.tipo})
                   </div>
                 ) : (
                   ""
@@ -231,9 +231,6 @@ const ReporteTotal = () => {
                     padding: "5px",
                     borderRadius: "5px",
                   }}>
-                  {sol.producto || sol.nombreDeLaAccion} (
-                  {sol.codigoNombre || sol.tipo})
-                  <br />
                   <strong>
                     {sol.codigoNombre
                       ? `${sol.cantidad.toLocaleString()} ${
@@ -241,6 +238,9 @@ const ReporteTotal = () => {
                         }`
                       : ""}
                   </strong>
+                  <br />
+                  {sol.producto || sol.nombreDeLaAccion} (
+                  {sol.codigoNombre || sol.tipo})
                 </div>
               );
             })}
@@ -275,14 +275,14 @@ const ReporteTotal = () => {
                           padding: "5px",
                           borderRadius: "5px",
                         }}>
-                        {sol.producto} ({sol.codigoNombre})
-                        <br />
                         <strong>
                           {sol.cantidad.toLocaleString()}{" "}
                           {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                           <br />
                           {sol.horasOcupadas.toFixed(2) + " horas"}
                         </strong>
+                        <br />
+                        {sol.producto} ({sol.codigoNombre})
                       </div>
                     ) : (
                       ""
@@ -295,9 +295,6 @@ const ReporteTotal = () => {
                         padding: "5px",
                         borderRadius: "5px",
                       }}>
-                      {sol.producto || sol.nombreDeLaAccion} (
-                      {sol.codigoNombre || sol.tipo})
-                      <br />
                       <strong>
                         {sol.codigoNombre
                           ? `${sol.cantidad.toLocaleString()} ${
@@ -309,6 +306,9 @@ const ReporteTotal = () => {
                         <br />
                         {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>
+                      <br />
+                      {sol.producto || sol.nombreDeLaAccion} (
+                      {sol.codigoNombre || sol.tipo})
                     </div>
                   );
                 })

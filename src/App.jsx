@@ -47,7 +47,7 @@ import {
 
 dayjs.locale("es");
 
-function App() {
+const App = () => {
   const dispatch = useDispatch();
 
   const [crearCopia, setCrearCopia] = useState(false);
@@ -229,6 +229,6 @@ function App() {
       </ThemeProvider>
     </div>
   );
-}
+};
 
 export default App;
