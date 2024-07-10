@@ -50,6 +50,19 @@ const enviarPDFPorCorreo = async (
 
   columns = columns.filter((x) => x.field !== "KE");
 
+  let observaciones = [];
+  rows.forEach((row) => {
+    if (row.totalXProducto) {
+      row.totalXProducto.forEach((prod) => {
+        if (prod.observaciones !== "") {
+          observaciones.push(
+            `${prod.producto} (${prod.codigoNombre}): ${prod.observaciones}`
+          );
+        }
+      });
+    }
+  });
+
   if (origen === "reporteGeneral") {
     console.log("Origen reporte general");
   }
@@ -96,7 +109,9 @@ const enviarPDFPorCorreo = async (
           cellValue.forEach((sol) => {
             if (sol.codigoNombre) {
               arrayProdsCompletos.push(
-                `${sol.producto} - (${sol.codigoNombre}) - ${sol.cantidad}CJ `
+                `${sol.producto} - (${sol.codigoNombre}) - ${sol.cantidad}CJ ${
+                  sol.observaciones ? "*" : ""
+                }`
               );
             } else {
               arrayProdsCompletos.push(
@@ -120,10 +135,15 @@ const enviarPDFPorCorreo = async (
   });
 
   // Obtener la posición Y después de la tabla
-  const finalY = doc.autoTable.previous.finalY || 10;
+  const underTable = doc.autoTable.previous.finalY || 10;
 
   // Agregar un párrafo después de la tabla
-  doc.text(`Salón KE: \n${parrafoKE.join(", ")}`, 10, finalY + 10);
+  doc.text(`Salón KE: \n${parrafoKE.join(", ")}`, 10, underTable + 10);
+
+  let underKe = 20 + underTable + parrafoKE.length * 10;
+
+  // Observaciones de los productos en el reporte
+  doc.text(`Observaciones: \n${observaciones.join(", ")}`, 10, underKe + 10);
 
   const pdfUrl = URL.createObjectURL(doc.output("blob"));
   window.open(pdfUrl, "_blank");
