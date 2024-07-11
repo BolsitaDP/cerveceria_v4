@@ -10,33 +10,33 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-const setPermiso = () => {
+const setPermiso = async () => {
   //Cuando el back funcione
 
-  let usuNombre = "Luisa Valey";
+  // let usuNombre = "Luisa Valey";
+  let usuNombre = window.parent.dataUsu.usu_nombre;
 
-  fetch(`${testURL}RolesController/getRol?usuNombre=${usuNombre}`, {
+  await fetch(`${testURL}RolesController/getRol?usuNombre=${usuNombre}`, {
     method: "GET",
     headers: headers,
-  }).then((res) => {
-    // store.dispatch(changeRole(res.usuRol));
-    store.dispatch(changeEditor(res.usuNombre));
-  });
-
-  store.dispatch(changeRole("administrador"));
-
-  // let usuNombre = window.parent.dataUsu.usu_nombre;
-  // let permiso = peticion.get("RolesController/getRol", {
-  //   usuNombre: usuNombre,
-  // });
-
-  // let permiso = "administrador";
-
-  // store.dispatch(changeRole(permiso));
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Network response was not ok " + res.statusText);
+      }
+      return res.json(); // Parse the JSON response
+    })
+    .then((data) => {
+      store.dispatch(changeRole(data[0].usuRol));
+      store.dispatch(changeEditor(data[0].usuNombre));
+    })
+    .catch((error) => {
+      console.error("Hubo un problema al validar autorización", error);
+    });
 };
 
-export const getUserRole = () => {
-  setPermiso();
+export const getUserRole = async () => {
+  await setPermiso();
 
   let state = store.getState();
 

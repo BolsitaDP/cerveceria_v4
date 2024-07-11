@@ -396,6 +396,23 @@ const ReporteTotal = () => {
     setModalAbierto("exportar");
   };
 
+  const getRowClassName = (params) => {
+    // console.log(params);
+    // return params.row.name.includes("inicio") ||
+    //   params.row.time.includes("8:00")
+    //   ? "highlight"
+    //   : "";
+    //     params.row.totalXProducto.forEach((el) => {
+    //       if (el.nombreDeLaAccion.includes("inicio") || el.nombreDeLaAccion.includes("inicia")) {
+    //     let hora = el.nombreDeLaAccion
+    //   }
+    // })
+    // if (true) {
+    //   // Con esto se aplicaría el margen arriba, pero toca determinar cuánto según la hora de inicio
+    //   return "sangriaArriba";
+    // }
+  };
+
   return (
     <BasicModal
       titulo={"Reporte total"}
@@ -460,6 +477,12 @@ const ReporteTotal = () => {
             getRowHeight={() => "auto"}
             columns={columns}
             getRowId={(row) => uuid()}
+            sx={{
+              "& .MuiDataGrid-cell": {
+                alignItems: "flex-start",
+              },
+            }}
+            getRowClassName={getRowClassName}
           />
         </Box>
       </Box>

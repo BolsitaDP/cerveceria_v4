@@ -16,7 +16,7 @@ peticion.interceptors.request.use(
     const { getUserRole, checkPermissionForRole } = await import(
       "../helpers/permissionUtils"
     );
-    const userRole = getUserRole();
+    const userRole = await getUserRole();
 
     if (!checkPermissionForRole(userRole)) {
       return Promise.reject({ message: "Forbidden" });
