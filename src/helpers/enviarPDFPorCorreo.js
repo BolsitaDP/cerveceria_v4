@@ -110,7 +110,7 @@ const enviarPDFPorCorreo = async (
             if (sol.codigoNombre) {
               arrayProdsCompletos.push(
                 `${sol.producto} - (${sol.codigoNombre}) - ${sol.cantidad}CJ ${
-                  sol.observaciones ? "*" : ""
+                  sol.observaciones ? "**" : ""
                 }`
               );
             } else {

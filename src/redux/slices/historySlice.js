@@ -71,6 +71,9 @@ const historySlice = createSlice({
     setDestino: (state, action) => {
       state.destino = action.payload.destino;
     },
+    changeEditor: (state, action) => {
+      state.editor = action.payload;
+    },
   },
 });
 
@@ -80,5 +83,6 @@ export const {
   setHistorialInicial,
   updateVersion,
   setDestino,
+  changeEditor,
 } = historySlice.actions;
 export default historySlice.reducer;

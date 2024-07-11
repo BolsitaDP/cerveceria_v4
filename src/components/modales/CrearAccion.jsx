@@ -33,7 +33,7 @@ const CrearAccion = () => {
   const [textoNombre, setTextoNombre] = useState("");
   const [minutosAccion, setMinutosAccion] = useState("");
   const [tipoAccion, setTipoAccion] = useState("");
-  const [color, setColor] = useState("#000000");
+  const [color, setColor] = useState("#6FD673");
 
   const acciones = useSelector((state) => state.contenedores.acciones);
 
@@ -58,7 +58,7 @@ const CrearAccion = () => {
   const handleChange = (event) => {
     if (event.target.value === "notas") {
       setMinutosAccion(null);
-      setColor("#000000");
+      setColor("#6FD673");
     }
     setTipoAccion(event.target.value);
   };
@@ -291,7 +291,7 @@ const CrearAccion = () => {
 
         <Button
           variant="contained"
-          sx={{ backgroundColor: `${color === "#000000" ? "#007aff" : color}` }}
+          sx={{ backgroundColor: `${color === "#6FD673" ? "#007aff" : color}` }}
           onClick={handleNuevaAccion}>
           Crear
         </Button>
