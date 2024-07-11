@@ -12,7 +12,10 @@ const peticion = axios.create({
 });
 
 peticion.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const { getUserRole, checkPermissionForRole } = await import(
+      "../helpers/permissionUtils"
+    );
     const userRole = getUserRole();
 
     if (!checkPermissionForRole(userRole)) {
@@ -25,22 +28,5 @@ peticion.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-const checkPermissionForRole = (role) => {
-  if (role === "administrador") {
-    // Si es administrador, puede hacer peticiones
-    return true;
-  } else {
-    // Si no es administrador no puede hacer peticiones
-    // return false
-
-    return true; //Quitar esta línea cuando ya funcione la autenticación con el back bien
-  }
-};
-
-const getUserRole = () => {
-  // let state = store.getState();
-  // return state.user.role;
-};
 
 export default peticion;

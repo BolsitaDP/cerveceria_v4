@@ -54,7 +54,7 @@ const enviarPDFPorCorreo = async (
   rows.forEach((row) => {
     if (row.totalXProducto) {
       row.totalXProducto.forEach((prod) => {
-        if (prod.observaciones !== "") {
+        if (prod.observaciones && prod.observaciones !== "") {
           observaciones.push(
             `${prod.producto} (${prod.codigoNombre}): ${prod.observaciones}`
           );
@@ -136,6 +136,8 @@ const enviarPDFPorCorreo = async (
 
   // Obtener la posición Y después de la tabla
   const underTable = doc.autoTable.previous.finalY || 10;
+
+  doc.setFontSize(12);
 
   // Agregar un párrafo después de la tabla
   doc.text(`Salón KE: \n${parrafoKE.join(", ")}`, 10, underTable + 10);

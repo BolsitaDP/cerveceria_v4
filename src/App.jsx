@@ -97,14 +97,18 @@ const App = () => {
         dispatch(settearPedidoTotal(solicitudesSinProgramar.data));
       } catch (error) {
         console.log(error);
-        toast.error("Error consultando los datos." + error);
+        if (error && error.message === "Forbidden") {
+          toast.error("No tiene autorización para acceder a la programación");
+        } else {
+          toast.error("Error consultando los datos." + error);
+        }
       }
     };
 
     setInitialData()
       .then((data) => console.log(data))
-      .then(() => setAppCargada(true));
-    // .catch((error) => console.error("Error setting initial data:", error));
+      .then(() => setAppCargada(true))
+      .catch((error) => console.error("Error setting initial data:", error));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -135,32 +139,38 @@ const App = () => {
   };
 
   useEffect(() => {
-    getData.getProgramacionProgramado().then((response) => {
-      let solicitudesFiltradas = [];
-      response.data.forEach((sol) => {
-        let [, solFecha] = sol.fecha.split("&");
-        fechasSeleccionadas.forEach((fecha) => {
-          if (fecha === solFecha) {
-            solicitudesFiltradas.push(sol);
-          }
+    getData
+      .getProgramacionProgramado()
+      .then((response) => {
+        let solicitudesFiltradas = [];
+        response.data.forEach((sol) => {
+          let [, solFecha] = sol.fecha.split("&");
+          fechasSeleccionadas.forEach((fecha) => {
+            if (fecha === solFecha) {
+              solicitudesFiltradas.push(sol);
+            }
+          });
         });
-      });
-      dispatch(setSolicitudesProgramadas(solicitudesFiltradas));
-      dispatch(settearPedidoTotal(solicitudesFiltradas));
-    });
-    getData.getAccionesProgramadas().then((response) => {
-      let accionesFiltradas = [];
-      response.data.forEach((acc) => {
-        let [, accFecha] = acc.fecha.split("&");
-        fechasSeleccionadas.forEach((fecha) => {
-          if (fecha === accFecha) {
-            accionesFiltradas.push(acc);
-          }
+        dispatch(setSolicitudesProgramadas(solicitudesFiltradas));
+        dispatch(settearPedidoTotal(solicitudesFiltradas));
+      })
+      .catch((err) => console.log(err));
+    getData
+      .getAccionesProgramadas()
+      .then((response) => {
+        let accionesFiltradas = [];
+        response.data.forEach((acc) => {
+          let [, accFecha] = acc.fecha.split("&");
+          fechasSeleccionadas.forEach((fecha) => {
+            if (fecha === accFecha) {
+              accionesFiltradas.push(acc);
+            }
+          });
         });
-      });
-      dispatch(setAccionesProgramadas(accionesFiltradas));
-      // as
-    });
+        dispatch(setAccionesProgramadas(accionesFiltradas));
+        // as
+      })
+      .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fechasSeleccionadas]);
 
