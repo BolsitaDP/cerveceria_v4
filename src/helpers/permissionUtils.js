@@ -13,8 +13,8 @@ const headers = {
 const setPermiso = async () => {
   //Cuando el back funcione
 
-  // let usuNombre = "Luisa Valey";
-  let usuNombre = window.parent.dataUsu.usu_nombre;
+  let usuNombre = "Luisa Valey";
+  // let usuNombre = window.parent.dataUsu.usu_nombre;
 
   await fetch(`${testURL}RolesController/getRol?usuNombre=${usuNombre}`, {
     method: "GET",
@@ -34,6 +34,8 @@ const setPermiso = async () => {
       console.error("Hubo un problema al validar autorización", error);
     });
 };
+
+// store.dispatch(changeRole("administrador"));
 
 export const getUserRole = async () => {
   await setPermiso();

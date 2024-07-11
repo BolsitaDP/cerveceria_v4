@@ -13,6 +13,7 @@ import PDFs from "../modales/FABS/PDFs";
 import Reportes from "../modales/FABS/Reportes";
 import ProgramadoProducido from "../modales/FABS/ProgramadoProducido";
 import ReporteTotal from "../modales/FABS/ReporteTotal";
+import AdminDashboard from "../modales/FABS/AdminDashboard";
 
 const FABS = [
   {
@@ -39,6 +40,10 @@ const FABS = [
     icon: <DonutLargeRoundedIcon />,
     tooltip: "Requerido, programado y producido",
   },
+  // {
+  //   icon: <AssessmentRoundedIcon />,
+  //   tooltip: "Panel de administrador",
+  // },
 ];
 
 const MUIFloatingButton = () => {
@@ -141,6 +146,12 @@ const MUIFloatingButton = () => {
         onClose={() => setModalAbierto(null)}>
         <ReporteTotal />
       </Modal>
+
+      {/* <Modal
+        open={modalAbierto === "Panel de administrador"}
+        onClose={() => setModalAbierto(null)}>
+        <AdminDashboard />
+      </Modal> */}
     </Box>
   );
 };
