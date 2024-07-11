@@ -56,7 +56,7 @@ const enviarPDFPorCorreo = async (
       row.totalXProducto.forEach((prod) => {
         if (prod.observaciones && prod.observaciones !== "") {
           observaciones.push(
-            `${prod.producto} (${prod.codigoNombre}): ${prod.observaciones}`
+            `${prod.salonProgramado} ${prod.producto} (${prod.codigoNombre}) ${prod.fecha}: ${prod.observaciones}` //AQUÍ VOY
           );
         }
       });
@@ -145,7 +145,7 @@ const enviarPDFPorCorreo = async (
   let underKe = 20 + underTable + parrafoKE.length * 10;
 
   // Observaciones de los productos en el reporte
-  doc.text(`Observaciones: \n${observaciones.join(", ")}`, 10, underKe + 10);
+  doc.text(`Observaciones: \n${observaciones.join(", \n")}`, 10, underKe + 10);
 
   const pdfUrl = URL.createObjectURL(doc.output("blob"));
   window.open(pdfUrl, "_blank");
