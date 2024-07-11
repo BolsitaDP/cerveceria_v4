@@ -132,7 +132,7 @@ const ReporteTotal = () => {
                     <div
                       key={index}
                       style={{
-                        backgroUNColor: "rgba(0, 122, 255, 0.4)",
+                        backgroundColor: "rgba(0, 122, 255, 0.4)",
                         padding: "5px",
                         borderRadius: "5px",
                       }}>
@@ -152,7 +152,7 @@ const ReporteTotal = () => {
                   <div
                     key={index}
                     style={{
-                      backgroUNColor: "rgba(0, 122, 255, 0.4)",
+                      backgroundColor: "rgba(0, 122, 255, 0.4)",
                       padding: "5px",
                       borderRadius: "5px",
                     }}>
@@ -192,7 +192,7 @@ const ReporteTotal = () => {
                   <div
                     key={index}
                     style={{
-                      backgroUNColor: switchColoresPorProductos
+                      backgroundColor: switchColoresPorProductos
                         ? colorBySol && colorBySol
                         : sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
                         ? "rgba(92, 101, 192, 0.4)"
@@ -215,19 +215,13 @@ const ReporteTotal = () => {
                 <div
                   key={index}
                   style={{
-                    backgroUNColor: switchColoresPorProductos
+                    backgroundColor: switchColoresPorProductos
                       ? colorBySol && colorBySol
                       : sol.tipoRequerimiento === "PRODUCCIÓN LOCAL"
                       ? "rgba(92, 101, 192, 0.4)"
                       : sol.codigoNombre
                       ? "rgba(240, 93, 103, 0.4)"
-                      : sol.tipo === "correctiva"
-                      ? "rgba(111, 149, 255, 0.4)"
-                      : sol.tipo === "operativa"
-                      ? "rgba(250, 161, 145, 0.4)"
-                      : sol.tipo === "horario"
-                      ? "rgb(85, 214, 194, 0.4)"
-                      : "rgba(111, 214, 115, 0.4)",
+                      : `#${sol.hexa}`,
                     padding: "5px",
                     borderRadius: "5px",
                   }}>
@@ -271,7 +265,7 @@ const ReporteTotal = () => {
                       <div
                         key={index}
                         style={{
-                          backgroUNColor: "rgba(0, 122, 255, 0.4)",
+                          backgroundColor: "rgba(0, 122, 255, 0.4)",
                           padding: "5px",
                           borderRadius: "5px",
                         }}>
@@ -291,7 +285,7 @@ const ReporteTotal = () => {
                     <div
                       key={index}
                       style={{
-                        backgroUNColor: "rgba(0, 122, 255, 0.4)",
+                        backgroundColor: "rgba(0, 122, 255, 0.4)",
                         padding: "5px",
                         borderRadius: "5px",
                       }}>
