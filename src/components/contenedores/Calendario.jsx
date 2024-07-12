@@ -480,6 +480,10 @@ const Calendario = () => {
 
                     const diaConteidoOrganizado = Object.entries(contenido);
 
+                    diaConteidoOrganizado.sort((a, b) => {
+                      return a[1].orden - b[1].orden;
+                    });
+
                     return (
                       <Droppable
                         droppableId={`${salonNombre}|${diaNombre}`}

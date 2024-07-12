@@ -55,8 +55,10 @@ const enviarPDFPorCorreo = async (
     if (row.totalXProducto) {
       row.totalXProducto.forEach((prod) => {
         if (prod.observaciones && prod.observaciones !== "") {
+          let [nombreDia, fechaDia] = prod.fecha.split("&");
+          let [dia, mes] = fechaDia.split("/");
           observaciones.push(
-            `${prod.salonProgramado} ${prod.producto} (${prod.codigoNombre}) ${prod.fecha}: ${prod.observaciones}` //AQUÍ VOY
+            `${prod.salonProgramado} - ${prod.producto} (${prod.codigoNombre}) - ${nombreDia} ${dia}-${mes}: ${prod.observaciones}`
           );
         }
       });

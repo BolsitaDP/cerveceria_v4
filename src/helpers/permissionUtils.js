@@ -13,8 +13,12 @@ const headers = {
 const setPermiso = async () => {
   //Cuando el back funcione
 
-  let usuNombre = "Luisa Valey";
-  // let usuNombre = window.parent.dataUsu.usu_nombre;
+  let usuNombre;
+  if (window.location.href.includes("localhost")) {
+    usuNombre = "Luisa Valey";
+  } else {
+    usuNombre = window.parent.dataUsu.usu_nombre;
+  }
 
   await fetch(`${testURL}RolesController/getRol?usuNombre=${usuNombre}`, {
     method: "GET",
@@ -24,7 +28,7 @@ const setPermiso = async () => {
       if (!res.ok) {
         throw new Error("Network response was not ok " + res.statusText);
       }
-      return res.json(); // Parse the JSON response
+      return res.json();
     })
     .then((data) => {
       store.dispatch(changeRole(data[0].usuRol));
@@ -34,8 +38,6 @@ const setPermiso = async () => {
       console.error("Hubo un problema al validar autorización", error);
     });
 };
-
-// store.dispatch(changeRole("administrador"));
 
 export const getUserRole = async () => {
   await setPermiso();
