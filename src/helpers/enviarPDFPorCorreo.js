@@ -110,17 +110,13 @@ const enviarPDFPorCorreo = async (
           let arrayProdsCompletos = [];
           cellValue.forEach((sol) => {
             if (sol.codigoNombre) {
-              arrayProdsCompletos.push(
-                `${sol.producto} - (${sol.codigoNombre}) - ${sol.cantidad}CJ ${
-                  sol.observaciones ? "**" : ""
-                }`
-              );
+              arrayProdsCompletos[sol.orden] = `${sol.producto} - (${
+                sol.codigoNombre
+              }) - ${sol.cantidad}CJ ${sol.observaciones ? "**" : ""}`;
             } else {
-              arrayProdsCompletos.push(
-                `${sol.nombreDeLaAccion} - (${sol.tipo})${
-                  sol.tipo === "notas" ? "" : ` - ${sol.duracion} horas`
-                }`
-              );
+              arrayProdsCompletos[sol.orden] = `${sol.nombreDeLaAccion} - (${
+                sol.tipo
+              })${sol.tipo === "notas" ? "" : ` - ${sol.duracion} horas`}`;
             }
           });
           cellValue = arrayProdsCompletos.join(",\n \n");
