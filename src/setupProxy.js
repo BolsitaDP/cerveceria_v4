@@ -4,7 +4,7 @@ module.exports = function (app) {
   app.use(
     "/api_cerveceria",
     createProxyMiddleware({
-      target: "https://icasa.bpmco.co",
+      target: "https://sqadccorpwapp1:4430",
       changeOrigin: true,
       secure: false,
     })

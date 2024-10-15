@@ -167,4 +167,4 @@ Es el componente `.jsx` principal, en este se define el [_DragDropContext_](#dra
 
 ### Proxy
 
-Se crea un archivo `setupProxy.js` debido a un problema de `CORSS` a la hora de ejecutar las peticiones. Este código configura un proxy en la aplicación para que cualquier solicitud a `/api_cerveceria` sea redirigida a `https://icasa.bpmco.co`, ajustando algunos encabezados y permitiendo certificados SSL no válidos.
+Se crea un archivo `setupProxy.js` debido a un problema de `CORSS` a la hora de ejecutar las peticiones. Este código configura un proxy en la aplicación para que cualquier solicitud a `/api_cerveceria` sea redirigida a `https://sqadccorpwapp1:4430`, ajustando algunos encabezados y permitiendo certificados SSL no válidos.

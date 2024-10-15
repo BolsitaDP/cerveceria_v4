@@ -77,7 +77,7 @@ const HistorialPDF = () => {
       link.href = pdfSeleccionado.rutaPdf;
       window.open(pdfSeleccionado.rutaPdf, "_blank");
     } else {
-      let url = `https://icasa.bpmco.co/api_cerveceria/temp/${pdfSeleccionado.rutaPdf}`;
+      let url = `https://sqadccorpwapp1:4430/api_cerveceria/temp/${pdfSeleccionado.rutaPdf}`;
 
       window.open(url, "_blank");
     }
