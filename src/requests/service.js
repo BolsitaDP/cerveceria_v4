@@ -1,7 +1,7 @@
 import axios from "axios";
 // import store from "../redux/store";
 
-const testURL = `/api_cerveceria/v1/`;
+const testURL = `https://sqadccorpwapp1:4430/api_cerveceria/v1/`;
 
 const peticion = axios.create({
   baseURL: testURL,
