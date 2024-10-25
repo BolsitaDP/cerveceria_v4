@@ -10,6 +10,8 @@
 
 # production
 /build
+build.rar
+build.zip
 
 # misc
 .DS_Store
@@ -17,6 +19,9 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env.icasa_calidad
+.env.bpmco
+.env.development
 
 npm-debug.log*
 yarn-debug.log*

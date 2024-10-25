@@ -18,6 +18,7 @@
     "axios": "^1.5.1",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.10",
+    "env-cmd": "^10.1.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "moment": "^2.29.4",
@@ -34,7 +35,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "prebuild:icasa_calidad": "node set-homepage.js icasa_calidad",
+    "build:icasa_calidad": "npm run prebuild:icasa_calidad && env-cmd -f .env.icasa_calidad react-scripts build",
+    "prebuild:bpmco": "node set-homepage.js bpmco",
+    "build:bpmco": "npm run prebuild:bpmco && env-cmd -f .env.bpmco react-scripts build",
+    "build:development": "node set-homepage.js development && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -56,5 +61,5 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://sqadccorpwapp1:4430/cerveceria"
+  "homepage": "https://icasa.bpmco.co"
 }

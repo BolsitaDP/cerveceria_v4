@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 
+const apiUrl = process.env.REACT_APP_URL;
+
 const HistorialPDF = () => {
   const [pdfSeleccionado, setPdfSeleccionado] = useState(null);
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState(null);
@@ -77,7 +79,7 @@ const HistorialPDF = () => {
       link.href = pdfSeleccionado.rutaPdf;
       window.open(pdfSeleccionado.rutaPdf, "_blank");
     } else {
-      let url = `https://sqadccorpwapp1:4430/api_cerveceria/temp/${pdfSeleccionado.rutaPdf}`;
+      let url = `${apiUrl}/api_cerveceria/temp/${pdfSeleccionado.rutaPdf}`;
 
       window.open(url, "_blank");
     }
