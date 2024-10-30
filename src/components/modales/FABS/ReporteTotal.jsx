@@ -117,6 +117,10 @@ const ReporteTotal = () => {
             });
           });
 
+          let totalXProductoOrdenado = totalXProducto.sort(
+            (a, b) => a.orden - b.orden
+          );
+
           return (
             <div
               style={{
@@ -126,7 +130,7 @@ const ReporteTotal = () => {
                 margin: "5px 0",
                 fontSize: switchTamanoPequeno ? "8px" : "12px",
               }}>
-              {totalXProducto.map((sol, index) =>
+              {totalXProductoOrdenado.map((sol, index) =>
                 sinAcciones ? (
                   sol.codigoNombre ? (
                     <div

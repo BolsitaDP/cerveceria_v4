@@ -26,6 +26,7 @@ import obtenerDiasDeLaSemana from "../../helpers/obtenerDiasDeLaSemana";
 import AddIcon from "@mui/icons-material/Add";
 import ModificarGrupo from "../MUIComponents/ModificarGrupo";
 import EliminarGrupo from "../MUIComponents/EliminarGrupo";
+import obtenerTituloPDFExportar from "../../helpers/obtenerTituloPDFExportar";
 
 const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   const [grupoANotificar, setGrupoANotificar] = useState([]);
@@ -90,6 +91,8 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   let fechasSemanaCompletas = obtenerDiasDeLaSemana(sieteDias);
   let semanaString = fechasSemanaCompletas.join("¬");
 
+  let tituloPDFExportar = obtenerTituloPDFExportar(semanaString);
+
   const handleDescargarProgramacion = async () => {
     await enviarPDFPorCorreo(
       columns,
@@ -99,7 +102,8 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
       "",
       "",
       semanaString,
-      versionEstado
+      versionEstado,
+      tituloPDFExportar
     );
 
     dispatch(updateVersion());

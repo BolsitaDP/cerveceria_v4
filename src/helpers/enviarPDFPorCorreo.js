@@ -15,14 +15,42 @@ const enviarPDFPorCorreo = async (
   grupoId,
   descargar,
   semana,
-  version
+  version,
+  tituloPDFExportar
 ) => {
   let blob = null;
   const doc = new jsPDF({
     orientation: "landscape",
     format: "legal",
   });
-  doc.text(pdfTitle, 10, 10);
+  // Estilos
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+
+  // Parte superior - Registro y Código
+  doc.text(
+    "REGISTRO: PROGRAMA DE LLENADO CERVECERIA CENTRO AMERICANA, S.A.",
+    10,
+    20
+  );
+  doc.setFont("helvetica", "bold");
+  doc.text("CÓDIGO: PLA-1171-R-0007", 10, 25);
+
+  // Título central
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("PROGRAMA DE LLENADO CCASA", 150, 35);
+  doc.text(
+    `DEL ${tituloPDFExportar.primerDia} AL ${
+      tituloPDFExportar.ultimoDia
+    } DE ${tituloPDFExportar.mes.toUpperCase()} DEL ${tituloPDFExportar.anio}.`,
+    145,
+    42
+  );
+
+  // Reiniciar fontSize y font para la tabla
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
 
   console.log(rows);
   console.log(columns);
@@ -100,7 +128,8 @@ const enviarPDFPorCorreo = async (
       } else if (origen === "reporteGeneral" || origen === "Version") {
         if (column.field === "dia" && cellValue !== undefined) {
           let [nombre, fecha] = cellValue.split("&");
-          cellValue = `${nombre} ${fecha}`;
+          let [dia, mes, anio] = fecha.split("/");
+          cellValue = `${nombre} ${dia}`;
         } else if (
           column.field !== "dia" &&
           column.field !== "total" &&
@@ -110,16 +139,18 @@ const enviarPDFPorCorreo = async (
           let arrayProdsCompletos = [];
           cellValue.forEach((sol) => {
             if (sol.codigoNombre) {
-              arrayProdsCompletos[sol.orden] = `${sol.producto} - (${
+              arrayProdsCompletos[
+                sol.orden
+              ] = `${sol.cantidad.toLocaleString()} CJ ${sol.producto} - (${
                 sol.codigoNombre
-              }) - ${sol.cantidad}CJ ${sol.observaciones ? "**" : ""}`;
+              }) ${sol.semiprocesado ? `- ${sol.semiprocesado}` : ""} ${
+                sol.observaciones ? " - **" : ""
+              }`;
             } else {
-              arrayProdsCompletos[sol.orden] = `${sol.nombreDeLaAccion} - (${
-                sol.tipo
-              })${sol.tipo === "notas" ? "" : ` - ${sol.duracion} horas`}`;
+              arrayProdsCompletos[sol.orden] = `${sol.nombreDeLaAccion}`;
             }
           });
-          cellValue = arrayProdsCompletos.join(",\n \n");
+          cellValue = arrayProdsCompletos.join("\n \n");
         }
       }
       rowData.push(cellValue);
@@ -128,6 +159,7 @@ const enviarPDFPorCorreo = async (
   });
 
   doc.autoTable({
+    startY: 50,
     head: [columns.map((column) => column.headerName)],
     body: data,
   });

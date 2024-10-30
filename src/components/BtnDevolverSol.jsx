@@ -32,8 +32,10 @@ const BtnDevolverSol = ({ id }) => {
     const fecha = fechaC.split("&");
     const fechaObjeto = new Date(fecha[1].split("/").reverse().join("-"));
     const fechaActual = new Date();
+    const diaDeAyer = new Date(fechaActual);
+    diaDeAyer.setDate(fechaActual.getDate() - 1);
 
-    if (fechaObjeto < fechaActual) {
+    if (fechaObjeto < diaDeAyer) {
       toast.error("No puedes devolver la planeación de días anteriores a hoy");
     } else {
       setOpenPregunta(true);
@@ -110,7 +112,10 @@ const BtnDevolverSol = ({ id }) => {
     const fecha = fechaC.split("&");
     const fechaObjeto = new Date(fecha[1].split("/").reverse().join("-"));
     const fechaActual = new Date();
-    setShowButton(fechaObjeto >= fechaActual);
+    const diaDeAyer = new Date(fechaActual);
+    diaDeAyer.setDate(fechaActual.getDate() - 1);
+
+    setShowButton(fechaObjeto >= diaDeAyer);
   }, [id]);
 
   return (
