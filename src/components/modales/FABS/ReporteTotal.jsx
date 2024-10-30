@@ -346,12 +346,18 @@ const ReporteTotal = () => {
     nombreSalones.forEach((salon) => {
       let dataXSalonXDia = salones[salon].dias[dia].contenido;
 
+      // Filtrar y ordenar solo los objetos que tienen la propiedad "orden"
+      const dataXSalonXDiaOrdenado = dataXSalonXDia
+        .filter((sol) => sol.hasOwnProperty("orden")) // Filtrar solo los que tienen "orden"
+        .sort((a, b) => a.orden - b.orden); // Ordenar por "orden"
+
       dataXSalonXDia.forEach((sol) => {
         let x = sol.codigoNombre || sol.tipo;
         prodsConColor[x] = { color: obtenerColorAleatorio() };
       });
 
-      fullData[salon] = dataXSalonXDia;
+      // Asignar el array ordenado a fullData
+      fullData[salon] = dataXSalonXDiaOrdenado;
     });
 
     //Construcción de total por día

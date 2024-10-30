@@ -45,9 +45,15 @@ const onDragEnd = (
   // Función para crear el elemento arrastrado en el destino
   const crearElementoArrastradoDestino = () => {
     if (destino[1]) {
+      let elementoArrastradoEditable = JSON.parse(
+        JSON.stringify(elementoArrastrado)
+      );
+
+      elementoArrastradoEditable.orden = posicionDestino;
+
       contenedoresActualizados.calendario[destino[0]].dias[
         destino[1]
-      ].contenido.splice(posicionDestino, 0, elementoArrastrado);
+      ].contenido.splice(posicionDestino, 0, elementoArrastradoEditable);
     } else {
       if (elementoArrastrado.codigoNombre) {
         let elementoSinFechaNiSalonProgramado = JSON.parse(
@@ -286,6 +292,7 @@ const onDragEnd = (
           elementoArrastradoEditable.fecha = destino[1];
           elementoArrastradoEditable.salonProgramado = destino[0];
           elementoArrastradoEditable.idDnd = uuid();
+          elementoArrastradoEditable.orden = posicionDestino;
 
           if (elementoArrastrado.codigoNombre) {
             let [cod, dif] = elementoArrastradoCopia.codigoNombre.split(" ");
@@ -302,7 +309,7 @@ const onDragEnd = (
           eliminarElementoArrastradoFuente();
 
           dispatcher("statusUpdaters", {
-            elementoArrastrado,
+            elementoArrastradoEditable,
             destino,
             contenidoDia:
               contenedoresActualizados.calendario[destino[0]].dias[destino[1]]
@@ -482,8 +489,14 @@ const onDragEnd = (
           eliminarElementoArrastradoFuente();
           crearElementoArrastradoDestino();
 
+          let elementoArrastradoEditable = JSON.parse(
+            JSON.stringify(elementoArrastrado)
+          );
+
+          elementoArrastradoEditable.orden = posicionDestino;
+
           dispatcher("statusUpdaters", {
-            elementoArrastrado,
+            elementoArrastradoEditable,
             destino,
             contenidoDia:
               contenedoresActualizados.calendario[destino[0]].dias[destino[1]]
