@@ -45,9 +45,34 @@ const onDragEnd = (
   // Función para crear el elemento arrastrado en el destino
   const crearElementoArrastradoDestino = () => {
     if (destino[1]) {
+      let elementoArrastradoEditable = JSON.parse(
+        JSON.stringify(elementoArrastrado)
+      );
+      elementoArrastradoEditable.orden = posicionDestino;
+
+      // Obtenemos una referencia al array de contenido
+      let contenido =
+        contenedoresActualizados.calendario[destino[0]].dias[destino[1]]
+          .contenido;
+
+      // Insertamos el nuevo elemento en la posición deseada
+      contenido.splice(posicionDestino, 0, elementoArrastradoEditable);
+
+      // Reordenamos secuencialmente el array contenido a partir de la posición de inserción
+      for (let i = posicionDestino; i < contenido.length; i++) {
+        contenido[i].orden = i;
+      }
+
+      // Incrementamos en 1 el orden de los elementos con un orden mayor o igual a posicionDestino
+      contenido.forEach((item) => {
+        if (item.orden >= posicionDestino) {
+          item.orden += 1;
+        }
+      });
+
       contenedoresActualizados.calendario[destino[0]].dias[
         destino[1]
-      ].contenido.splice(posicionDestino, 0, elementoArrastrado);
+      ].contenido = contenido;
     } else {
       if (elementoArrastrado.codigoNombre) {
         let elementoSinFechaNiSalonProgramado = JSON.parse(
@@ -286,6 +311,7 @@ const onDragEnd = (
           elementoArrastradoEditable.fecha = destino[1];
           elementoArrastradoEditable.salonProgramado = destino[0];
           elementoArrastradoEditable.idDnd = uuid();
+          elementoArrastradoEditable.orden = posicionDestino;
 
           if (elementoArrastrado.codigoNombre) {
             let [cod, dif] = elementoArrastradoCopia.codigoNombre.split(" ");
