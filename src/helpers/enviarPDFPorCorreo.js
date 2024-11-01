@@ -143,7 +143,7 @@ const enviarPDFPorCorreo = async (
                 sol.orden
               ] = `${sol.cantidad.toLocaleString()} CJ ${sol.producto} - (${
                 sol.codigoNombre
-              }) ${sol.semiprocesado ? `- ${sol.semiprocesado}` : ""} ${
+              }) ${sol.codigoFormula ? `- ${sol.codigoFormula}` : ""} ${
                 sol.observaciones ? " - **" : ""
               }`;
             } else {

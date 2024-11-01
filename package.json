@@ -35,6 +35,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "build": "react-scripts build",
     "prebuild:icasa_calidad": "node set-homepage.js icasa_calidad",
     "build:icasa_calidad": "npm run prebuild:icasa_calidad && env-cmd -f .env.icasa_calidad react-scripts build",
     "prebuild:bpmco": "node set-homepage.js bpmco",
