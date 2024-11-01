@@ -59,16 +59,9 @@ const onDragEnd = (
       contenido.splice(posicionDestino, 0, elementoArrastradoEditable);
 
       // Reordenamos secuencialmente el array contenido a partir de la posición de inserción
-      for (let i = posicionDestino; i < contenido.length; i++) {
+      for (let i = 0; i < contenido.length; i++) {
         contenido[i].orden = i;
       }
-
-      // Incrementamos en 1 el orden de los elementos con un orden mayor o igual a posicionDestino
-      contenido.forEach((item) => {
-        if (item.orden >= posicionDestino) {
-          item.orden += 1;
-        }
-      });
 
       contenedoresActualizados.calendario[destino[0]].dias[
         destino[1]
