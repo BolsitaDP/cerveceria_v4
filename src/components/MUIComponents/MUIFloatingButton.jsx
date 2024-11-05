@@ -14,6 +14,8 @@ import Reportes from "../modales/FABS/Reportes";
 import ProgramadoProducido from "../modales/FABS/ProgramadoProducido";
 import ReporteTotal from "../modales/FABS/ReporteTotal";
 import AdminDashboard from "../modales/FABS/AdminDashboard";
+import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import Semielaborados from "../modales/FABS/Semielaborados";
 
 const FABS = [
   {
@@ -39,6 +41,10 @@ const FABS = [
   {
     icon: <DonutLargeRoundedIcon />,
     tooltip: "Requerido, programado y producido",
+  },
+  {
+    icon: <PrecisionManufacturingIcon />,
+    tooltip: "Reporte semielaborados",
   },
   // {
   //   icon: <AssessmentRoundedIcon />,
@@ -145,6 +151,12 @@ const MUIFloatingButton = () => {
         open={modalAbierto === "Reporte total"}
         onClose={() => setModalAbierto(null)}>
         <ReporteTotal />
+      </Modal>
+
+      <Modal
+        open={modalAbierto === "Reporte semielaborados"}
+        onClose={() => setModalAbierto(null)}>
+        <Semielaborados />
       </Modal>
 
       {/* <Modal
