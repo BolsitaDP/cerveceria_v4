@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiUrl = process.env.REACT_APP_URL;
 
-const testURL = "https://icasa.bpmco.co/api_cerveceria/v1/";
+const testURL = "/api_cerveceria/v1/";
 
 const peticion = axios.create({
   baseURL: testURL,

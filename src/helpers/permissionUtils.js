@@ -3,7 +3,7 @@ import { changeRole } from "../redux/slices/userSlice";
 import store from "../redux/store";
 import peticion from "../requests/service";
 
-const testURL = `https://icasa.bpmco.co/api_cerveceria/v1/`;
+const testURL = `api_cerveceria/v1/`;
 
 const apiUrl = process.env.REACT_APP_URL;
 console.log(apiUrl);
