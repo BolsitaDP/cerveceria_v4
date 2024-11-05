@@ -209,8 +209,8 @@ const ReporteTotal = () => {
                       {sol.unidadMedida === "UN" ? "CJ" : sol.unidadMedida}
                     </strong>
                     <br />
-                    {sol.producto || sol.nombreDeLaAccion} (
-                    {sol.codigoNombre || sol.tipo})
+                    {sol.producto || sol.nombreDeLaAccion}
+                    {sol.codigoNombre && `(${sol.codigoNombre})`}
                   </div>
                 ) : (
                   ""
@@ -237,8 +237,8 @@ const ReporteTotal = () => {
                       : ""}
                   </strong>
                   <br />
-                  {sol.producto || sol.nombreDeLaAccion} (
-                  {sol.codigoNombre || sol.tipo})
+                  {sol.producto || sol.nombreDeLaAccion}{" "}
+                  {sol.codigoNombre && `(${sol.codigoNombre})`}
                 </div>
               );
             })}
@@ -305,8 +305,8 @@ const ReporteTotal = () => {
                         {sol.horasOcupadas.toFixed(2) + " horas"}
                       </strong>
                       <br />
-                      {sol.producto || sol.nombreDeLaAccion} (
-                      {sol.codigoNombre || sol.tipo})
+                      {sol.producto || sol.nombreDeLaAccion}
+                      {sol.codigoNombre && `(${sol.codigoNombre})`}
                     </div>
                   );
                 })

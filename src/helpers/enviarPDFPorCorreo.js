@@ -139,13 +139,11 @@ const enviarPDFPorCorreo = async (
           let arrayProdsCompletos = [];
           cellValue.forEach((sol) => {
             if (sol.codigoNombre) {
-              arrayProdsCompletos[
-                sol.orden
-              ] = `${sol.cantidad.toLocaleString()} CJ ${sol.producto} - (${
-                sol.codigoNombre
-              }) ${sol.codigoFormula ? `- ${sol.codigoFormula}` : ""} ${
-                sol.observaciones ? " - **" : ""
-              }`;
+              arrayProdsCompletos[sol.orden] = `${sol.cantidad.toLocaleString(
+                "en-US"
+              )} CJ ${sol.producto} - (${sol.codigoNombre}) ${
+                sol.codigoFormula ? `- ${sol.codigoFormula}` : ""
+              } ${sol.observaciones ? " - **" : ""}`;
             } else {
               arrayProdsCompletos[sol.orden] = `${sol.nombreDeLaAccion}`;
             }
