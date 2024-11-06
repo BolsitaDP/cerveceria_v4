@@ -48,12 +48,24 @@ const onDragEnd = (
       let elementoArrastradoEditable = JSON.parse(
         JSON.stringify(elementoArrastrado)
       );
-
       elementoArrastradoEditable.orden = posicionDestino;
+
+      // Obtenemos una referencia al array de contenido
+      let contenido =
+        contenedoresActualizados.calendario[destino[0]].dias[destino[1]]
+          .contenido;
+
+      // Insertamos el nuevo elemento en la posición deseada
+      contenido.splice(posicionDestino, 0, elementoArrastradoEditable);
+
+      // Reordenamos secuencialmente el array contenido a partir de la posición de inserción
+      for (let i = 0; i < contenido.length; i++) {
+        contenido[i].orden = i;
+      }
 
       contenedoresActualizados.calendario[destino[0]].dias[
         destino[1]
-      ].contenido.splice(posicionDestino, 0, elementoArrastradoEditable);
+      ].contenido = contenido;
     } else {
       if (elementoArrastrado.codigoNombre) {
         let elementoSinFechaNiSalonProgramado = JSON.parse(

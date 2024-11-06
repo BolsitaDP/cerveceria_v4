@@ -3,9 +3,9 @@ const fs = require("fs");
 const env = process.argv[2];
 
 const homepageUrls = {
-  bpmco: "https://icasa.bpmco.co",
+  bpmco: "https://icasa.bpmco.co/cerveceria",
   icasa_calidad: "https://sqadccorpwapp1:4430",
-  development: "/",
+  development: "https://icasa.bpmco.co",
 };
 
 if (!homepageUrls[env]) {
