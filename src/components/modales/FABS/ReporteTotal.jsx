@@ -82,6 +82,9 @@ const ReporteTotal = () => {
       width: switchTamanoPequeno ? 90 : 150,
       renderCell: (row) => {
         let salon = row.field;
+        if (typeof row.row == "string") {
+          return;
+        }
         let contenido = row.row[salon];
         if (!contenido) {
           let totalXProducto = [];

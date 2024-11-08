@@ -4,6 +4,7 @@ import "jspdf-autotable";
 import { toast } from "react-toastify";
 import { agregarArchivoPDF } from "../redux/slices/contenedoresSlice";
 import store from "../redux/store";
+import * as XLSX from "xlsx";
 
 import { v4 as uuid } from "uuid";
 
@@ -210,6 +211,28 @@ const enviarPDFPorCorreo = async (
   } catch (error) {
     toast.error("Ha ocurrido un error, inténtalo de nuevo más tarde");
   }
+
+  // Crear un libro de trabajo (workbook) y hoja (worksheet)
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([
+    columns.map((column) => column.headerName),
+    ...data,
+  ]);
+
+  // Agregar la hoja de datos al libro de trabajo
+  XLSX.utils.book_append_sheet(wb, ws, "DatosPDF");
+
+  // Agregar las observaciones y otras secciones después de la tabla
+  ws["!ref"] = XLSX.utils.decode_range(
+    `A1:${String.fromCharCode(65 + columns.length)}${data.length + 5}`
+  );
+  ws[`A${data.length + 3}`] = { v: "Observaciones:" };
+  ws[`A${data.length + 4}`] = { v: observaciones.join(", \n") };
+  ws[`A${data.length + 6}`] = { v: "Salón KE:" };
+  ws[`A${data.length + 7}`] = { v: parrafoKE.join(", ") };
+
+  // Exportar el libro de trabajo a un archivo .xlsx
+  XLSX.writeFile(wb, `${pdfTitle}.xlsx`);
 };
 
 export default enviarPDFPorCorreo;
