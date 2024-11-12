@@ -97,6 +97,9 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const [cantidadProducida, setCantidadProducida] = useState(
     solicitudAbiertaEditable.datosReales
   );
+  const [cantidadProgramada, setcantidadProgramada] = useState(
+    solicitudAbiertaEditable.cantidadProgramada
+  );
 
   // Son los datos obtenidos desde el state global
   const versionEstado = useSelector((state) => state.history.version);
@@ -122,6 +125,10 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
   const handleNuevoProducido = (e) => {
     let { value } = e.target;
     setCantidadProducida(value);
+  };
+  const handleNuevoProgramado = (e) => {
+    let { value } = e.target;
+    setcantidadProgramada(value);
   };
 
   // Controladores de modales
@@ -323,40 +330,40 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
     return format(date, "dd/MM/yyyy");
   };
 
-  const compararCantidadInicial = (cantidadSinComas) => {
-    getData
-      .getValidarCantidadProgramada({
+  const compararCantidadInicial = async (cantidadSinComas) => {
+    try {
+      const res = await getData.getValidarCantidadProgramada({
         idPadre: solicitudAbiertaEditable.idPadre,
         cantidad: cantidadSinComas,
         idProducto: solicitudAbiertaEditable.id,
-      })
-      .then((res) => {
-        if (res.data.status !== "ERROR") {
-          return "OK";
-        } else {
-          // Expresión regular para encontrar todos los números en el mensaje
-          const numeros = res.data.msg.match(/\d+/g);
-
-          // Asignar los números a variables
-          const cantidadOriginal = parseInt(numeros[0]);
-          const cantidadActual = parseInt(numeros[1]);
-          // const cantidadProducir = parseInt(numeros[2]);
-
-          toast.error(
-            `No puedes superar la cantidad inicial de la solicitud: ${Number(
-              cantidadOriginal
-            ).toLocaleString()} porque ya hay ${Number(
-              cantidadActual
-            ).toLocaleString()} programada`
-          );
-          return false;
-        }
       });
-    // .finally(() => onClose());
+
+      if (res.data.status !== "ERROR") {
+        toast.success(`Cantidad actualizada correctamente`);
+        return "OK";
+      } else {
+        const numeros = res.data.msg.match(/\d+/g);
+
+        const cantidadOriginal = parseInt(numeros[0]);
+        const cantidadActual = parseInt(numeros[1]);
+
+        toast.error(
+          `No puedes superar la cantidad inicial de la solicitud: ${Number(
+            cantidadOriginal
+          ).toLocaleString()} porque ya hay ${Number(
+            cantidadActual
+          ).toLocaleString()} programada`
+        );
+        return false;
+      }
+    } catch (error) {
+      console.error("Error en la función compararCantidadInicial:", error);
+      return false;
+    }
   };
 
   // Función para guardar las propiedades editadas
-  const handleGuardarProp = ({ name, value }) => {
+  const handleGuardarProp = async ({ name, value }) => {
     let [fechaActual, horaActual] = fechaHoraActual.split(" - ");
 
     let valueFechaFormateada;
@@ -425,7 +432,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       } else if (
         calendario &&
         name === "cantidad" &&
-        compararCantidadInicial(cantidadSinComas) === "OK"
+        (await compararCantidadInicial(cantidadSinComas)) === "OK"
       ) {
         setCantidadInput(Number(cantidadSinComas));
 
@@ -669,7 +676,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             defaultValue={solicitudAbiertaEditable.producto}
             variant="standard"
           />
-
           <FormControl
             sx={{
               width: "40%",
@@ -700,7 +706,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               <span></span>
             </Tooltip>
           </FormControl>
-
           <TextField
             InputProps={{
               readOnly: true,
@@ -709,7 +714,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             defaultValue={solicitudAbiertaEditable.paisDestino}
             variant="standard"
           />
-
           <FormControl
             sx={{
               width: "40%",
@@ -752,16 +756,51 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               <span></span>
             </Tooltip>
           </FormControl>
-
-          <TextField
+          {/* <TextField
             InputProps={{
               readOnly: true,
             }}
             label="Programado"
             defaultValue={solicitudAbiertaEditable.cantidad.toLocaleString()}
             variant="standard"
-          />
+          /> */}
 
+          <FormControl
+            sx={{
+              width: "40%",
+              display: "flex",
+              flexDirection: "row",
+              gap: "0 5%",
+              alignItems: "center",
+            }}>
+            <FormattedInputTypeNumber
+              input={cantidadProgramada}
+              handleInputChange={handleNuevoProgramado}
+              label="Programado"
+              name="programado"
+            />
+            <Tooltip title="Guardar" arrow>
+              <IconButton
+                sx={{
+                  color: theme.palette.primary.main,
+                }}
+                disabled={
+                  // eslint-disable-next-line
+                  solicitudAbiertaEditable.cantidadProgramada ==
+                  cantidadProgramada
+                }
+                onClick={() =>
+                  handleGuardarProp({
+                    name: "cantidadProgramada",
+                    value: cantidadProgramada,
+                  })
+                }
+                edge="end">
+                <SaveIcon />
+              </IconButton>
+              <span></span>
+            </Tooltip>
+          </FormControl>
           <FormControl
             sx={{
               width: "40%",
@@ -801,7 +840,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               <span></span>
             </Tooltip>
           </FormControl>
-
           <TextField
             label="Observaciones generales"
             multiline
@@ -812,7 +850,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
             defaultValue={solicitudAbiertaEditable.observacionesGenerales}
             variant="standard"
           />
-
           <FormControl
             sx={{
               width: "40%",
@@ -851,7 +888,6 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
               <span></span>
             </Tooltip>
           </FormControl>
-
           <Accordion
             sx={{
               width: "90%",

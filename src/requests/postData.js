@@ -173,6 +173,7 @@ const postData = {
       fechaProduccion: body.fechaProduccion,
       fechaExpiracion: body.fechaExpiracion,
       observaciones: body.observaciones,
+      cantidadProgramada: body.cantidadProgramada,
       version: body.version,
       pais: body.pais,
       planta: body.planta,
