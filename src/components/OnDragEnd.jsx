@@ -369,6 +369,7 @@ const onDragEnd = (
                 cantidad: cantidadRedondeada500,
                 fecha: destino[1],
                 salonProgramado: salon,
+                orden: posicionDestino,
                 idDnd: uuid(),
               });
             }
