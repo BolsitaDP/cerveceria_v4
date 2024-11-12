@@ -41,6 +41,7 @@ const postData = {
       marca: body.marca,
       formula: body.formula,
       codigoFormula: body.codigoFormula,
+      cantidadProgramada: body.cantidadProgramada,
       volumen: body.volumen,
       envase: body.envase,
       empaque: body.empaque,
