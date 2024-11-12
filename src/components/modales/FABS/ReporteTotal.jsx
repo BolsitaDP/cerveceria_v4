@@ -1,12 +1,30 @@
 import React, { useState } from "react";
 import BasicModal from "../../MUIComponents/BasicModal";
 import { Box, FormControlLabel, Modal, Switch } from "@mui/material";
-import { DataGrid, GridToolbar, esES } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarFilterButton,
+  esES,
+} from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import generarColores from "../../../helpers/generadorColores";
 import obtenerDiasDeLaSemana from "../../../helpers/obtenerDiasDeLaSemana";
 import Notificar from "../Notificar";
+
+const CustomToolbarWithoutExport = () => {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+    </GridToolbarContainer>
+  );
+};
 
 const ReporteTotal = () => {
   const [switchColoresPorProductos, setSwitchColoresPorProductos] =
@@ -399,7 +417,7 @@ const ReporteTotal = () => {
     return fullData;
   });
 
-  rows7.push("TOTAL");
+  // rows7.push("TOTAL");
 
   const handleCheckedTotales = () => {
     setSwitchTamanoPequeno(!switchTamanoPequeno);
@@ -478,7 +496,7 @@ const ReporteTotal = () => {
         </Box>
         <Box sx={{ width: "100%", height: "90%" }}>
           <DataGrid
-            slots={{ toolbar: GridToolbar }}
+            slots={{ toolbar: CustomToolbarWithoutExport }}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             rows={rows7}
             pageSizeOptions={[8, 10]}

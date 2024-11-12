@@ -332,7 +332,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       })
       .then((res) => {
         if (res.data.status !== "ERROR") {
-          return true;
+          return "OK";
         } else {
           // Expresión regular para encontrar todos los números en el mensaje
           const numeros = res.data.msg.match(/\d+/g);
@@ -425,7 +425,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
       } else if (
         calendario &&
         name === "cantidad" &&
-        compararCantidadInicial(cantidadSinComas)
+        compararCantidadInicial(cantidadSinComas) === "OK"
       ) {
         setCantidadInput(Number(cantidadSinComas));
 
