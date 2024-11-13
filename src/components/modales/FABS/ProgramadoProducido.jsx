@@ -38,11 +38,11 @@ const ProgramadoProducido = () => {
       },
     },
     {
-      field: "cantidadPendiente",
+      field: "cantidadProgramada",
       headerName: "Programado",
       width: 150,
       renderCell: ({ row }) => {
-        let formattedQuant = row.cantidadPendiente.toLocaleString();
+        let formattedQuant = row.cantidadProgramada.toLocaleString();
         return formattedQuant;
       },
     },
@@ -60,23 +60,30 @@ const ProgramadoProducido = () => {
   let mapaFilas = new Map();
 
   contenedoresEstado.pedidoTotal.forEach((sol) => {
-    if (mapaFilas.has(sol.producto)) {
-      let filaExistente = mapaFilas.get(sol.producto);
-      filaExistente.cantidadTotal += sol.cantidad;
-    } else if (mapaFilas.has(sol.codigoNombre)) {
-      let filaExistente = mapaFilas.get(sol.codigoNombre);
-      filaExistente.cantidadTotal += sol.cantidad;
-    } else {
-      let obj = {
-        nombre: sol.producto,
-        codigo: sol.codigoNombre,
-        cantidadTotal: sol.cantidad,
-        cantidadProducida: 0,
-        cantidadPendiente: 0,
-      };
-      mapaFilas.set(sol.producto, obj);
-      mapaFilas.set(sol.codigoNombre, obj);
-      newRows.push(obj);
+    if (
+      sieteDias.includes(sol.fechaRequiere) ||
+      sieteDias.includes(sol.fecha.split("&")[1])
+    ) {
+      if (mapaFilas.has(sol.producto)) {
+        let filaExistente = mapaFilas.get(sol.producto);
+        filaExistente.cantidadTotal += sol.cantidad;
+        filaExistente.cantidadProgramada += Number(sol.cantidadProgramada);
+      } else if (mapaFilas.has(sol.codigoNombre)) {
+        let filaExistente = mapaFilas.get(sol.codigoNombre);
+        filaExistente.cantidadTotal += sol.cantidad;
+        filaExistente.cantidadProgramada += Number(sol.cantidadProgramada);
+      } else {
+        let obj = {
+          nombre: sol.producto,
+          codigo: sol.codigoNombre,
+          cantidadTotal: sol.cantidad,
+          cantidadProducida: 0,
+          cantidadProgramada: Number(sol.cantidadProgramada),
+        };
+        mapaFilas.set(sol.producto, obj);
+        mapaFilas.set(sol.codigoNombre, obj);
+        newRows.push(obj);
+      }
     }
   });
 

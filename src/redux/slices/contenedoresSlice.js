@@ -413,9 +413,25 @@ const contenedoresSlice = createSlice({
         let elEdit = JSON.parse(JSON.stringify(el));
         elEdit.idDnd = uuid();
 
-        state.calendario[elEdit.salonProgramado].dias[
-          elEdit.fecha
-        ].contenido.push(elEdit);
+        let contenidoEditable =
+          state.calendario[elEdit.salonProgramado].dias[elEdit.fecha].contenido;
+
+        contenidoEditable.splice(elEdit.orden, 0, elEdit);
+
+        // state.calendario[elEdit.salonProgramado].dias[
+        //   elEdit.fecha
+        // ].contenido.push(elEdit);
+
+        for (let i = 0; i < contenidoEditable.length; i++) {
+          contenidoEditable[i].orden = i;
+        }
+
+        // contenedoresActualizados.calendario[destino[0]].dias[
+        //   destino[1]
+        // ].contenido = contenido;
+
+        state.calendario[elEdit.salonProgramado].dias[elEdit.fecha].contenido =
+          contenidoEditable;
 
         let capacidadSalonPorDia;
 
