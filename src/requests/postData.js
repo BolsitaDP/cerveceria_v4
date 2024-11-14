@@ -193,6 +193,22 @@ const postData = {
   postDeleteSolicitud(body) {
     return peticion.post("ProgramacionController/delete", body);
   },
+
+  postAddUsuario(body) {
+    return peticion.post("RolesController/addUsuario", body);
+  },
+
+  postUpdateRolUsuario(body) {
+    return peticion.post(
+      `RolesController/updateRolUsuario?usuCorreo=${body.usuCorreo}&nuevoRol=${body.usuRol}`
+    );
+  },
+
+  postDesactivarUsuario(body) {
+    return peticion.post(
+      `RolesController/updateUserState?usuCorreo=${body.usuCorreo}&estadoActual=false`
+    );
+  },
 };
 
 export default postData;

@@ -11,10 +11,16 @@ import {
   TextField,
 } from "@mui/material";
 import ConfirmarCambioRoles from "../ConfirmarCambioRoles";
+import postData from "../../../requests/postData";
+import { toast } from "react-toastify";
 
 const AdminDashboard = () => {
   const [accion, setAccion] = useState("");
+
+  const [nombreUsuario, setNombreUsuario] = useState("");
+  const [correoUsuario, setCorreoUsuario] = useState("");
   const [tipoPermiso, setTipoPermiso] = useState("");
+
   const [confirmacionAccion, setConfirmacionAccion] = useState(false);
 
   const handleAccion = (accion) => {
@@ -29,8 +35,38 @@ const AdminDashboard = () => {
     setTipoPermiso(e.target.value);
   };
 
-  const handleConfirmation = (res) => {
-    console.log(res);
+  const handleConfirmation = async (res) => {
+    setConfirmacionAccion(false);
+
+    if (res === "no") {
+      return;
+    }
+
+    let respuesta;
+
+    try {
+      if (accion === "crear") {
+        respuesta = await postData.postAddUsuario({
+          usuNombre: nombreUsuario.toUpperCase(),
+          usuCorreo: correoUsuario,
+        });
+      } else if (accion === "permisos") {
+        respuesta = await postData.postUpdateRolUsuario({
+          usuCorreo: correoUsuario,
+          usuRol: tipoPermiso,
+        });
+      } else if (accion === "eliminar") {
+        respuesta = await postData.postDesactivarUsuario({
+          usuCorreo: correoUsuario,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(`Hubo un error. Intenta de nuevo más tarde ${error}`);
+      return;
+    }
+
+    console.log(respuesta);
   };
 
   return (
@@ -75,6 +111,8 @@ const AdminDashboard = () => {
               }}
               label="Nombre del usuario"
               variant="standard"
+              value={nombreUsuario}
+              onChange={(e) => setNombreUsuario(e.target.value)}
             />
             <TextField
               sx={{
@@ -83,6 +121,8 @@ const AdminDashboard = () => {
               }}
               label="Correo del usuario"
               variant="standard"
+              value={correoUsuario}
+              onChange={(e) => setCorreoUsuario(e.target.value)}
             />
 
             <FormControl
@@ -127,7 +167,10 @@ const AdminDashboard = () => {
       <Modal
         open={confirmacionAccion}
         onClose={() => setConfirmacionAccion(false)}>
-        <ConfirmarCambioRoles handleConfirmation={handleConfirmation} />
+        <ConfirmarCambioRoles
+          handleConfirmation={handleConfirmation}
+          accion={accion}
+        />
       </Modal>
     </div>
   );
