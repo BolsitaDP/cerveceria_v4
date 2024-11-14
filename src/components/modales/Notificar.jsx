@@ -27,6 +27,8 @@ import AddIcon from "@mui/icons-material/Add";
 import ModificarGrupo from "../MUIComponents/ModificarGrupo";
 import EliminarGrupo from "../MUIComponents/EliminarGrupo";
 import obtenerTituloPDFExportar from "../../helpers/obtenerTituloPDFExportar";
+import getWeekNumber from "../../helpers/obtenerNumeroSemana";
+import numeroALetra from "../../helpers/convertirNumeroALetra";
 
 const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   const [grupoANotificar, setGrupoANotificar] = useState([]);
@@ -93,6 +95,9 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
 
   let tituloPDFExportar = obtenerTituloPDFExportar(semanaString);
 
+  let numeroSemana = getWeekNumber(sieteDias[0]);
+  let letraVersion = numeroALetra(versionEstado).toUpperCase();
+
   const handleDescargarProgramacion = async () => {
     await enviarPDFPorCorreo(
       columns,
@@ -103,7 +108,9 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
       "",
       semanaString,
       versionEstado,
-      tituloPDFExportar
+      tituloPDFExportar,
+      numeroSemana,
+      letraVersion
     );
 
     dispatch(updateVersion());

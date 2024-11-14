@@ -17,7 +17,9 @@ const enviarPDFPorCorreo = async (
   descargar,
   semana,
   version,
-  tituloPDFExportar
+  tituloPDFExportar,
+  numeroSemana,
+  numeroVersion
 ) => {
   let blob = null;
   const doc = new jsPDF({
@@ -36,6 +38,14 @@ const enviarPDFPorCorreo = async (
   );
   doc.setFont("helvetica", "bold");
   doc.text("CÓDIGO: PLA-1171-R-0007", 10, 25);
+
+  // Texto alineado a la derecha en la misma línea
+  const textDerecha = `CORRELATIVO ${numeroSemana}-${numeroVersion}`;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const textWidth = doc.getTextWidth(textDerecha);
+
+  // Calcula la posición X para el texto a la derecha
+  doc.text(textDerecha, pageWidth - textWidth - 10, 20);
 
   // Título central
   doc.setFontSize(14);
