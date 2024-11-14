@@ -46,10 +46,10 @@ const FABS = [
     icon: <PrecisionManufacturingIcon />,
     tooltip: "Reporte semielaborados",
   },
-  // {
-  //   icon: <AssessmentRoundedIcon />,
-  //   tooltip: "Panel de administrador",
-  // },
+  {
+    icon: <AssessmentRoundedIcon />,
+    tooltip: "Panel de administrador",
+  },
 ];
 
 const MUIFloatingButton = () => {
@@ -159,11 +159,11 @@ const MUIFloatingButton = () => {
         <Semielaborados />
       </Modal>
 
-      {/* <Modal
+      <Modal
         open={modalAbierto === "Panel de administrador"}
         onClose={() => setModalAbierto(null)}>
         <AdminDashboard />
-      </Modal> */}
+      </Modal>
     </Box>
   );
 };
