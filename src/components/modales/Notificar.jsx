@@ -29,6 +29,9 @@ import EliminarGrupo from "../MUIComponents/EliminarGrupo";
 import obtenerTituloPDFExportar from "../../helpers/obtenerTituloPDFExportar";
 import getWeekNumber from "../../helpers/obtenerNumeroSemana";
 import numeroALetra from "../../helpers/convertirNumeroALetra";
+import obtenerInformacionHistorialVersiones from "../../helpers/obtenerInformacionHistorialVersiones";
+import getData from "../../requests/getData";
+import { setArchivosPDFInicial } from "../../redux/slices/contenedoresSlice";
 
 const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   const [grupoANotificar, setGrupoANotificar] = useState([]);
@@ -93,10 +96,13 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
   let fechasSemanaCompletas = obtenerDiasDeLaSemana(sieteDias);
   let semanaString = fechasSemanaCompletas.join("¬");
 
+  let versionHistorialPdf =
+    Number(obtenerInformacionHistorialVersiones(semanaString)) + 1;
+
   let tituloPDFExportar = obtenerTituloPDFExportar(semanaString);
 
   let numeroSemana = getWeekNumber(sieteDias[0]);
-  let letraVersion = numeroALetra(versionEstado).toUpperCase();
+  let letraVersion = numeroALetra(versionHistorialPdf).toUpperCase();
 
   const handleDescargarProgramacion = async () => {
     await enviarPDFPorCorreo(
@@ -107,13 +113,24 @@ const Notificar = ({ exportar, columns, rows, titulo, origen }) => {
       "",
       "",
       semanaString,
-      versionEstado,
+      versionHistorialPdf,
       tituloPDFExportar,
       numeroSemana,
       letraVersion
     );
 
     dispatch(updateVersion());
+
+    try {
+      // Espera la respuesta de la función getArchivosPDF
+      const archivosPDF = await getData.getArchivosPDF();
+
+      // Despacha la acción con los datos recibidos
+      dispatch(setArchivosPDFInicial(archivosPDF.data));
+    } catch (error) {
+      // Maneja cualquier error que ocurra
+      console.error("Error al obtener archivos PDF:", error);
+    }
   };
 
   return (

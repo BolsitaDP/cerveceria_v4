@@ -105,11 +105,21 @@ const HistorialPDF = () => {
             sx={{ width: 250 }}
             onChange={handleChangeSemana}
             input={<OutlinedInput label="Semana" />}>
-            {rangoFecchas.map((fecha, index) => (
-              <MenuItem key={index} value={`${fecha[0]}`}>
-                {`${fecha[0]} - ${fecha[1]}`}
-              </MenuItem>
-            ))}
+            {rangoFecchas.map((fecha, index) => {
+              let fechaCompletaInicio = fecha[0];
+              let fechaNombreDiaInicio = fecha[0].split("&")[0];
+              let [diaInicio, mesInicio] = fecha[0].split("&")[1].split("/");
+
+              let fechaCompletaFin = fecha[1];
+              let fechaNombreDiaFin = fecha[1].split("&")[0];
+              let [diaFin, mesFin] = fecha[1].split("&")[1].split("/");
+
+              return (
+                <MenuItem key={index} value={`${fechaCompletaInicio}`}>
+                  {`${fechaNombreDiaInicio} ${diaInicio}/${mesInicio} - ${fechaNombreDiaFin} ${diaFin}/${mesFin}`}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
 
