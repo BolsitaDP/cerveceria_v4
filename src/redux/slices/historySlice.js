@@ -41,31 +41,6 @@ const historySlice = createSlice({
       state.salonSeleccionado = action.payload;
     },
     updateVersion: (state, action) => {
-      // const cambiosRealizados = state.cambios.filter((cambio) => {
-      //   const exists = state.cambiosSinNotificar.find(
-      //     (x) => JSON.stringify(x) === JSON.stringify(cambio)
-      //   );
-      //   return exists;
-      // });
-
-      // if (cambiosRealizados.length > 0) {
-      //   state.version++;
-      //   cambiosRealizados.forEach((cambio) => {
-      //     const index = state.cambiosSinNotificar.findIndex(
-      //       (k) => JSON.stringify(k) === JSON.stringify(cambio)
-      //     );
-      //     cambio.notificado = 1;
-      //     state.cambiosSinNotificar.splice(index, 1);
-      //   });
-      //   toast.success(
-      //     `Cambios de versión ${
-      //       parseInt(state.version) - 1
-      //     } notificados correctamente`
-      //   );
-      // } else {
-      //   toast("No hay cambios a notificar");
-      // }
-
       state.version++;
     },
     setDestino: (state, action) => {
