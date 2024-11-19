@@ -40,12 +40,12 @@ const enviarPDFPorCorreo = async (
   doc.text("CÓDIGO: PLA-1171-R-0007", 10, 25);
 
   // Texto alineado a la derecha en la misma línea
-  const textDerecha = `CORRELATIVO ${numeroSemana}-${numeroVersion}`;
+  const textoMarca = `CORRELATIVO ${numeroSemana}-${numeroVersion}`;
   const pageWidth = doc.internal.pageSize.getWidth();
-  const textWidth = doc.getTextWidth(textDerecha);
+  // const textWidth = doc.getTextWidth(textDerecha);
 
-  // Calcula la posición X para el texto a la derecha
-  doc.text(textDerecha, pageWidth - textWidth - 10, 20);
+  // // Calcula la posición X para el texto a la derecha
+  // doc.text(textDerecha, pageWidth - textWidth - 10, 20);
 
   // Título central
   doc.setFontSize(14);
@@ -174,13 +174,13 @@ const enviarPDFPorCorreo = async (
   });
 
   // Obtener la posición Y después de la tabla
-  const underTable = doc.autoTable.previous.finalY || 10;
+  const underTable = doc.autoTable.previous.finalY || 30;
 
   doc.setFontSize(12);
 
   // Agregar un párrafo después de la tabla
   const marginLeft = 10; // Margen izquierdo
-  const marginTop = 10; // Margen superior
+  const marginTop = 30; // Margen superior
   const pageHeight = doc.internal.pageSize.getHeight();
   const maxLineWidth = pageWidth - marginLeft * 2; // Ancho máximo del texto
   const lineHeightKE = 6; // Altura de línea para el primer párrafo
@@ -189,7 +189,7 @@ const enviarPDFPorCorreo = async (
   const textoKE = `Salón KE:\n${parrafoKE.join(", ")}`;
   const lineasKE = doc.splitTextToSize(textoKE, maxLineWidth);
 
-  let cursorY = underTable + lineHeightKE;
+  let cursorY = underTable + 15;
 
   lineasKE.forEach((linea) => {
     if (cursorY + lineHeightKE > pageHeight) {
@@ -208,6 +208,8 @@ const enviarPDFPorCorreo = async (
   let textoObservaciones = `Observaciones: \n${observaciones.join(", \n")}`;
   let lineas = doc.splitTextToSize(textoObservaciones, maxLineWidth);
 
+  cursorY += 10;
+
   lineas.forEach((linea) => {
     if (cursorY + lineHeightObservaciones > pageHeight) {
       doc.addPage();
@@ -217,6 +219,13 @@ const enviarPDFPorCorreo = async (
     doc.text(linea, marginLeft, cursorY);
     cursorY += lineHeightObservaciones;
   });
+
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i); // Cambiar a la página correspondiente
+    const textWidth = doc.getTextWidth(textoMarca);
+    doc.text(textoMarca, pageWidth - textWidth - 10, 10); // Posicionar en la esquina superior derecha
+  }
 
   const pdfUrl = URL.createObjectURL(doc.output("blob"));
   window.open(pdfUrl, "_blank");
