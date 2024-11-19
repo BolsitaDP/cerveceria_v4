@@ -83,7 +83,7 @@ const enviarPDFPorCorreo = async (
 
   contenidoKE.forEach((x) => {
     if (x.nombreDeLaAccion) {
-      parrafoKE.push(`${x.nombreDeLaAccion} (${x.tipo})`);
+      parrafoKE.push(`${x.nombreDeLaAccion}`);
     }
   });
 
@@ -179,12 +179,44 @@ const enviarPDFPorCorreo = async (
   doc.setFontSize(12);
 
   // Agregar un párrafo después de la tabla
-  doc.text(`Salón KE: \n${parrafoKE.join(", ")}`, 10, underTable + 10);
+  const marginLeft = 10; // Margen izquierdo
+  const marginTop = 10; // Margen superior
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const maxLineWidth = pageWidth - marginLeft * 2; // Ancho máximo del texto
+  const lineHeightKE = 6; // Altura de línea para el primer párrafo
+  const lineHeightObservaciones = 6; // Altura de línea para el segundo párrafo
 
-  let underKe = 20 + underTable + parrafoKE.length * 10;
+  const textoKE = `Salón KE:\n${parrafoKE.join(", ")}`;
+  const lineasKE = doc.splitTextToSize(textoKE, maxLineWidth);
+
+  let cursorY = underTable + lineHeightKE;
+
+  lineasKE.forEach((linea) => {
+    if (cursorY + lineHeightKE > pageHeight) {
+      doc.addPage();
+      cursorY = marginTop; // Restablecer en nueva página
+    }
+
+    doc.text(linea, marginLeft, cursorY);
+    cursorY += lineHeightKE;
+  });
+
+  // doc.text(`Salón KE: \n${parrafoKE.join(", ")}`, 10, underTable + 10);
 
   // Observaciones de los productos en el reporte
-  doc.text(`Observaciones: \n${observaciones.join(", \n")}`, 10, underKe + 10);
+
+  let textoObservaciones = `Observaciones: \n${observaciones.join(", \n")}`;
+  let lineas = doc.splitTextToSize(textoObservaciones, maxLineWidth);
+
+  lineas.forEach((linea) => {
+    if (cursorY + lineHeightObservaciones > pageHeight) {
+      doc.addPage();
+      cursorY = marginTop; // Restablecer en nueva página
+    }
+
+    doc.text(linea, marginLeft, cursorY);
+    cursorY += lineHeightObservaciones;
+  });
 
   const pdfUrl = URL.createObjectURL(doc.output("blob"));
   window.open(pdfUrl, "_blank");
@@ -223,28 +255,6 @@ const enviarPDFPorCorreo = async (
       "Ha ocurrido un error enviando el correo, inténtalo de nuevo más tarde"
     );
   }
-
-  // // Crear un libro de trabajo (workbook) y hoja (worksheet)
-  // const wb = XLSX.utils.book_new();
-  // const ws = XLSX.utils.aoa_to_sheet([
-  //   columns.map((column) => column.headerName),
-  //   ...data,
-  // ]);
-
-  // // Agregar la hoja de datos al libro de trabajo
-  // XLSX.utils.book_append_sheet(wb, ws, "DatosPDF");
-
-  // // Agregar las observaciones y otras secciones después de la tabla
-  // ws["!ref"] = XLSX.utils.decode_range(
-  //   `A1:${String.fromCharCode(65 + columns.length)}${data.length + 5}`
-  // );
-  // ws[`A${data.length + 3}`] = { v: "Observaciones:" };
-  // ws[`A${data.length + 4}`] = { v: observaciones.join(", \n") };
-  // ws[`A${data.length + 6}`] = { v: "Salón KE:" };
-  // ws[`A${data.length + 7}`] = { v: parrafoKE.join(", ") };
-
-  // // Exportar el libro de trabajo a un archivo .xlsx
-  // XLSX.writeFile(wb, `${pdfTitle}.xlsx`);
 };
 
 export default enviarPDFPorCorreo;

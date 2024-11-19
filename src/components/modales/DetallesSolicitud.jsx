@@ -984,7 +984,7 @@ const DetallesSolicitud = ({ solicitudAbierta, calendario, onClose }) => {
                   readOnly: true,
                 }}
                 label="Fecha de expiración"
-                defaultValue={solicitudAbiertaEditable.fechaExpiración}
+                defaultValue={solicitudAbiertaEditable.fechaExpiracion}
                 variant="standard"
               />
             </AccordionDetails>
