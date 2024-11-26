@@ -40,8 +40,8 @@ const Semielaborados = () => {
         if (dia.contenido.length > 0) {
           let contenidoDia = dia.contenido;
           contenidoDia.forEach((el) => {
-            if (!productosNombres.includes(el.producto)) {
-              productosNombres.push(el.producto);
+            if (!productosNombres.includes(el.codigoFormula)) {
+              productosNombres.push(el.codigoFormula);
             }
           });
         }
@@ -62,12 +62,13 @@ const Semielaborados = () => {
 
             contenidoDia.forEach((el) => {
               // Comprueba si el producto coincide con productoABuscar
-              if (productoABuscar.includes(el.producto)) {
+              if (productoABuscar.includes(el.codigoFormula)) {
                 diasSeleccionado.forEach((diaSel) => {
                   nombreDiasDeLaSemana.forEach((nombre) => {
                     if (
                       diaSel === nombre &&
-                      el.fecha.split("&")[0] === diaSel
+                      el.fecha.split("&")[0] === diaSel &&
+                      el.codigoFormula
                     ) {
                       uniqueRows.add(el);
                     }
@@ -146,7 +147,7 @@ const Semielaborados = () => {
       field: "cantidad",
       headerName: "Cantidad",
       flex: 1,
-      minWidth: 250,
+      minWidth: 100,
       renderCell: (params) => {
         if (params.row.cantidad) {
           return `${params.row.cantidad.toLocaleString("en-US")}`;
@@ -154,10 +155,32 @@ const Semielaborados = () => {
       },
     },
     {
+      field: "salones",
+      headerName: "Salones",
+      flex: 1,
+      minWidth: 100,
+      renderCell: (params) => {
+        if (params.row.salonProgramado) {
+          return `${params.row.salonProgramado}`;
+        }
+      },
+    },
+    {
+      field: "fecha",
+      headerName: "Dias",
+      flex: 1,
+      minWidth: 100,
+      renderCell: (params) => {
+        if (params.row.fecha) {
+          return `${params.row.fecha.split("&")[0]}`;
+        }
+      },
+    },
+    {
       field: "codigoFormula",
       headerName: "Semielaborado",
       flex: 1,
-      minWidth: 250,
+      minWidth: 200,
     },
   ];
 
@@ -177,7 +200,7 @@ const Semielaborados = () => {
       field: "cantidad",
       headerName: "Cantidad",
       flex: 1,
-      minWidth: 250,
+      minWidth: 150,
       renderCell: (params) => {
         if (params.row.cantidad) {
           return `${params.row.cantidad.toLocaleString("en-US")}`;
@@ -188,7 +211,7 @@ const Semielaborados = () => {
       field: "codigoFormula",
       headerName: "Semielaborado",
       flex: 1,
-      minWidth: 250,
+      minWidth: 150,
     },
   ];
 
@@ -228,7 +251,7 @@ const Semielaborados = () => {
                 sx={{ width: "100%" }}
                 color="secondary"
                 variant="standard"
-                label="Producto"
+                label="Semielaborado"
               />
             );
           }}
