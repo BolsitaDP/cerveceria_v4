@@ -363,6 +363,11 @@ const onDragEnd = (
 
             cantidadQueVaFaltando += cantidadSeSupone - cantidadRedondeada500;
 
+            if (cantidadRedondeada500 <= 0) {
+              toast.error("El día no cuenta con capacidad suficiente");
+              return;
+            }
+
             if (cantidadRedondeada500 > 0) {
               reparticion.push({
                 ...elementoCopia,

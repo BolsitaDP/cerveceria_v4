@@ -86,6 +86,7 @@ const BtnDevolverSol = ({ id }) => {
         estado: "",
         fecha: "",
         salonProgramado: "",
+        orden: 0,
       })
     );
 
